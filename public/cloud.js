@@ -87,7 +87,16 @@
   /* ---------- shared link viewer: /v/<link id> ---------- */
   const demo = params.get('demo');   // /app?demo=showcase: a built-in deck, played without saving anything
   if (viewSlug || demo) { startViewer(viewSlug, demo); return; }
-  if (!ON) return;
+  if (!ON) {
+    // Accounts are not connected yet (config.js is empty): say so instead of silently opening the editor.
+    if (params.get('signin') || params.get('upgrade')) {
+      history.replaceState(null, '', location.pathname);
+      setTimeout(() => toast(window.supabase
+        ? 'Sign-in is not set up on this site yet: add the Supabase URL and anon key to config.js.'
+        : 'Sign-in could not load. Check your internet connection and reload the page.'), 600);
+    }
+    return;
+  }
 
   /* ---------- account state ---------- */
   let session = null, user = null, profile = null;
@@ -480,6 +489,8 @@
   sb.auth.getSession().then(async ({ data }) => {
     await onSession(data.session);
     if (!user && wantsUpgrade()) signInDialog('Sign in first, then choose monthly or yearly.');
+    else if (!user && params.get('signin')) signInDialog();          // "Sign in" on the home page
+    if (params.get('signin')) history.replaceState(null, '', location.pathname);
   });
   if (params.get('upgraded')) { history.replaceState(null, '', location.pathname); waitForPro(); }
   // "Get Pro" on the home page: /app?upgrade=1 (remembered across the email sign-in)
