@@ -1,0 +1,10 @@
+{
+  "name": "trace-saas",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "test": "node --test tests/*.test.mjs && sh tests/run_db_tests.sh",
+    "dev": "npx wrangler@3 pages dev public",
+    "deploy": "npx wrangler@3 pages deploy public --project-name trace"
+  }
+}

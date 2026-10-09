@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Animating · Tracé guide</title>
+<meta name="description" content="Clicks, moves, morphs, timing: how to use Tracé, the editor for animated maths and physics slides.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%2322488a'/%3E%3Cpath d='M5 21c4-12 7-12 11 0s7 12 11 0' fill='none' stroke='%23fff' stroke-width='2.6' stroke-linecap='round'/%3E%3C/svg%3E">
+<link rel="stylesheet" href="/site.css">
+</head>
+<body>
+<header class="top">
+  <div class="wrap">
+    <a class="logo" href="/">Tracé</a>
+    <nav aria-label="Main">
+      <a href="/guide/" class="hide-s">Guide</a>
+      <a href="/#pricing">Pricing</a>
+    </nav>
+    <a class="btn primary" href="/app">Open the editor</a>
+  </div>
+</header>
+<div class="wrap guide">
+  <nav class="gnav" aria-label="Guide">
+    <p>Guide</p>
+    <ol><li><a href="/guide/">Guide</a></li><li><a href="/guide/start">Getting started</a></li><li><a href="/guide/objects">Objects and equations</a></li><li><a href="/guide/animate" aria-current="page">Animating</a></li><li><a href="/guide/present">Presenting</a></li><li><a href="/guide/share">Saving and sharing</a></li><li><a href="/guide/cheatsheet">Cheat sheet</a></li></ol>
+    <p class="search">Looking for something? Press Ctrl+F on any page, or see the <a href="/guide/cheatsheet">cheat sheet</a>.</p>
+  </nav>
+  <main class="article">
+
+<h1>Animating</h1>
+<p class="lead">There is no timeline. You decide what the slide looks like at each click, and Tracé animates between those moments.</p>
+<nav class="toc" aria-label="On this page"><b>On this page</b><ul><li><a href="#two">Two ways to animate</a></li><li><a href="#clicks">Building a slide click by click</a></li><li><a href="#options">Entrances, exits and motion</a></li><li><a href="#change">Changing an object on a click</a></li><li><a href="#bar">The clicks bar</a></li><li><a href="#slides">Animating between slides</a></li><li><a href="#slide-settings">Speed and feel</a></li><li><a href="#tips">Tips</a></li></ul></nav>
+<h2 id="two">Two ways to animate</h2>
+<ul>
+<li><b>Clicks:</b> objects appear, change and leave on click 1, 2, 3… within one slide.</li>
+<li><b>Slides:</b> duplicate a slide and change the copy. Everything that moved, grew, turned or changed animates when you go to the next slide.</li>
+</ul>
+<p>You can mix both freely. Clicks are best for building up one picture; duplicated slides are best for a sequence of states, like a story board.</p>
+
+<h2 id="clicks">Building a slide click by click</h2>
+<p>Select an object and look at <span class="ui">Animation</span> in the settings. <span class="ui">Appears</span> says when it comes in: <span class="ui">With the slide</span>, or <span class="ui">On click 1</span>, <span class="ui">On click 2</span>… The last option, marked <span class="ui">(new)</span>, adds a click to the slide.</p>
+<figure class="narrow" style="--w:296px"><img src="/guide/img/animation-panel.webp" alt="Animation settings: Appears, Enters with, morph, Leaves, Leaves with, When it moves, Keeps moving, Emphasis" width="296" height="393" loading="lazy"><figcaption>The Animation settings of an object.</figcaption></figure>
+<p>Objects that appear on the same click come in together. To bring them in one after another, tick <span class="ui">Objects that appear together come in one after another</span> in the slide settings.</p>
+
+<h2 id="options">Entrances, exits and motion</h2>
+<div class="tbl-wrap"><table class="tbl"><thead><tr><th>Setting</th><th>Choices</th></tr></thead><tbody><tr><td><span class="ui">Enters with</span></td><td>Write (text and equations are written stroke by stroke), Draw (lines, arrows and curves draw from start to end), Fade in, Grow, Slide in from the left or right, Rise from below, Drop from above, Zoom in, Spin in, Draw the outline then fill</td></tr><tr><td><span class="ui">Or appears by morphing out of</span></td><td>Pick another object: it turns into this one, for example a circle into a star, or one equation into the next</td></tr><tr><td><span class="ui">Leaves</span> / <span class="ui">Leaves with</span></td><td>Stays, or leaves on a click: Fade out, Shrink away, Slide out, Drop out, Un-draw</td></tr><tr><td><span class="ui">When it moves</span></td><td>Straight line, Curve to the left, Curve to the right</td></tr><tr><td><span class="ui">Keeps moving</span></td><td>No, Spin, Pulse, Float up and down, or a motion that suits the object (a wave keeps travelling, a phasor keeps turning, a 3D view keeps turning). Set how long one cycle takes</td></tr><tr><td><span class="ui">Emphasis when this slide starts</span></td><td>Pulse and highlight, Flash colour, Wiggle</td></tr></tbody></table></div>
+
+<h2 id="change">Changing an object on a click</h2>
+<p>This is the heart of Tracé. Click a step in the clicks bar under the slide, for example <span class="ui">Click 1</span>. The slide now shows that moment, and <b>whatever you change animates on that click</b>: drag an object, resize or turn it, recolour it, or change any value in its settings.</p>
+<figure class=""><img src="/guide/img/click-editing.webp" alt="Editing at Click 1: a triangle selected, the clicks bar showing Click 1 with its length, by itself, view zoom and Play" width="800" height="608" loading="lazy"><figcaption>At Click 1, dragging the triangle’s corner makes it move there on that click.</figcaption></figure>
+<ul>
+<li><b>Values animate too:</b> the number of Riemann rectangles, a slider value, <span class="ui">Curve drawn so far</span>, the number of series terms, a wave’s phase, a matrix, a 3D view. Set a different value on each click and it changes smoothly.</li>
+<li><b>Follow a path:</b> while a click is selected, <span class="ui">Travels</span> can send the object along a curve, circle or other shape on the slide instead of in a straight line. A dashed line shows the route.</li>
+<li><span class="ui">Undo this click’s changes</span> puts the object back to how it was before that click.</li>
+<li>Click the selected step again to go back to editing the slide as a whole.</li>
+</ul>
+
+<h2 id="bar">The clicks bar</h2>
+<p>Each step shows what happens on it: <b>+2</b> means two objects appear, <b>−1</b> one leaves, <b>~1</b> one changes, and a magnifier means the view zooms. When a step is selected you also get:</p>
+<ul>
+<li><span class="ui">Lasts</span>: how many seconds this click’s animation takes.</li>
+<li><span class="ui">by itself</span>: the step plays on its own after the previous one, without a click. Use it for a sequence that runs by itself.</li>
+<li><span class="ui">View</span>: zoom into part of the slide on this click. <span class="ui">Frame the selected object</span> zooms to it; <span class="ui">Full slide</span> zooms back out.</li>
+<li><span class="ui">▶ Play</span>: plays just this step.</li>
+</ul>
+<p><span class="ui">+ Click</span> adds a step at the end. If an object is selected, it will appear on the new click.</p>
+
+<h2 id="slides">Animating between slides</h2>
+<ol class="steps-big">
+<li><div>Finish a slide, then press <span class="ui">Duplicate</span> under the slide list.</div></li>
+<li><div>On the copy, change what should change: move the point, edit the equation, turn the 3D view, add a new object, delete one.</div></li>
+<li><div>Press <span class="ui">Preview</span>, or present: going to the copy animates every change. Objects that only exist on the new slide enter; objects that are gone leave.</div></li>
+</ol>
+<p>The line under each slide in the list sums up what will animate, for example “2 move, 1 morph, 1 new”.</p>
+
+<h2 id="slide-settings">Speed and feel</h2>
+<p>Click an empty part of the slide to see the slide settings:</p>
+<ul>
+<li><span class="ui">Transition length</span>: how long the move into this slide takes.</li>
+<li><span class="ui">Motion feel</span>: <span class="ui">Smooth</span>, <span class="ui">Steady (constant speed)</span>, <span class="ui">Snappy (fast start)</span>, <span class="ui">Bouncy (slight overshoot)</span> and more.</li>
+<li><span class="ui">Background (whole deck)</span> and <span class="ui">Show grid</span>, a grid that helps you line things up and never shows when presenting.</li>
+</ul>
+
+<h2 id="tips">Tips</h2>
+<ul>
+<li>Use <span class="ui">Preview</span> often. It plays exactly what the audience will see when this slide starts.</li>
+<li>Keep one idea per click. If a click changes five things, the audience will not know where to look.</li>
+<li>To draw a graph after its axes are on screen, show the graph with the slide, set <span class="ui">Curve drawn so far</span> to 0, then set it to 1 on click 1.</li>
+<li>Animations that keep moving (<span class="ui">Keeps moving</span>) keep running while the next steps play, so a spinning object never stops abruptly.</li>
+</ul>
+
+<nav class="pager" aria-label="Previous and next"><a href="/guide/objects"><small>Previous</small>← Objects and equations</a><a href="/guide/present" style="text-align:right"><small>Next</small>Presenting →</a></nav>
+  </main>
+</div>
+<footer>
+  <div class="wrap">
+    <span class="sp">© <span id="yr">2026</span> Tracé</span>
+    <a href="/guide/">Guide</a><a href="/terms">Terms</a><a href="/privacy">Privacy</a><a href="/refunds">Refunds</a><a href="mailto:hello@your-domain.example">Contact</a>
+  </div>
+</footer>
+<script>document.getElementById('yr').textContent = new Date().getFullYear();</script>
+</body>
+</html>

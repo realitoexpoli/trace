@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Cheat sheet · Tracé guide</title>
+<meta name="description" content="Shortcuts and maths you can type: how to use Tracé, the editor for animated maths and physics slides.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%2322488a'/%3E%3Cpath d='M5 21c4-12 7-12 11 0s7 12 11 0' fill='none' stroke='%23fff' stroke-width='2.6' stroke-linecap='round'/%3E%3C/svg%3E">
+<link rel="stylesheet" href="/site.css">
+</head>
+<body>
+<header class="top">
+  <div class="wrap">
+    <a class="logo" href="/">Tracé</a>
+    <nav aria-label="Main">
+      <a href="/guide/" class="hide-s">Guide</a>
+      <a href="/#pricing">Pricing</a>
+    </nav>
+    <a class="btn primary" href="/app">Open the editor</a>
+  </div>
+</header>
+<div class="wrap guide">
+  <nav class="gnav" aria-label="Guide">
+    <p>Guide</p>
+    <ol><li><a href="/guide/">Guide</a></li><li><a href="/guide/start">Getting started</a></li><li><a href="/guide/objects">Objects and equations</a></li><li><a href="/guide/animate">Animating</a></li><li><a href="/guide/present">Presenting</a></li><li><a href="/guide/share">Saving and sharing</a></li><li><a href="/guide/cheatsheet" aria-current="page">Cheat sheet</a></li></ol>
+    <p class="search">Looking for something? Press Ctrl+F on any page, or see the <a href="/guide/cheatsheet">cheat sheet</a>.</p>
+  </nav>
+  <main class="article">
+
+<h1>Cheat sheet</h1>
+<p class="lead">Keyboard shortcuts, and everything you can type in an equation written as <span class="ui">Normal maths</span>.</p>
+<nav class="toc" aria-label="On this page"><b>On this page</b><ul><li><a href="#keys">Keyboard shortcuts</a></li><li><a href="#maths">Typing maths</a></li><li><a href="#problems">When something looks wrong</a></li></ul></nav>
+<h2 id="keys">Keyboard shortcuts</h2>
+<h3>In the editor</h3>
+<div class="tbl-wrap"><table class="tbl"><thead><tr><th>Keys</th><th>Does</th></tr></thead><tbody><tr><td><kbd>Ctrl</kbd>+<kbd>Z</kbd></td><td>Undo</td></tr><tr><td><kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>Z</kbd></td><td>Redo</td></tr><tr><td><kbd>Ctrl</kbd>+<kbd>D</kbd></td><td>Duplicate the selected object</td></tr><tr><td><kbd>Delete</kbd> or <kbd>Backspace</kbd></td><td>Delete the selected object</td></tr><tr><td>Arrow keys</td><td>Nudge the selected object (with <kbd>Shift</kbd> for bigger steps)</td></tr><tr><td><kbd>Ctrl</kbd>+<kbd>B</kbd>, <kbd>I</kbd>, <kbd>U</kbd></td><td>Bold, italic, underline for a selected text, list or table</td></tr><tr><td><kbd>Esc</kbd></td><td>Deselect</td></tr><tr><td><kbd>Shift</kbd> + drag</td><td>Turn a 3D object</td></tr></tbody></table></div>
+<p>On a Mac, use <kbd>⌘</kbd> instead of <kbd>Ctrl</kbd>.</p>
+<h3>While presenting</h3>
+<div class="tbl-wrap"><table class="tbl"><thead><tr><th>Keys</th><th>Does</th></tr></thead><tbody><tr><td><kbd>→</kbd> <kbd>Space</kbd> <kbd>Page Down</kbd> <kbd>Enter</kbd> or click</td><td>Next step</td></tr><tr><td><kbd>←</kbd> <kbd>Page Up</kbd></td><td>Previous step</td></tr><tr><td><kbd>C</kbd></td><td>Hide or show the live sliders</td></tr><tr><td><kbd>Esc</kbd></td><td>Leave</td></tr></tbody></table></div>
+<h2 id="maths">Typing maths</h2>
+<div class="tbl-wrap"><table class="tbl"><thead><tr><th>To get</th><th>Type</th><th>Notes</th></tr></thead><tbody><tr><td>Powers</td><td><code>x^2</code>, <code>e^(-x/4)</code></td><td>Put longer powers in brackets</td></tr><tr><td>Multiplication</td><td><code>2x</code>, <code>k x</code>, <code>2*x</code></td><td>A space or nothing between letters multiplies</td></tr><tr><td>Fractions</td><td><code>1/(1+x^2)</code></td><td>Brackets show what is on top and below</td></tr><tr><td>Roots and absolute value</td><td><code>sqrt(x)</code>, <code>|x|</code></td><td></td></tr><tr><td>Trigonometry</td><td><code>sin cos tan sec csc cot</code>, <code>asin acos atan</code>, <code>sinh cosh tanh</code></td><td>Angles are in radians</td></tr><tr><td>Logarithms and exponential</td><td><code>ln(x)</code>, <code>log(x)</code>, <code>log2(x)</code>, <code>exp(x)</code></td><td><code>log</code> is base 10, <code>ln</code> is natural</td></tr><tr><td>Rounding, factorial</td><td><code>floor(x)</code>, <code>ceil(x)</code>, <code>n!</code></td><td></td></tr><tr><td>Greek letters and π</td><td><code>pi</code>, <code>theta</code>, <code>lambda</code>, <code>sigma</code>…</td><td>Written as the Greek letter on the slide</td></tr><tr><td>Subscripts</td><td><code>P_j</code>, <code>d_t</code></td><td>Each one is its own symbol</td></tr><tr><td>A curve</td><td><code>(cos(t), sin(2t))</code></td><td>A pair in t</td></tr><tr><td>A vector field</td><td><code>F = (-y, x)</code></td><td>A pair in x and y</td></tr><tr><td>A vector</td><td><code>v = (2, 1)</code></td><td>Two numbers</td></tr><tr><td>A circle or other curve in x and y</td><td><code>x^2 + y^2 = 4</code></td><td></td></tr><tr><td>A 3D surface</td><td><code>z = sin(x) cos(y)</code></td><td></td></tr></tbody></table></div>
+<p>Letters other than the variables (x, and t or θ for curves) become parameters: each gets a value you can set, animate on a click, or turn into a <span class="ui">Live slider</span>. For anything this cannot express, switch <span class="ui">Write it as</span> to <span class="ui">LaTeX</span>.</p>
+<h2 id="problems">When something looks wrong</h2>
+<dl>
+<dt><b>The graph is empty or cut off.</b></dt><dd>Select the graph and press <span class="ui">Fit ranges to the curve</span>. Check the red note under the equation, if any.</dd>
+<dt><b>An equation shows as code instead of maths.</b></dt><dd>The maths fonts load from the internet the first time. Reload the page once you are online.</dd>
+<dt><b>An object appears before its animation.</b></dt><dd>Check its <span class="ui">Appears</span> setting: <span class="ui">With the slide</span> means it is there from the start.</dd>
+<dt><b>A change animates on the wrong click.</b></dt><dd>Select that object, click the step in the clicks bar where it changes, and use <span class="ui">Undo this click’s changes</span>. Then redo the change on the right click.</dd>
+<dt><b>My decks are not on my other computer.</b></dt><dd>Sign in with the same email on both. Decks marked “Device only” are not online: see <a href="/guide/share#account">the saving states</a>.</dd>
+<dt><b>The sign-in email does not arrive.</b></dt><dd>Check your spam folder, wait a minute and try again. The link works in the browser where you asked for it.</dd>
+</dl>
+
+<nav class="pager" aria-label="Previous and next"><a href="/guide/share"><small>Previous</small>← Saving and sharing</a><span></span></nav>
+  </main>
+</div>
+<footer>
+  <div class="wrap">
+    <span class="sp">© <span id="yr">2026</span> Tracé</span>
+    <a href="/guide/">Guide</a><a href="/terms">Terms</a><a href="/privacy">Privacy</a><a href="/refunds">Refunds</a><a href="mailto:hello@your-domain.example">Contact</a>
+  </div>
+</footer>
+<script>document.getElementById('yr').textContent = new Date().getFullYear();</script>
+</body>
+</html>

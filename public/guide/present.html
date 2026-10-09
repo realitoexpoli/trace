@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Presenting · Tracé guide</title>
+<meta name="description" content="Full screen, sliders, phones: how to use Tracé, the editor for animated maths and physics slides.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%2322488a'/%3E%3Cpath d='M5 21c4-12 7-12 11 0s7 12 11 0' fill='none' stroke='%23fff' stroke-width='2.6' stroke-linecap='round'/%3E%3C/svg%3E">
+<link rel="stylesheet" href="/site.css">
+</head>
+<body>
+<header class="top">
+  <div class="wrap">
+    <a class="logo" href="/">Tracé</a>
+    <nav aria-label="Main">
+      <a href="/guide/" class="hide-s">Guide</a>
+      <a href="/#pricing">Pricing</a>
+    </nav>
+    <a class="btn primary" href="/app">Open the editor</a>
+  </div>
+</header>
+<div class="wrap guide">
+  <nav class="gnav" aria-label="Guide">
+    <p>Guide</p>
+    <ol><li><a href="/guide/">Guide</a></li><li><a href="/guide/start">Getting started</a></li><li><a href="/guide/objects">Objects and equations</a></li><li><a href="/guide/animate">Animating</a></li><li><a href="/guide/present" aria-current="page">Presenting</a></li><li><a href="/guide/share">Saving and sharing</a></li><li><a href="/guide/cheatsheet">Cheat sheet</a></li></ol>
+    <p class="search">Looking for something? Press Ctrl+F on any page, or see the <a href="/guide/cheatsheet">cheat sheet</a>.</p>
+  </nav>
+  <main class="article">
+
+<h1>Presenting</h1>
+<p class="lead">Press <span class="ui">Present</span> to play the deck full screen from the slide you are on. Every click plays the next step; live sliders let you change the maths on stage.</p>
+<nav class="toc" aria-label="On this page"><b>On this page</b><ul><li><a href="#keys">Moving through the deck</a></li><li><a href="#sliders">Live sliders and 3D</a></li><li><a href="#touch">Tablets and phones</a></li><li><a href="#stage">On the day</a></li></ul></nav>
+<h2 id="keys">Moving through the deck</h2>
+<div class="tbl-wrap"><table class="tbl"><thead><tr><th>To</th><th>Do this</th></tr></thead><tbody><tr><td>Go to the next step</td><td>Click anywhere, or press <kbd>→</kbd>, <kbd>Space</kbd>, <kbd>Page Down</kbd> or <kbd>Enter</kbd></td></tr><tr><td>Go back one step</td><td><kbd>←</kbd> or <kbd>Page Up</kbd></td></tr><tr><td>Hide or show the live sliders</td><td><kbd>C</kbd>, or the button at the top left</td></tr><tr><td>Leave</td><td><kbd>Esc</kbd>, or <span class="ui">Exit (Esc)</span> at the top right</td></tr></tbody></table></div>
+<p>A click during an animation lines up the next step, so you never lose a click. Most presentation remotes send <kbd>Page Down</kbd> and <kbd>Page Up</kbd>, so they work too.</p>
+<h2 id="sliders">Live sliders and 3D</h2>
+<figure class=""><img src="/guide/img/present-sliders.webp" alt="Presenting a graph slide with sliders for A, k and the point at the bottom" width="800" height="450" loading="lazy"><figcaption>Sliders for the equation’s A and k, and for the point on the graph.</figcaption></figure>
+<p>A slider appears when you ticked <span class="ui">Live slider</span> for a letter in an equation, <span class="ui">Slider for the point while presenting</span> on a graph, or <span class="ui">Turn and tilt sliders while presenting</span> on 3D axes. Moving a slider updates everything linked to it: the equation’s graph, a counter, a 3D surface. Going to the next step resets them to the values you set in the editor.</p>
+<p>3D objects can be turned by dragging them while presenting.</p>
+<h2 id="touch">Tablets and phones</h2>
+<figure class="narrow" style="--w:240px"><img src="/guide/img/present-phone.webp" alt="Presenting on a phone held upright: the slide in the middle, sliders and next and previous buttons at the bottom" width="390" height="844" loading="lazy"><figcaption>On a phone, turn it sideways for a bigger slide.</figcaption></figure>
+<ul>
+<li>Swipe left for the next step and right to go back, or tap the ‹ and › buttons.</li>
+<li>Tap the left quarter of the screen to go back; tap anywhere else to go forward.</li>
+<li>Held sideways, sliders stay hidden so they don’t cover the slide; tap <span class="ui">Show controls</span> to see them.</li>
+</ul>
+<h2 id="stage">On the day</h2>
+<ul>
+<li>Open the editor and the deck before the talk while you have internet: the maths fonts load once, then presenting works offline.</li>
+<li>Play the deck once on the projector. Colours look different on projectors; light text on a dark background is safest.</li>
+<li>If something goes wrong, sharing a link (next page) lets you present from any other computer.</li>
+</ul>
+
+<nav class="pager" aria-label="Previous and next"><a href="/guide/animate"><small>Previous</small>← Animating</a><a href="/guide/share" style="text-align:right"><small>Next</small>Saving and sharing →</a></nav>
+  </main>
+</div>
+<footer>
+  <div class="wrap">
+    <span class="sp">© <span id="yr">2026</span> Tracé</span>
+    <a href="/guide/">Guide</a><a href="/terms">Terms</a><a href="/privacy">Privacy</a><a href="/refunds">Refunds</a><a href="mailto:hello@your-domain.example">Contact</a>
+  </div>
+</footer>
+<script>document.getElementById('yr').textContent = new Date().getFullYear();</script>
+</body>
+</html>

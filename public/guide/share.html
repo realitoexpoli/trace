@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Saving and sharing · Tracé guide</title>
+<meta name="description" content="Your account, links, export, plans: how to use Tracé, the editor for animated maths and physics slides.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%2322488a'/%3E%3Cpath d='M5 21c4-12 7-12 11 0s7 12 11 0' fill='none' stroke='%23fff' stroke-width='2.6' stroke-linecap='round'/%3E%3C/svg%3E">
+<link rel="stylesheet" href="/site.css">
+</head>
+<body>
+<header class="top">
+  <div class="wrap">
+    <a class="logo" href="/">Tracé</a>
+    <nav aria-label="Main">
+      <a href="/guide/" class="hide-s">Guide</a>
+      <a href="/#pricing">Pricing</a>
+    </nav>
+    <a class="btn primary" href="/app">Open the editor</a>
+  </div>
+</header>
+<div class="wrap guide">
+  <nav class="gnav" aria-label="Guide">
+    <p>Guide</p>
+    <ol><li><a href="/guide/">Guide</a></li><li><a href="/guide/start">Getting started</a></li><li><a href="/guide/objects">Objects and equations</a></li><li><a href="/guide/animate">Animating</a></li><li><a href="/guide/present">Presenting</a></li><li><a href="/guide/share" aria-current="page">Saving and sharing</a></li><li><a href="/guide/cheatsheet">Cheat sheet</a></li></ol>
+    <p class="search">Looking for something? Press Ctrl+F on any page, or see the <a href="/guide/cheatsheet">cheat sheet</a>.</p>
+  </nav>
+  <main class="article">
+
+<h1>Saving and sharing</h1>
+<p class="lead">Without an account, Tracé keeps your projects in this browser. With a free account, they are saved online, open on any device and can be shared with a link.</p>
+<nav class="toc" aria-label="On this page"><b>On this page</b><ul><li><a href="#projects">Projects</a></li><li><a href="#account">Signing in</a></li><li><a href="#link">Sharing a link</a></li><li><a href="#files">Project files</a></li><li><a href="#video">Making a video</a></li><li><a href="#plans">Free and Pro</a></li><li><a href="#signout">Signing out and privacy</a></li></ul></nav>
+<h2 id="projects">Projects</h2>
+<p>Each deck is a project. The arrow next to the project name opens the project menu.</p>
+<figure class="narrow" style="--w:381px"><img src="/guide/img/projects-menu.webp" alt="Project menu listing projects with when they were last changed, and New project, Duplicate, Import, Save project file and Delete" width="381" height="328" loading="lazy"><figcaption>The project menu.</figcaption></figure>
+<ul>
+<li>Click a project to open it. They are sorted by when you last worked on them.</li>
+<li><span class="ui">Delete this project</span> asks you to click twice, so nothing is deleted by accident. If you are signed in, its online copy is deleted too.</li>
+</ul>
+<h2 id="account">Signing in</h2>
+<p>Press <span class="ui">Sign in</span> at the top right and enter your email. Tracé emails you a link; click it and you are signed in. There is no password to remember.</p>
+<figure class="narrow" style="--w:462px"><img src="/guide/img/sign-in.webp" alt="Sign in window: email address and Send link" width="462" height="248" loading="lazy"></figure>
+<p>Once signed in, the projects on this device are saved to your account, and your account’s projects appear in the project menu on every device you sign in on. A cloud next to the project name shows the state (on smaller screens only the cloud shows; point at it to read the state):</p>
+<figure class="narrow" style="--w:388px"><img src="/guide/img/saved-status.webp" alt="Project name with a cloud mark and the word Saved" width="388" height="51" loading="lazy"></figure>
+<div class="tbl-wrap"><table class="tbl"><thead><tr><th>It says</th><th>Meaning</th></tr></thead><tbody><tr><td>Saved</td><td>The latest version is in your account.</td></tr><tr><td>Saving…</td><td>A change is on its way. Changes are saved a couple of seconds after you make them.</td></tr><tr><td>Device only</td><td>The free plan’s 3 online decks are used, so this one is only on this device. Delete a deck you no longer need, or upgrade.</td></tr><tr><td>Too big</td><td>The deck is over the size limit, usually because of large images.</td></tr><tr><td>Offline</td><td>No connection. Keep working: changes are kept on this device and saved when you are back online.</td></tr></tbody></table></div>
+<p class="tip"><b>Two devices at once?</b> If you change the same deck on two devices, the most recent change wins. Close the deck on one device before working on the other.</p>
+<h2 id="link">Sharing a link</h2>
+<p>Press <span class="ui">Share</span> and tick <span class="ui">Anyone with the link can watch this deck</span>. Copy the link and send it.</p>
+<figure class="narrow" style="--w:462px"><img src="/guide/img/share.webp" alt="Share window with the link turned on, the link, and a Copy button" width="462" height="300" loading="lazy"></figure>
+<ul>
+<li>Viewers see the presentation with its live sliders, on any device, without an account. They cannot edit it, and it is not copied into their own projects.</li>
+<li>The link always shows your latest version. Untick the box to stop sharing; the link then stops working. Ticking it again brings back the same link.</li>
+<li>On the free plan, shared decks show a small “Made with Tracé” badge.</li>
+</ul>
+<h2 id="files">Project files</h2>
+<p><span class="ui">Save project file</span> in the project menu downloads the whole project, images included, as one file. Keep it as a backup or send it to a colleague, who opens it with <span class="ui">Import a project file…</span> or by dragging the file onto the editor.</p>
+<h2 id="video">Making a video</h2>
+<p><span class="ui">Export</span> → <span class="ui">Video script</span> gives a Python file for <a href="https://www.manim.community/">Manim</a>, the free animation engine used for many maths videos. Save it as <code>deck.py</code>. The first lines of the file list the commands:</p>
+<ol>
+<li><code>pip install manim manim-slides</code> installs the tools (once).</li>
+<li><code>manim-slides render deck.py Presentation</code> renders the deck in high quality.</li>
+<li><code>manim-slides Presentation</code> plays it as a clickable presentation.</li>
+</ol>
+<p>For a single video file, run <code>manim -qh deck.py Presentation</code> instead. This needs Python on your computer; Manim’s website explains the setup.</p>
+<h2 id="plans">Free and Pro</h2>
+<div class="tbl-wrap"><table class="tbl"><thead><tr><th></th><th>Free</th><th>Pro</th></tr></thead><tbody><tr><td>The editor, every object and animation</td><td>Yes</td><td>Yes</td></tr><tr><td>Decks in the browser</td><td>Unlimited</td><td>Unlimited</td></tr><tr><td>Decks in your account</td><td>3</td><td>Unlimited</td></tr><tr><td>Size of one deck</td><td>2 MB</td><td>20 MB</td></tr><tr><td>Share links</td><td>With a small badge</td><td>No badge, with view counts</td></tr></tbody></table></div>
+<figure class="narrow" style="--w:574px"><img src="/guide/img/account-menu.webp" alt="Account menu showing the email, Free plan with 2 of 3 cloud decks used, Upgrade to Pro, Sync now and Sign out" width="574" height="282" loading="lazy"><figcaption>The account menu shows your plan and how many online decks you use.</figcaption></figure>
+<ul>
+<li><b>Upgrade:</b> account menu → <span class="ui">Upgrade to Pro</span> → choose monthly or yearly. Payment is handled by Paddle, our reseller. Pro switches on within seconds, and any “Device only” decks are saved online.</li>
+<li><b>Card, invoices, cancelling:</b> account menu → <span class="ui">Manage billing</span>.</li>
+<li><b>After cancelling</b>, Pro lasts until the end of the period you paid for. No deck is ever deleted; above 3 decks you just cannot add new ones online.</li>
+<li><b>Refunds:</b> within 14 days of a payment, see the <a href="/refunds">refund policy</a>.</li>
+</ul>
+<h2 id="signout">Signing out and privacy</h2>
+<p><span class="ui">Sign out</span> in the account menu removes your account’s decks from this browser; they stay safe in your account. Do this on shared computers. If a deck has changes that are not online yet, Tracé asks before signing out and keeps that deck on the device.</p>
+<p>Tracé shows no ads and uses no tracking. See the <a href="/privacy">privacy policy</a>.</p>
+
+<nav class="pager" aria-label="Previous and next"><a href="/guide/present"><small>Previous</small>← Presenting</a><a href="/guide/cheatsheet" style="text-align:right"><small>Next</small>Cheat sheet →</a></nav>
+  </main>
+</div>
+<footer>
+  <div class="wrap">
+    <span class="sp">© <span id="yr">2026</span> Tracé</span>
+    <a href="/guide/">Guide</a><a href="/terms">Terms</a><a href="/privacy">Privacy</a><a href="/refunds">Refunds</a><a href="mailto:hello@your-domain.example">Contact</a>
+  </div>
+</footer>
+<script>document.getElementById('yr').textContent = new Date().getFullYear();</script>
+</body>
+</html>
