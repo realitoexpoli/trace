@@ -271,7 +271,7 @@ details.more[open]>summary{margin-bottom:8px}
 .helpmenu{min-width:290px}.helpmenu b{color:var(--pen);font-weight:700}
 .tourbtn{display:inline-flex;align-items:center;gap:6px;border:1.5px solid var(--pen);color:var(--pen);background:transparent;border-radius:999px;padding:5px 13px 5px 9px;font-weight:700;margin:0 4px;white-space:nowrap}
 .tourbtn svg{width:16px;height:16px}.tourbtn:hover,.tourbtn[aria-expanded=true]{background:var(--pen);color:var(--pen-ink)}
-.tourmenu button{justify-content:space-between}.tourmenu small{color:var(--mute);font-weight:400;margin-left:12px;white-space:nowrap}.tourmenu b{color:var(--ink)}
+.tourmenu{width:min(420px,94vw);padding:0;display:block}.tuthead{padding:12px 14px 10px;border-bottom:1px solid var(--line);display:grid;gap:6px}.tuthead b{font-size:15px;color:var(--ink)}.tuthead span{font-size:12.5px;color:var(--mute)}.tutbar{display:block;height:6px;border-radius:3px;background:var(--desk);overflow:hidden}.tutbar i{display:block;height:100%;background:#3B5BFD;border-radius:3px}.menu .tutgo{justify-content:center;background:#3B5BFD;color:#fff;font-weight:700;border-radius:6px;margin-top:4px}.menu .tutgo:hover{background:#2f4be0}.tutall{margin:2px 0 0;font-size:13px;color:var(--mute)}.tutlist{max-height:min(460px,58vh);overflow:auto;padding:4px 6px 8px}.tutpart{margin:10px 8px 4px;font-size:11.5px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--mute)}.tourmenu .tutlist button{display:grid;grid-template-columns:20px 1fr auto;align-items:center;gap:8px;width:100%}.tourmenu .tutlist b{font-weight:600;color:var(--ink)}.tourmenu .tutlist small{color:var(--mute)}.tick{width:18px;height:18px;border-radius:50%;border:1.5px solid var(--line);display:grid;place-items:center;font-size:11px;font-weight:700;color:#fff}.tutlist .done .tick{background:#3B5BFD;border-color:#3B5BFD}.tourmenu button{justify-content:space-between}.tourmenu small{color:var(--mute);font-weight:400;margin-left:12px;white-space:nowrap}.tourmenu b{color:var(--ink)}
 .menuhead{margin:4px 10px 6px;font-size:12px;color:var(--mute)}
 .menu a[role=menuitem]{display:flex;padding:7px 10px;border-radius:3px;color:inherit;text-decoration:none}
 .menu a[role=menuitem]:hover{background:var(--hover)}
@@ -285,8 +285,8 @@ details.more[open]>summary{margin-bottom:8px}
   <div class="tools" id="tools" aria-label="Add objects"></div>
   <div class="spacer"></div>
   <div class="menuwrap"><button class="tool" data-menu="ex" aria-haspopup="true" aria-expanded="false">Examples<svg viewBox="0 0 16 16"><path d="M4 6l4 4 4-4" stroke="currentColor" stroke-width="1.5" fill="none"/></svg></button><div class="menu" role="menu" hidden style="left:auto;right:0"><button role="menuitem" data-ex="showcase">Tour: everything Tracé can do (new project)</button><button role="menuitem" data-ex="jamming">Cours : le brouillage des communications (nouveau projet)</button><button role="menuitem" data-ex="signal">Lecture: how a signal travels (new project)</button><button role="menuitem" data-ex="radar">Radar jamming in 3D</button></div></div>
-  <div class="menuwrap tourwrap"><button class="tourbtn" id="tourBtn" data-menu="tours" aria-haspopup="true" aria-expanded="false" title="Interactive tours: learn by doing"><svg viewBox="0 0 16 16" aria-hidden="true"><circle cx="8" cy="8" r="6.6" fill="none" stroke="currentColor" stroke-width="1.4"/><path d="M6.5 5.2v5.6L11 8z" fill="currentColor"/></svg>Tour</button><div class="menu helpmenu tourmenu" role="menu" hidden style="left:auto;right:0"><p class="menuhead">Learn by doing: each tour shows you where to click</p><button role="menuitem" data-tour="first"><b>Your first animated slide</b><small>2 min</small></button><button role="menuitem" data-tour="clicks"><b>Change things on a click</b><small>1 min</small></button><button role="menuitem" data-tour="slides"><b>Animate between slides</b><small>1 min</small></button><button role="menuitem" data-tour="screen"><b>What is on the screen</b><small>under 1 min</small></button></div></div>
-  <div class="menuwrap"><button class="tool" data-menu="help" aria-haspopup="true" aria-expanded="false">Help<svg viewBox="0 0 16 16"><path d="M4 6l4 4 4-4" stroke="currentColor" stroke-width="1.5" fill="none"/></svg></button><div class="menu helpmenu" role="menu" hidden style="left:auto;right:0"><button role="menuitem" data-tour="first"><b>Tour:</b> your first animated slide</button><button role="menuitem" data-tour="clicks"><b>Tour:</b> change things on a click</button><button role="menuitem" data-tour="slides"><b>Tour:</b> animate between slides</button><button role="menuitem" data-tour="screen"><b>Tour:</b> what is on the screen</button><a role="menuitem" id="guideLink" href="/guide/" target="_blank" rel="noopener" hidden>Read the full guide</a></div></div>
+  <div class="menuwrap tourwrap"><button class="tourbtn" id="tourBtn" data-menu="tours" aria-haspopup="true" aria-expanded="false" title="The interactive tutorial: learn every feature by doing it"><svg viewBox="0 0 16 16" aria-hidden="true"><circle cx="8" cy="8" r="6.6" fill="none" stroke="currentColor" stroke-width="1.4"/><path d="M6.5 5.2v5.6L11 8z" fill="currentColor"/></svg>Tour</button><div class="menu helpmenu tourmenu" role="menu" hidden style="left:auto;right:0"></div></div>
+  <div class="menuwrap"><button class="tool" data-menu="help" aria-haspopup="true" aria-expanded="false">Help<svg viewBox="0 0 16 16"><path d="M4 6l4 4 4-4" stroke="currentColor" stroke-width="1.5" fill="none"/></svg></button><div class="menu helpmenu" role="menu" hidden style="left:auto;right:0"><button role="menuitem" data-tutmenu><b>Interactive tutorial:</b> every feature, chapter by chapter</button><button role="menuitem" data-tour="first"><b>Tour:</b> your first animated slide</button><button role="menuitem" data-tour="screen"><b>Tour:</b> what is on the screen</button><a role="menuitem" id="guideLink" href="/guide/" target="_blank" rel="noopener" hidden>Read the full guide</a></div></div>
   <button class="btn" id="undo" title="Undo (Ctrl+Z)">Undo</button>
   <button class="btn" id="preview" title="Play the animation into this slide">Preview</button>
   <button class="btn" id="exportBtn">Export</button>
@@ -2359,8 +2359,9 @@ stageEl.addEventListener('dragleave',()=>stageEl.style.outline='');
 stageEl.addEventListener('drop',async e=>{e.preventDefault();stageEl.style.outline='';const fs=[...e.dataTransfer.files],sv=fs.find(f=>/\.svg$/i.test(f.name)||f.type==='image/svg+xml');if(sv){if(sv.size>3e6){toast('This SVG file is too big (over 3 MB).');return;}addDrawingFromText(await sv.text(),sv.name);return;}const f=fs.find(f=>/^image\//.test(f.type));if(f)addImageFile(f,null);else toast('Drop an image (PNG, JPEG, GIF, WebP) or a drawing (SVG).');});
 document.addEventListener('paste',async e=>{if(/INPUT|TEXTAREA/.test(document.activeElement?.tagName||'')||document.activeElement?.isContentEditable)return;const fs=[...(e.clipboardData?.files||[])],sv=fs.find(f=>f.type==='image/svg+xml');if(sv){e.preventDefault();addDrawingFromText(await sv.text(),sv.name);return;}
   const txt=e.clipboardData?.getData('text/plain')||'';if(/^\s*(<\?xml[^>]*>\s*)?<svg[\s>]/i.test(txt)){e.preventDefault();addDrawingFromText(txt,'Drawing');return;}const f=fs.find(f=>/^image\//.test(f.type));if(f){e.preventDefault();addImageFile(f,null);}});
-$('#preview').onclick=()=>{sel=null;editStep=null;renderProps();LOOP0=performance.now();const s2=slide(),K=maxStep(s2),prev=cur?deck.slides[cur-1]:null;let k=0;
-  const go=(from,c0)=>{const to=visibleAt(s2,k),c1=camAt(s2,k);voicePlay(s2,k);play(canvas,from,to,durOf(s2,k),()=>afterVoice(()=>{if(k<K){k++;setTimeout(()=>go(to,c1),autoOf(s2,k)?30:450);}else{const objs=to;startLoop(canvas,()=>objs);setTimeout(()=>{stopLoop();renderCanvas();},hasLoop(objs)?4500:700);}}),{feel:feelOf(s2),stagger:!!s2.stagger,camFrom:c0,camTo:c1,step:k,slideObjs:s2.objects,loops:true});};
+let previewRun=0;
+$('#preview').onclick=()=>{sel=null;editStep=null;renderProps();LOOP0=performance.now();const s2=slide(),K=maxStep(s2),prev=cur?deck.slides[cur-1]:null,tok=++previewRun;let k=0;
+  const go=(from,c0)=>{if(tok!==previewRun)return;const to=visibleAt(s2,k),c1=camAt(s2,k);voicePlay(s2,k);play(canvas,from,to,durOf(s2,k),()=>afterVoice(()=>{if(tok!==previewRun)return;if(k<K){k++;setTimeout(()=>go(to,c1),autoOf(s2,k)?30:450);}else{const objs=to;startLoop(canvas,()=>objs);setTimeout(()=>{stopLoop();renderCanvas();},hasLoop(objs)?4500:700);}}),{feel:feelOf(s2),stagger:!!s2.stagger,camFrom:c0,camTo:c1,step:k,slideObjs:s2.objects,loops:true});};
   go(prev?finalOf(prev):[],prev?lastCam(prev):CAM0);};
 
 /* ---------- live controls ---------- */
@@ -3680,7 +3681,10 @@ const selectId=id=>{sel=id;editStep=null;renderCanvas();renderProps();renderStep
 const setInput=(sel2,v)=>{const el=$(sel2);if(!el)return;el.value=v;el.dispatchEvent(new Event('input',{bubbles:true}));el.dispatchEvent(new Event('change',{bubbles:true}));};
 const tourFlags={};
 document.addEventListener('click',e=>{if(e.target.closest('#preview'))tourFlags.preview=true;if(e.target.closest('#playStep'))tourFlags.play=true;},true);
-function tourDeck(name,build){const d=blankDeck();build(d.slides[0].objects);createProject(name,d);cur=0;sel=null;editStep=null;refresh();}
+function tourDeck(name,build){previewRun++;try{finishAnim();stopLoop();voiceStop();}catch(_){}const d=blankDeck();build(d.slides[0].objects);const m=projects.find(p=>p.practice);
+  if(m){if(curProj!==m.id)openProject(m.id);deck=d;hist=[];future=[];m.updated=Date.now();saveIndex();persist();}
+  else{createProject('Tutorial practice',d);const m2=projects.find(p=>p.id===curProj);if(m2){m2.practice=true;saveIndex();}}
+  cur=0;sel=null;editStep=null;refresh();}
 const TOURS={
   first:()=>{let presented=false;return[
     {title:'Your first animated slide',body:'You will make a slide with a title and an equation, then a graph that <b>draws itself on a click</b>, and a slider you can move while presenting. About 2 minutes, and you do each step yourself.<br><br>We start in a new project, so your work is safe.',place:'center',next:'Start',action:()=>tourDeck('My first animation',()=>{})},
@@ -3732,32 +3736,205 @@ const TOURS={
     {target:()=>$('#tourBtn'),title:'Tours are always here',body:'Press <b>Tour</b> at any time to take a tour again. <b>Help</b> next to it opens the full guide.',next:'Finish'},
   ],
 };
+/* ---------- the tutorial: every feature, chapter by chapter ----------
+   Each chapter is a tour (same engine): it points at the place to act, waits for the person to do it,
+   and offers “Do it for me”. Chapters run in a practice project that is reused and never saved online. */
+const fld=k=>document.querySelector(`#props [data-k="${k}"]`);
+const fldBox=k=>{const e=fld(k);return e&&(e.closest('.field')||e);};
+function setF(k,v){const e=fld(k);if(!e)return;if(e.type==='checkbox'){e.checked=!!v;e.dispatchEvent(new Event('change',{bubbles:true}));}else{e.value=v;e.dispatchEvent(new Event('input',{bubbles:true}));e.dispatchEvent(new Event('change',{bubbles:true}));}}
+function openMore(name){const d=document.querySelector(`#props details[data-more="${name}"]`);if(d&&!d.open)d.open=true;}
+const byId=id=>slide().objects.find(o=>o.id===id);
+const ensureSel=id=>{if(sel!==id&&byId(id)){sel=id;renderCanvas();renderProps();}};
+const ensureStep=k=>{if(editStep!==k){editStep=k;refresh();}};
+const noSel=()=>{if(sel||editStep!==null){sel=null;editStep=null;refresh();}};
+const libTileEl=k=>document.querySelector(`.libmenu:not([hidden]) [data-lib="${k}"]`);
+const P2=(t,x,y,more)=>Object.assign(make(t),{x,y},more||{});
+Object.assign(TOURS,{
+  select:()=>{const R='t_rect',C='t_circ',L='t_line';return[
+    {title:'Selecting and arranging',body:'How to pick exactly the object you want, even when objects overlap, and how to move, resize, turn, copy and stack them.',place:'center',next:'Start',action:()=>tourDeck('Tutorial practice',os=>{os.push(P2('rect',-1,0,{id:R,w:5,h:3,fillOpacity:0.35}),P2('circle',-1,0,{id:C,radius:0.8,fillOpacity:0.6}),P2('line',2.5,2.2,{id:L,dx:4,dy:0}),P2('text',0,3.3,{text:'Overlapping objects',fontSize:36}));})},
+    {target:()=>objEl(byId(C))||$('.frame'),title:'Point, then click',body:'Move the pointer over the slide: a <b>dashed outline</b> and a name show what a click would pick. Click the <b>circle</b>.',wait:()=>sel===C,auto:()=>selectId(C)},
+    {target:()=>objEl(byId(C))||$('.frame'),title:'The one underneath',body:'The rectangle is under the circle. Hold <b>Alt</b> and click the circle again to pick the object underneath.',wait:()=>sel===R,auto:()=>selectId(R)},
+    {target:()=>$('.frame'),title:'Go through them',body:'Press <b>Tab</b> to select the next object, <b>Shift+Tab</b> for the previous one.',wait:()=>sel&&sel!==R,auto:()=>selectId(L),place:'corner'},
+    {target:()=>$('#props .objlist')||$('#props'),title:'Or pick from the list',body:'With nothing selected, the settings list every object on the slide. Click <b>Line</b> in the list.',wait:()=>sel===L,auto:()=>selectId(L),before:()=>{if(sel!==L&&sel){sel=null;editStep=null;renderCanvas();renderProps();}}},
+    {target:()=>objEl(byId(L))||$('.frame'),title:'Resize and turn',body:'Drag a <b>corner handle</b> to resize, or the <b>round handle</b> to turn it.',wait:()=>{const o=byId(L);return o&&(Math.abs((o.scale||1)-1)>0.1||Math.abs(o.rot||0)>5);},auto:()=>{const o=byId(L);snap();o.rot=20;persist();refresh();},before:()=>ensureSel(L),optional:true},
+    {target:()=>$('#toFront'),title:'Bring to front',body:'Select the rectangle, then press <b>Bring to front</b>: it now covers the circle.',wait:()=>slide().objects.at(-1)?.id===R,auto:()=>{selectId(R);setTimeout(()=>$('#toFront')?.click(),0);},before:()=>ensureSel(R)},
+    {target:()=>$('#dupObj'),title:'Copy it',body:'Press <b>Duplicate</b> (or <b>Ctrl+D</b>) to make a copy.',wait:()=>slide().objects.length>=5,auto:()=>{ensureSel(R);dupObj();},before:()=>ensureSel(R)},
+    {target:()=>$('#undo'),title:'Take it back',body:'Press <b>Undo</b> (or <b>Ctrl+Z</b>). Every change can be undone; <b>Ctrl+Shift+Z</b> redoes it.',wait:()=>slide().objects.length<=4,auto:()=>$('#undo').click()},
+  ];},
+  text:()=>{let B=null;const T=()=>firstOf('text');return[
+    {title:'Text and lists',body:'Titles and paragraphs, formatting single words, and bullet lists that appear one item per click.',place:'center',next:'Start',action:()=>tourDeck('Tutorial practice',()=>{})},
+    {target:()=>menuItem('text')||toolBtn('Write'),title:'Add a text',body:'Open <b>Write</b> and choose <b>Text</b>.',wait:()=>!!T(),auto:()=>addObj('text')},
+    {target:()=>$('#props .rte'),title:'Type',body:'Type a sentence in the box, for example <i>Energy is conserved</i>. To format one word, select it in the box and press <b>B</b>, <b>I</b>, <b>U</b> or a colour.',wait:()=>T()&&plainOf(T().text)!=='Your text',auto:()=>{snap();T().text='Energy is conserved';persist();refresh();},before:()=>{const t=T();if(t)ensureSel(t.id);},optional:true},
+    {target:()=>$('#props .fontbar')||$('#props'),title:'Font and size',body:'The bar above the box sets the font, size, alignment and line spacing. Make the text bigger: set the size to <b>60</b>.',wait:()=>(T()?.fontSize||0)>=56,auto:()=>setF('fontSize',60),before:()=>{const t=T();if(t)ensureSel(t.id);},optional:true},
+    {target:()=>menuItem('bullets')||toolBtn('Write'),title:'A bullet list',body:'Open <b>Write</b> again and choose <b>Bullet list</b>.',wait:()=>!!firstOf('bullets'),auto:()=>addObj('bullets')},
+    {target:()=>fldBox('shown'),title:'One item at a time',body:'Set <b>Items shown</b> to <b>1</b>: the slide opens with the first item only.',wait:()=>(firstOf('bullets')?.shown||0)===1,auto:()=>setF('shown',1),before:()=>{B=firstOf('bullets');if(B)ensureSel(B.id);}},
+    {target:()=>$('#addClick'),title:'Add a click',body:'Press <b>+ Click</b>.',wait:()=>maxStep(slide())>=1&&editStep>=1,auto:()=>$('#addClick').click()},
+    {target:()=>fldBox('shown'),title:'Reveal the second item',body:'With <b>Click 1</b> selected, set <b>Items shown</b> to <b>2</b>. Do the same on Click 2 for the third item.',wait:()=>(firstOf('bullets')?.keys?.[1]?.shown||0)>=2,auto:()=>setF('shown',2),before:()=>{const b=firstOf('bullets');if(b)ensureSel(b.id);ensureStep(1);}},
+    {target:()=>$('#preview'),title:'Watch it',body:'Press <b>Preview</b>.',wait:()=>tourFlags.preview,auto:()=>$('#preview').click(),before:()=>{tourFlags.preview=false;}},
+  ];},
+  equations:()=>{const Q=()=>firstOf('latex');return[
+    {title:'Equations',body:'Type maths like on a calculator, highlight a term, and build an equation up one term at a time.',place:'center',next:'Start',action:()=>tourDeck('Tutorial practice',()=>{})},
+    {target:()=>menuItem('latex')||toolBtn('Write'),title:'Add an equation',body:'Open <b>Write</b> and choose <b>Equation</b>.',wait:()=>!!Q(),auto:()=>addObj('latex')},
+    {target:()=>$('#f_src'),title:'Type it',body:'Replace the example with <code>F = m a</code>. Powers are <code>x^2</code>, fractions <code>1/(1+x)</code>, roots <code>sqrt(x)</code>, Greek letters <code>theta</code>.',wait:()=>/m\s*a/.test(Q()?.src||''),auto:()=>setInput('#f_src','F = m a'),before:()=>{const q=Q();if(q)ensureSel(q.id);}},
+    {target:()=>fldBox('mode'),title:'Or write LaTeX',body:'<b>Write it as</b> switches to LaTeX for anything a calculator cannot express. Keep <b>Normal maths</b> for now.',next:'Next'},
+    {target:()=>fldBox('hl'),title:'Highlight a term',body:'Type <b>a</b> in <b>Highlight a term</b>: the acceleration turns red.',wait:()=>(Q()?.hl||'').trim()==='a',auto:()=>setF('hl','a'),before:()=>{const q=Q();if(q)ensureSel(q.id);},optional:true},
+    {target:()=>fldBox('terms'),title:'Build it up',body:'Set <b>Show only the first terms</b> to <b>1</b>: only <b>F</b> shows.',wait:()=>(Q()?.terms||0)===1,auto:()=>setF('terms',1)},
+    {target:()=>$('#addClick'),title:'Add a click',body:'Press <b>+ Click</b>.',wait:()=>editStep>=1,auto:()=>$('#addClick').click()},
+    {target:()=>fldBox('terms'),title:'The rest on the click',body:'With Click 1 selected, set it back to <b>0</b> (all terms): the rest of the equation is written on that click.',wait:()=>Q()?.keys?.[1]?.terms===0,auto:()=>setF('terms',0),before:()=>{const q=Q();if(q)ensureSel(q.id);ensureStep(1);}},
+    {target:()=>$('#preview'),title:'Watch it',body:'Press <b>Preview</b>.',wait:()=>tourFlags.preview,auto:()=>$('#preview').click(),before:()=>{tourFlags.preview=false;}},
+  ];},
+  graphs:()=>{const G=()=>firstOf('axes');return[
+    {title:'Graphs',body:'Plot a function, fit the axes, and mark a point with its tangent that you can move while presenting.',place:'center',next:'Start',action:()=>tourDeck('Tutorial practice',os=>{os.push(P2('latex',0,3,{id:'t_eq',src:'y = x^2/4 - 1',fontSize:40}));})},
+    {target:()=>$('#plotEq'),title:'Plot the equation',body:'The equation is selected. Press <b>Plot this equation as a graph</b>.',wait:()=>!!G(),auto:()=>$('#plotEq')?.click(),before:()=>ensureSel('t_eq')},
+    {target:()=>$('#fitGraph'),title:'Fit the axes',body:'The graph is selected. <b>Fit ranges to the curve</b> picks sensible axes for any function.',next:'Next',before:()=>{const g=G();if(g)ensureSel(g.id);}},
+    {target:()=>fldBox('mark'),title:'Mark a point',body:'Tick <b>Mark a point on the curve</b>.',wait:()=>!!G()?.mark,auto:()=>setF('mark',true),before:()=>{const g=G();if(g)ensureSel(g.id);}},
+    {target:()=>fldBox('tangent'),title:'Its tangent',body:'Tick <b>Tangent line at the point</b>.',wait:()=>!!G()?.tangent,auto:()=>setF('tangent',true)},
+    {target:()=>fldBox('markLive'),title:'A slider for the point',body:'Tick <b>Slider for the point while presenting</b>. A slider appears under the slide.',wait:()=>!!G()?.markLive,auto:()=>setF('markLive',true)},
+    {target:()=>$('#livebar')||$('.frame'),title:'Move it',body:'Drag the slider (or press <b>+</b>): the point and its tangent slide along the curve. The same slider shows while presenting.',wait:()=>Math.abs((G()?.markX||0))>0.2,auto:()=>{const i=document.querySelector('#livebar input[data-cname="markX"]');if(i)setLv(i,1.5);},optional:true},
+    {target:()=>fldBox('area'),title:'More to try',body:'Graphs can also shade the area under the curve, show Riemann rectangles, a secant that shrinks to the tangent, or a Fourier or Taylor series that adds terms on each click.',next:'Next'},
+  ];},
+  threed:()=>{const S=()=>slide().objects.find(o=>o.type==='axes3d');return[
+    {title:'3D',body:'Solids you can turn with the mouse, and views that turn while you present.',place:'center',next:'Start',action:()=>tourDeck('Tutorial practice',()=>{})},
+    {target:()=>menuItem('sphere3')||toolBtn('3D'),title:'Add a sphere',body:'Open <b>3D</b> and choose <b>Sphere</b>.',wait:()=>!!S(),auto:()=>{sel=null;addObj('sphere3');}},
+    {target:()=>objEl(S())||$('.frame'),title:'Turn it',body:'Hold <b>Shift</b> and drag on the sphere to turn the view.',wait:()=>{const s=S();return s&&(Math.abs((+s.az||0)-(-35))>4||Math.abs((+s.tilt||0)-65)>4);},auto:()=>{const s=S();snap();s.az=20;s.tilt=50;persist();refresh();},optional:true},
+    {target:()=>fldBox('viewLive'),title:'Turn it while presenting',body:'Tick <b>Turn and tilt sliders while presenting</b>. In Present you can also just drag a 3D object.',wait:()=>!!S()?.viewLive,auto:()=>setF('viewLive',true),before:()=>{const s=S();if(s)ensureSel(s.id);}},
+    PLAN.pro?{target:()=>toolBtn('3D'),title:'Surfaces and scenes',body:'In <b>3D</b> you also find <b>3D axes</b>: type <code>z = sin(x) cos(y)</code> in an equation and plot it to get a surface, and a <b>3D scene</b> with several solids.',next:'Next'}
+      :{target:()=>toolBtn('3D'),title:'More with Pro',body:'The items marked <b>PRO</b> add surfaces such as <code>z = sin(x) cos(y)</code>, 3D scenes, polyhedra and views that keep turning.',next:'Next'},
+  ];},
+  entrances:()=>{const C='t_c';return[
+    {title:'Entrances, exits and timing',body:'How objects arrive and leave, how long each click lasts, and clicks that play by themselves.',place:'center',next:'Start',action:()=>tourDeck('Tutorial practice',os=>{os.push(P2('text',0,3,{text:'Arrive, stay, leave',fontSize:40}),P2('circle',0,0,{id:C,radius:1.2,fillOpacity:0.5}));})},
+    {target:()=>objEl(byId(C))||$('.frame'),title:'Select the circle',body:'Click the circle.',wait:()=>sel===C,auto:()=>selectId(C)},
+    {target:()=>$('#f_step'),title:'When it appears',body:'Set <b>Appears</b> to <b>On click 1</b>.',wait:()=>stepOf(byId(C)||{})===1,auto:()=>setInput('#f_step','1'),before:()=>ensureSel(C)},
+    {target:()=>$('#f_enter'),title:'How it arrives',body:'Set <b>Enters with</b> to <b>Grow</b>.',wait:()=>byId(C)?.enter==='grow',auto:()=>setInput('#f_enter','grow'),before:()=>ensureSel(C)},
+    {target:()=>$('#f_exitStep'),title:'When it leaves',body:'Under <b>Leaving, moving and looping</b>, set <b>Leaves</b> to <b>On click 2</b>.',wait:()=>exitOf(byId(C)||{})===2,auto:()=>setInput('#f_exitStep','2'),before:()=>{ensureSel(C);openMore('anim');}},
+    {target:()=>$('#f_exit'),title:'How it leaves',body:'Set <b>Leaves with</b> to <b>Shrink away</b>.',wait:()=>byId(C)?.exit==='shrink',auto:()=>setInput('#f_exit','shrink'),before:()=>{ensureSel(C);openMore('anim');}},
+    {target:()=>$('#stepbar [data-step="1"]'),title:'Timing of a click',body:'Click <b>Click 1</b> in the clicks bar.',wait:()=>editStep===1,auto:()=>ensureStep(1)},
+    {target:()=>$('#stepT'),title:'How long it lasts',body:'<b>Lasts</b> sets this click’s length in seconds. Set it to <b>2</b>.',wait:()=>durOf(slide(),1)>=1.9,auto:()=>{const i=$('#stepT');if(i){i.value=2;i.dispatchEvent(new Event('change'));}},before:()=>ensureStep(1),optional:true},
+    {target:()=>$('#stepbar [data-step="2"]')||$('#stepbar'),title:'A click that plays by itself',body:'Select <b>Click 2</b> and tick <b>by itself</b>: it plays right after Click 1, without a click.',wait:()=>!!autoOf(slide(),2),auto:()=>{ensureStep(2);setTimeout(()=>{const a=$('#stepAuto');if(a&&!a.checked)a.click();},0);},optional:true},
+    {target:()=>$('#preview'),title:'Watch it',body:'Press <b>Preview</b>. In the slide settings (click an empty part of the slide) you also set the <b>Motion feel</b>, and whether objects that appear together come in <b>one after another</b>.',wait:()=>tourFlags.preview,auto:()=>$('#preview').click(),before:()=>{tourFlags.preview=false;}},
+  ];},
+  morph:()=>{const C='t_c',S=()=>firstOf('star');return[
+    {title:'Morphing',body:'Turn one shape into another: a circle becomes a star, one equation becomes the next.',place:'center',next:'Start',action:()=>tourDeck('Tutorial practice',os=>{os.push(P2('circle',0,0,{id:C,radius:1.3,fillOpacity:0.4,color:'#58C4DD'}));})},
+    {target:()=>menuItem('star')||toolBtn('Draw'),title:'Add a star',body:'Open <b>Draw</b> and choose <b>Star</b>.',wait:()=>!!S(),auto:()=>{sel=null;addObj('star');}},
+    {target:()=>$('#f_step'),title:'On a click',body:'Set <b>Appears</b> to <b>On click 1</b>.',wait:()=>stepOf(S()||{})===1,auto:()=>setInput('#f_step','1'),before:()=>{const s=S();if(s)ensureSel(s.id);}},
+    {target:()=>$('#f_morphFrom'),title:'Morph out of the circle',body:'Set <b>Or appears by morphing out of</b> to the <b>circle</b>.',wait:()=>S()?.morphFrom===C,auto:()=>setInput('#f_morphFrom',C),before:()=>{const s=S();if(s)ensureSel(s.id);}},
+    {target:()=>$('#preview'),title:'Watch it',body:'Press <b>Preview</b>. Between slides it is automatic: duplicate a slide, change a shape, and Tracé morphs it.',wait:()=>tourFlags.preview,auto:()=>$('#preview').click(),before:()=>{tourFlags.preview=false;}},
+  ];},
+  paths:()=>{const R='t_rocket';return[
+    {title:'Paths: orbit, trail, nose first',body:'Send an object along a curve on a click. It can turn to face where it goes and leave a trail.',place:'center',next:'Start',action:()=>tourDeck('Tutorial practice',os=>{os.push(P2('ellipse',0,0,{id:'t_orb',w:9,h:5,color:'#4A5160'}),Object.assign(P2('drawing',0,0,{lib:'earth',name:'Earth',w:1.6}),{id:'t_earth'}),Object.assign(P2('drawing',4.5,0,{lib:'rocket',name:'Rocket',w:0.9,nose:90}),{id:R}));})},
+    {target:()=>$('#addClick'),title:'Add a click',body:'Press <b>+ Click</b>.',wait:()=>editStep>=1,auto:()=>$('#addClick').click(),before:noSel},
+    {target:()=>objEl(byId(R))||$('.frame'),title:'Select the rocket',body:'Click the rocket.',wait:()=>sel===R,auto:()=>{sel=R;editStep=1;refresh();}},
+    {target:()=>$('#f_path'),title:'Along the orbit',body:'In the settings, set <b>Travels</b> to <b>Along the ellipse</b>.',wait:()=>byId(R)?.paths?.[1]?.target==='t_orb',auto:()=>setInput('#f_path','t_orb'),before:()=>{ensureSel(R);ensureStep(1);}},
+    {target:()=>$('#f_face')?.closest('label')||$('#f_path'),title:'Nose first',body:'Tick <b>Turn to face where it goes</b>.',wait:()=>!!byId(R)?.paths?.[1]?.face,auto:()=>$('#f_face')?.click()},
+    {target:()=>$('#f_trail')?.closest('label')||$('#f_path'),title:'Leave a trail',body:'Tick <b>Leave a trail</b>.',wait:()=>!!byId(R)?.paths?.[1]?.trail,auto:()=>$('#f_trail')?.click()},
+    {target:()=>$('#playStep'),title:'Watch the click',body:'Press <b>▶ Play</b>.',wait:()=>tourFlags.play,auto:()=>$('#playStep')?.click(),before:()=>{tourFlags.play=false;}},
+  ];},
+  camera:()=>{const T='t_target';return[
+    {title:'Zoom the view',body:'On any click, the camera can zoom into part of the slide, then back out.',place:'center',next:'Start',action:()=>tourDeck('Tutorial practice',os=>{os.push(P2('text',0,3,{text:'Zoom in on a detail',fontSize:40}),P2('circle',-3,0,{radius:1,fillOpacity:0.4}),P2('star',3,-1,{id:T,r:0.6}),P2('rect',0,-1.5,{w:2,h:1}));})},
+    {target:()=>$('#addClick'),title:'Add a click',body:'Press <b>+ Click</b>.',wait:()=>editStep>=1,auto:()=>$('#addClick').click(),before:noSel},
+    {target:()=>objEl(byId(T))||$('.frame'),title:'Select the star',body:'Click the small star.',wait:()=>sel===T,auto:()=>{sel=T;editStep=1;refresh();}},
+    {target:()=>$('#camFit'),title:'Frame it',body:'Press <b>Frame the selected object</b>: on Click 1, the view zooms to the star. The <b>View</b> slider sets the zoom by hand.',wait:()=>(camAt(slide(),1).z||1)>1.2,auto:()=>$('#camFit')?.click(),before:()=>{ensureStep(1);ensureSel(T);}},
+    {target:()=>$('#playStep'),title:'Watch it',body:'Press <b>▶ Play</b>. Add another click and press <b>Full slide</b> to zoom back out.',wait:()=>tourFlags.play,auto:()=>$('#playStep')?.click(),before:()=>{tourFlags.play=false;}},
+  ];},
+  motion:()=>{const S='t_star';return[
+    {title:'Keep moving and emphasis',body:'Objects can keep spinning, pulsing or floating, and can be emphasised when the slide starts.',place:'center',next:'Start',action:()=>tourDeck('Tutorial practice',os=>{os.push(P2('star',0,0,{id:S,r:1.4}));})},
+    {target:()=>objEl(byId(S))||$('.frame'),title:'Select the star',body:'Click the star.',wait:()=>sel===S,auto:()=>selectId(S)},
+    {target:()=>$('#f_loop'),title:'Keep it moving',body:'Under <b>Leaving, moving and looping</b>, set <b>Keeps moving</b> to <b>Spin</b>.',wait:()=>byId(S)?.loop==='spin',auto:()=>setInput('#f_loop','spin'),before:()=>{ensureSel(S);openMore('anim');}},
+    {target:()=>$('#f_loopTime')||$('#f_loop'),title:'How fast',body:'<b>One cycle takes</b> sets the speed. Graphs, waves and phasors can also <b>keep going</b>: a wave keeps travelling.',next:'Next',before:()=>{ensureSel(S);openMore('anim');}},
+    {target:()=>fldBox('emph'),title:'Draw attention to it',body:'Set <b>Emphasis when this slide starts</b> to <b>Pulse and highlight</b>.',wait:()=>byId(S)?.emph==='indicate',auto:()=>setF('emph','indicate'),before:()=>{ensureSel(S);openMore('anim');}},
+    {target:()=>$('#preview'),title:'Watch it',body:'Press <b>Preview</b>.',wait:()=>tourFlags.preview,auto:()=>$('#preview').click(),before:()=>{tourFlags.preview=false;}},
+  ];},
+  library:()=>{const D=()=>slide().objects.find(o=>o.type==='drawing');return[
+    {title:'The library and your own drawings',body:'For anything that is not in the menus: rockets, magnets, flasks… or any drawing you have as an SVG file.',place:'center',next:'Start',action:()=>tourDeck('Tutorial practice',()=>{})},
+    {target:()=>toolBtn('Library'),title:'Open the library',body:'Open <b>Library</b>.',wait:()=>toolBtn('Library')?.getAttribute('aria-expanded')==='true'||!!D(),auto:()=>toolBtn('Library').click()},
+    {target:()=>$('#libSearch')?.closest('.libhead')||toolBtn('Library'),title:'Search',body:'Type <b>magnet</b> in the search box.',wait:()=>/magn/i.test($('#libSearch')?.value||'')||!!D(),auto:()=>{const q=$('#libSearch');if(q){q.value='magnet';q.dispatchEvent(new Event('input',{bubbles:true}));}},place:'corner',keepMenus:true},
+    {target:()=>libTileEl('magnet')||toolBtn('Library'),title:'Add it',body:'Click the <b>magnet</b> (or press Enter).',wait:()=>!!D(),auto:()=>{closeMenus();addLibrary('magnet');},place:'corner'},
+    {target:()=>fldBox('paint'),title:'Its colours',body:'A drawing keeps its own colours, or set <b>Colours</b> to <b>One colour</b> to paint it in a colour of your choice, which can change on a click.',next:'Next',before:()=>{const d=D();if(d)ensureSel(d.id);}},
+    {target:()=>$('#swapDrawing'),title:'Swap it',body:'<b>Change drawing…</b> replaces the picture and keeps its place and animation.',next:'Next'},
+    {target:()=>toolBtn('Library'),title:'Your own drawings',body:'At the bottom of <b>Library</b>: <b>Import an SVG file…</b> or <b>Paste SVG code…</b>. You can also drag an SVG file onto the slide. Drawings can draw themselves, morph and follow paths.',next:'Next'},
+  ];},
+  science:()=>{const W=()=>firstOf('wave');return[
+    {title:'Science objects',body:'Waves, phasors, spectra, charts, networks and signal simulations, all animatable.',place:'center',next:'Start',action:()=>tourDeck('Tutorial practice',()=>{})},
+    {target:()=>menuItem('wave')||toolBtn('Science'),title:'Add a wave',body:'Open <b>Science</b> and choose <b>Wave</b>.',wait:()=>!!W(),auto:()=>{sel=null;addObj('wave');}},
+    {target:()=>fldBox('kind'),title:'Standing wave',body:'Set <b>Wave</b> to <b>Standing</b>.',wait:()=>W()?.kind==='standing',auto:()=>setF('kind','standing'),before:()=>{const w=W();if(w)ensureSel(w.id);}},
+    {target:()=>$('#f_loop'),title:'Make it oscillate',body:'Set <b>Keeps moving</b> to <b>Keep going</b>: the wave oscillates on its own.',wait:()=>W()?.loop==='flow',auto:()=>setInput('#f_loop','flow'),before:()=>{const w=W();if(w)ensureSel(w.id);openMore('anim');}},
+    {target:()=>$('#preview'),title:'Watch it',body:'Press <b>Preview</b>. Any number in the settings (amplitude, wavelength, phase…) can also change on a click.',wait:()=>tourFlags.preview,auto:()=>$('#preview').click(),before:()=>{tourFlags.preview=false;}},
+    {target:()=>toolBtn('Science'),title:'More in Science',body:'A <b>phasor</b> traces a sine wave, <b>Signal and spectrum</b> shows a signal and its frequencies, plus charts, networks and signal-jamming simulations. In <b>Write</b>, a <b>Counter</b> can count up or follow an equation’s value.',next:'Next'},
+  ];},
+  present:()=>{let started=false;return[
+    {title:'Presenting',body:'Play your slides full screen, step by step, with live sliders. Works on a projector, a tablet or a phone.',place:'center',next:'Start',action:()=>tourDeck('Tutorial practice',os=>{os.push(P2('latex',0,2.6,{id:'t_eq',src:'y = sin(k x)',fontSize:44,live:{k:{on:true,min:0.5,max:4}},params:{k:1}}),P2('text',0,-3,{text:'Click to go on',fontSize:30,step:1}));})},
+    {target:()=>$('#presentBtn'),title:'Present',body:'Press <b>Present</b>.',wait:()=>!$('#present').hidden,auto:()=>$('#presentBtn').click()},
+    {title:'Go forward',body:'Click the slide, or press <b>→</b>, <b>Space</b> or <b>Page Down</b> (presentation remotes work too).',place:'corner',dim:false,wait:()=>!$('#present').hidden&&ps>=1,auto:()=>presNext(),before:()=>{started=true;}},
+    {title:'Go back',body:'Press <b>←</b> or <b>Page Up</b>.',place:'corner',dim:false,wait:()=>!$('#present').hidden&&ps===0,auto:()=>presPrev()},
+    {title:'Live sliders',body:'Drag the <b>k</b> slider at the bottom. Move the pointer away from the slider while dragging for finer control; click its number to type a value. <b>C</b> hides or shows the sliders.',place:'corner',dim:false,next:'Next'},
+    {title:'Leave',body:'Press <b>Esc</b> to come back to the editor. On a phone, swipe or use the ‹ › buttons, and turn it sideways for a bigger slide.',place:'corner',dim:false,wait:()=>$('#present').hidden,auto:()=>closePresent()},
+  ];},
+  voice:()=>PLAN.pro?[
+    {title:'Recording your voice',body:'Each step of a slide can have its own recording. It plays as the step starts, when you present and in share links.',place:'center',next:'Start',action:()=>tourDeck('Tutorial practice',os=>{os.push(P2('text',0,0,{text:'Narrated slide',fontSize:48}));})},
+    {target:()=>$('#stepbar [data-step="0"]'),title:'Pick a step',body:'Click <b>Opens</b> (the start of the slide) in the clicks bar.',wait:()=>editStep===0,auto:()=>ensureStep(0),before:noSel},
+    {target:()=>$('#vRec'),title:'Record',body:'Press <b>Record voice</b>, allow the microphone, speak, then press <b>Stop</b>. <b>▶ Voice</b> plays it back; <b>Re-record</b> replaces it.',wait:()=>!!slide().voice,optional:true,before:()=>ensureStep(0)},
+    {target:()=>$('#stepbar'),title:'Narrated clicks',body:'Steps with a recording show 🎙. A step set to play <b>by itself</b> waits until the voice before it has finished, so a slide can run like a narrated video.',next:'Next'},
+  ]:[
+    {title:'Recording your voice',body:'With <b>Pro</b>, each click of a slide can have your recorded voice. It plays as the step starts, when you present and in share links, so a slide can run like a narrated video.',place:'center',next:'Next'},
+    {target:()=>$('#stepbar'),title:'Where it lives',body:'Select a step in the clicks bar: <b>Record voice</b> appears next to <b>▶ Play</b>.',next:'Next',before:()=>{if(editStep===null)ensureStep(0);}},
+  ],
+  share:()=>[
+    {title:'Saving, files and sharing',body:'Where your work is kept, how to keep a copy, and how to show it to others.',place:'center',next:'Start'},
+    {target:()=>$('.proj'),title:'Your projects',body:'Every change is saved at once in this browser. The arrow next to the name lists your projects: new, duplicate, import, and <b>Save project file</b> to keep a copy or send it to a colleague.',next:'Next'},
+    {target:()=>$('#cloudStat')||$('.proj'),title:'In your account',body:'Signed in, your projects are also saved to your account and open on every device. The cloud mark says <b>Saved</b> when the latest change is online.',next:'Next'},
+    {target:()=>$('#shareBtn')||$('#presentBtn'),title:'Share a link',body:'<b>Share</b> gives a link anyone can watch, with the live sliders, without an account.',next:'Next'},
+    {target:()=>$('#exportBtn'),title:'Export',body:'<b>Export</b> gives the deck file, and with Pro a <b>Python video script</b> for Manim to render a video.',next:'Next'},
+  ],
+});
+const TUT=[
+  ['Getting started',[['screen','What is on the screen',1],['first','Your first animated slide',2],['select','Selecting and arranging',2],['text','Text and lists',2]]],
+  ['Maths',[['equations','Equations',2],['graphs','Graphs and live points',2],['threed','3D',1]]],
+  ['Animating',[['clicks','Change things on a click',1],['slides','Animate between slides',1],['entrances','Entrances, exits and timing',2],['morph','Morphing',1],['paths','Paths: orbit, trail, nose first',2],['camera','Zoom the view',1],['motion','Keep moving and emphasis',1]]],
+  ['Objects',[['library','The library and your own drawings',2],['science','Science objects',1]]],
+  ['Presenting and sharing',[['present','Presenting',1],['voice','Recording your voice',1],['share','Saving, files and sharing',1]]],
+];
+const TUT_FLAT=TUT.flatMap(([,c])=>c);
+setTimeout(()=>renderTutMenu(),0);document.addEventListener('click',e=>{if(e.target.closest('#tourBtn'))renderTutMenu();},true);
+const tutDone=()=>{try{return new Set(JSON.parse(localStorage.getItem('trace-tut-done')||'[]'));}catch(_){return new Set();}};
+function tutMark(name){if(!TUT_FLAT.some(c=>c[0]===name))return;const d=tutDone();d.add(name);try{localStorage.setItem('trace-tut-done',JSON.stringify([...d]));}catch(_){}renderTutMenu();}
+const tutNext=name=>{const i=TUT_FLAT.findIndex(c=>c[0]===name),d=tutDone();for(let j=1;j<=TUT_FLAT.length;j++){const c=TUT_FLAT[(i+j)%TUT_FLAT.length];if(!d.has(c[0]))return c;}return TUT_FLAT[(i+1)%TUT_FLAT.length];};
+/* every chapter ends the same way: done, and what comes next */
+function chapterSteps(name){let st=TOURS[name]();if(['first','clicks','slides'].includes(name))st=st.slice(0,-1);
+  const me=TUT_FLAT.find(c=>c[0]===name);if(!me)return st;
+  return[...st,{title:`✓ ${me[1]}`,body:()=>{const n=tutNext(name),d=tutDone();return`Chapter done: <b>${d.size} of ${TUT_FLAT.length}</b> in the tutorial.<div class="tour-more">${d.size>=TUT_FLAT.length?'<b>You have seen every feature.</b>':`<button class="btn primary" data-tour="${n[0]}">Next: ${n[1]}</button>`}<button class="btn" data-tutmenu>All chapters</button></div>`;},place:'center',next:'Finish',plain:true,done:true}];}
+function renderTutMenu(){const m=document.querySelector('.tourmenu');if(!m)return;const d=tutDone(),n=tutNext(TUT_FLAT[TUT_FLAT.length-1][0]),pct=Math.round(100*d.size/TUT_FLAT.length);
+  m.innerHTML=`<div class="tuthead"><b>Interactive tutorial</b><span>${d.size} of ${TUT_FLAT.length} chapters</span><i class="tutbar"><i style="width:${pct}%"></i></i>
+    ${d.size<TUT_FLAT.length?`<button role="menuitem" class="tutgo" data-tour="${n[0]}">${d.size?'Continue':'Start'}: ${n[1]}</button>`:'<p class="tutall">You have done every chapter. Take any again below.</p>'}</div>
+    <div class="tutlist">${TUT.map(([part,cs])=>`<p class="tutpart">${part}</p>${cs.map(([k,t,min])=>`<button role="menuitem" data-tour="${k}"${d.has(k)?' class="done"':''}><span class="tick" aria-hidden="true">${d.has(k)?'✓':''}</span><b>${t}</b><small>${min} min${k==='voice'||k==='threed'?'':''}</small></button>`).join('')}`).join('')}</div>`;}
+document.addEventListener('click',e=>{if(e.target.closest('[data-tutmenu]')){e.preventDefault();e.stopPropagation();endTour();setTimeout(()=>{const b=$('#tourBtn');if(b&&b.getAttribute('aria-expanded')!=='true')b.click();},0);}},true);
+
 function tourBuild(){if(tourUI.card)return;
   tourUI.dim=document.createElement('div');tourUI.dim.className='tour-dim';
   tourUI.spot=document.createElement('div');tourUI.spot.className='tour-spot';
   tourUI.card=document.createElement('div');tourUI.card.className='tour-card';tourUI.card.setAttribute('role','dialog');tourUI.card.setAttribute('aria-live','polite');
   document.body.append(tourUI.dim,tourUI.spot,tourUI.card);
   tourUI.card.addEventListener('click',e=>{const b=e.target.closest('[data-tb]');if(!b)return;e.stopPropagation();const k=b.dataset.tb,st=tour&&tour.steps[tour.i];if(!st)return;
-    if(k==='end')endTour();else if(k==='back')tourShow(tour.i-1);else if(k==='auto'){setTimeout(()=>{try{st.auto();}catch(_){}},0);}else if(k==='next'){if(st.action)st.action();if(tour.i>=tour.steps.length-1)endTour();else tourShow(tour.i+1);}});}
-function startTour(name){if(!TOURS[name])return;endTour();closeMenus();if(!$('#present').hidden)closePresent();tourBuild();tour={name,steps:TOURS[name](),i:0};try{localStorage.setItem('trace-toured','1');}catch(_){}tourShow(0);tourTimer=setInterval(tourTick,150);}
+    if(k==='end')endTour();else if(k==='back')tourShow(tour.i-1);else if(k==='auto'){setTimeout(()=>{try{if(!st.keepMenus)closeMenus();st.auto();}catch(_){}},0);}else if(k==='next'){if(st.action)st.action();if(tour.i>=tour.steps.length-1)endTour();else tourShow(tour.i+1);}});}
+function startTour(name){if(!TOURS[name])return;endTour();closeMenus();if(!$('#present').hidden)closePresent();tourBuild();tour={name,steps:chapterSteps(name),i:0};try{localStorage.setItem('trace-toured','1');}catch(_){}tourShow(0);tourTimer=setInterval(tourTick,150);}
 function endTour(){clearInterval(tourTimer);tour=null;for(const k of['dim','spot','card'])if(tourUI[k])tourUI[k].remove();tourUI.dim=tourUI.spot=tourUI.card=null;}
-function tourShow(i){if(!tour)return;i=Math.max(0,Math.min(i,tour.steps.length-1));tour.i=i;tour.doneAt=0;const st=tour.steps[i];try{st.before&&st.before();}catch(_){}
+function tourShow(i){if(!tour)return;i=Math.max(0,Math.min(i,tour.steps.length-1));tour.i=i;tour.doneAt=0;const st=tour.steps[i];if(st.done)tutMark(tour.name);try{st.before&&st.before();}catch(_){}
   const n=tour.steps.length,btns=[];
   if(i>0&&!st.wait)btns.push('<button class="btn" data-tb="back">Back</button>');
   if(st.auto)btns.push('<button class="btn" data-tb="auto">Do it for me</button>');
   if(!st.wait||st.optional)btns.push(`<button class="btn${st.plain||st.optional?'':' primary'}" data-tb="next">${st.next||(st.optional?'Skip this step':'Next')}</button>`);
   tour.lastScroll=0;
-  tourUI.card.innerHTML=`<div class="tour-top"><span>${n>1?`Step ${i+1} of ${n}`:'Tour'}</span><button class="tour-x" data-tb="end" aria-label="End the tour" title="End the tour">×</button></div><h3>${st.title}</h3><p>${st.body}</p>${st.wait?'<p class="tour-wait">Waiting for you… the tour moves on when it is done.</p>':''}<div class="tour-btns">${btns.join('')}</div>`;
+  tourUI.card.innerHTML=`<div class="tour-top"><span>${n>1?`Step ${i+1} of ${n}`:'Tour'}</span><button class="tour-x" data-tb="end" aria-label="End the tour" title="End the tour">×</button></div><h3>${st.title}</h3><p>${typeof st.body==='function'?st.body():st.body}</p>${st.wait?'<p class="tour-wait">Waiting for you… the tour moves on when it is done.</p>':''}<div class="tour-btns">${btns.join('')}</div>`;
   tourTick();}
 function tourTick(){if(!tour)return;const st=tour.steps[tour.i],t=st.target&&st.target(),presenting=!$('#present').hidden;
-  let r=t&&t.getBoundingClientRect&&t.getBoundingClientRect();const visible=r&&r.width>0&&r.height>0;
+  let r=t&&t.getBoundingClientRect&&t.getBoundingClientRect();const visible=r&&(r.width>0||r.height>0)&&t.isConnected;
+  if(visible&&(r.width<28||r.height<28)){const cx=r.left+r.width/2,cy=r.top+r.height/2,w=Math.max(28,r.width),h=Math.max(28,r.height);r={left:cx-w/2,top:cy-h/2,right:cx+w/2,bottom:cy+h/2,width:w,height:h};}   /* thin lines still get a visible spot */
   // bring the place to act into view (again if the page moved it away)
   if(visible&&!presenting&&(r.top<8||r.bottom>innerHeight-8)&&performance.now()-(tour.lastScroll||0)>1200){tour.lastScroll=performance.now();t.scrollIntoView({block:'center',behavior:matchMedia('(prefers-reduced-motion: reduce)').matches?'auto':'smooth'});}
   tourUI.dim.style.display=(st.dim===false||presenting||visible)?'none':'block';
   if(visible&&!presenting){const p=6;Object.assign(tourUI.spot.style,{display:'block',left:(r.left-p)+'px',top:(r.top-p)+'px',width:(r.width+2*p)+'px',height:(r.height+2*p)+'px'});}else tourUI.spot.style.display='none';
   const c=tourUI.card,cw=c.offsetWidth,ch=c.offsetHeight,W=innerWidth,H=innerHeight,m=12;let x,y;
   if(presenting){x=m;y=H-ch-m-60;}
-  else if(st.place==='corner'){x=W-cw-m;y=H-ch-m;}
+  else if(st.place==='corner'){const cs=[[W-cw-m,H-ch-m],[W-cw-m,m],[m,m],[m,H-ch-m]],free=([a,b])=>!visible||a+cw<=r.left-8||a>=r.right+8||b+ch<=r.top-8||b>=r.bottom+8;[x,y]=cs.find(free)||cs[0];}
   else if(!visible||st.place==='center'){x=(W-cw)/2;y=Math.max(m,(H-ch)/2);}
   else{const cl=([a,b])=>[Math.max(m,Math.min(a,W-cw-m)),Math.max(m,Math.min(b,H-ch-m))];
     const cand=[[r.right+16,r.top],[r.left-cw-16,r.top],[r.left,r.bottom+16],[r.left,r.top-ch-16]];
@@ -3776,7 +3953,7 @@ document.addEventListener('click',e=>{const b=e.target.closest('[data-tour]');if
 /* first visit: offer the tour, without getting in the way */
 setTimeout(()=>{let seen=false;try{seen=localStorage.getItem('trace-toured')==='1';}catch(_){seen=true;}
   if(seen||tour||document.body.classList.contains('viewer')||!$('#present').hidden||/[?&](demo|view)=/.test(location.search)||/^\/v\//.test(location.pathname))return;
-  tourBuild();tour={name:'welcome',i:0,steps:[{title:'Welcome to Tracé',body:'Want a 2-minute tour? You make your first animated slide yourself, step by step.<div class="tour-more"><button class="btn primary" data-tour="first">Take the tour</button><button class="btn" data-tour="screen">Just show me around</button></div>',place:'corner',dim:false,next:'Not now',plain:true}]};
+  tourBuild();tour={name:'welcome',i:0,steps:[{title:'Welcome to Tracé',body:'Want a 2-minute tour? You make your first animated slide yourself, step by step.<div class="tour-more"><button class="btn primary" data-tour="first">Take the tour</button><button class="btn" data-tour="screen">Just show me around</button><button class="btn" data-tutmenu>All chapters</button></div>',place:'corner',dim:false,next:'Not now',plain:true}]};
   try{localStorage.setItem('trace-toured','1');}catch(_){}tourShow(0);tourTimer=setInterval(tourTick,150);},1600);
 
 

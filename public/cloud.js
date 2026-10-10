@@ -153,6 +153,7 @@
     if (!profileDone()) return setStatus('warn', 'Finish your profile to save projects online', 'Finish profile');
     if (!m) return;
     if (m.tooBig) return setStatus('warn', 'Too big for the cloud on your plan', 'Too big');
+    if (m.practice) return setStatus('local', 'The tutorial’s practice project is kept on this device only', 'Practice');
     if (m.needsPro) return setStatus('warn', 'This project has recorded voice, a Pro feature: saved on this device only', 'Needs Pro');
     if (m.localOnly) return setStatus('warn', `On this device only: the free plan keeps ${CFG.freeDecks || 3} decks online`, 'Device only');
     if (pending.has(m.id) || busy) return setStatus('saving', 'Saving to your account…', 'Saving…');
@@ -315,7 +316,7 @@
       for (const id of [...pending]) {
         pending.delete(id);
         const m = meta(id);
-        if (m && !m.remote && !m.localOnly && !m.tooBig) await push(m);
+        if (m && !m.remote && !m.localOnly && !m.tooBig && !m.practice) await push(m);
       }
     } finally { busy = false; showStatus(); }
   }
@@ -359,7 +360,7 @@
 
   /* every edit already calls persist(): copy it to the cloud a moment later */
   const _persist = window.persist;
-  window.persist = function () { _persist(); { const m0 = curMeta(); if (m0) { m0.rev = (m0.rev || 0) + 1; saveIndex(); } } if (user && curProj) { const m = curMeta(); if (m && !m.localOnly && !m.tooBig) queue(curProj); else showStatus(); } };
+  window.persist = function () { _persist(); { const m0 = curMeta(); if (m0) { m0.rev = (m0.rev || 0) + 1; saveIndex(); } } if (user && curProj) { const m = curMeta(); if (m && !m.localOnly && !m.tooBig && !m.practice) queue(curProj); else showStatus(); } };
   $q('#projName').addEventListener('change', () => { const m = curMeta(); if (m) { m.rev = (m.rev || 0) + 1; saveIndex(); } queue(curProj, 300); });
 
   /* opening a deck that was saved from another device downloads it first */
@@ -434,7 +435,7 @@
       if (p.cloudId && !seen.has(p.cloudId) && p.owner === user.id) { delete p.cloudId; delete p.cloudAt; p.localOnly = true; }   // deleted on another device
     }
     // decks on this device that are not online yet: most recently edited first, so they win the free slots
-    projects.filter(p => !p.cloudId && !p.localOnly && !p.tooBig && (!p.owner || p.owner === user.id))
+    projects.filter(p => !p.cloudId && !p.localOnly && !p.tooBig && !p.practice && (!p.owner || p.owner === user.id))
       .sort((a, b) => b.updated - a.updated).forEach(p => pending.add(p.id));
     saveIndex();
     const m = curMeta();
