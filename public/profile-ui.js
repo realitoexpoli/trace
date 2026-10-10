@@ -72,7 +72,7 @@
   .t-colors button{width:28px;height:28px;border-radius:50%;border:2px solid transparent;cursor:pointer;padding:0}
   .t-colors button[aria-pressed="true"]{box-shadow:0 0 0 2px var(--paper),0 0 0 4px var(--ink)}
   .t-preview{display:flex;align-items:center;gap:12px;padding:12px;border:1px dashed var(--line);border-radius:4px}
-  .t-preview b{display:block}.t-preview span{color:var(--mute);font-size:13.5px}
+  .t-preview b{display:block}.t-preview span:not(.t-avatar){color:var(--mute);font-size:13.5px}
   .t-err{color:var(--danger,#a8352b);font-size:14px;margin:0}`;
   document.head.appendChild(css);
 

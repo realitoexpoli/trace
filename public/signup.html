@@ -5,32 +5,40 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Create your account · Tracé</title>
 <meta name="description" content="Create a free Tracé account to save your maths slides online and share them.">
-
 <link rel="icon" href="/favicon.svg" type="image/svg+xml">
 <link rel="apple-touch-icon" href="/apple-touch-icon.png">
 <link rel="stylesheet" href="/site.css">
 </head>
-<body data-mode="signup" class="auth-page">
-<header class="top">
-  <div class="wrap">
-    <a class="logo" href="/" aria-label="Tracé home"><img src="/img/logo.svg" alt="Tracé" width="112" height="28"></a>
-    <nav aria-label="Main">
-      <a href="/guide/" class="hide-s">Guide</a>
-      <a href="/#pricing" class="hide-s">Pricing</a>
-    </nav>
-    <a class="btn" href="/app">Open the editor</a>
-    <span id="userSlot"></span>
+<body data-mode="signup" class="auth-page auth2">
+<div class="auth-shell">
+<aside class="auth-brand" aria-label="About Tracé">
+  <a class="auth-logo" href="/" aria-label="Tracé home"><img src="/img/logo-white.svg" alt="Tracé" width="120" height="32"></a>
+  <div class="auth-pitch">
+    <p class="auth-kicker" id="brandKicker">Create your free account</p>
+    <h2>Slides where the maths moves.</h2>
+    <figure class="auth-demo" aria-hidden="true">
+      <svg viewBox="0 0 320 170" role="presentation">
+        <g class="ax"><path d="M20 85H300M30 20V150"/></g>
+        <path class="wave" d="M30 85 C45 30, 60 30, 75 85 S105 140, 120 85 S150 30, 165 85 S195 140, 210 85 S240 30, 255 85 S285 140, 300 85" pathLength="1"/>
+        <circle class="pt" r="6"><animateMotion dur="5s" repeatCount="indefinite" keyPoints="0;1;1" keyTimes="0;.8;1" calcMode="linear" path="M30 85 C45 30, 60 30, 75 85 S105 140, 120 85 S150 30, 165 85 S195 140, 210 85 S240 30, 255 85 S285 140, 300 85"/></circle>
+        <text x="186" y="34" class="eq">y = sin(k x)</text>
+      </svg>
+      <div class="demo-slider"><span>k</span><i><b></b></i><span class="v">2.00</span></div>
+    </figure>
+    <ul class="auth-points">
+      <li>Type an equation, get its graph</li>
+      <li>Build the explanation one click at a time</li>
+      <li>Change the numbers live in front of your class</li>
+    </ul>
   </div>
-</header>
-<main class="wrap auth-main" id="main" aria-live="polite">
-  <p class="muted" style="padding:40px 0">Loading…</p>
-</main>
-<footer>
-  <div class="wrap">
-    <span class="sp">© Tracé</span>
-    <a href="/guide/">Guide</a><a href="/terms">Terms</a><a href="/privacy">Privacy</a><a href="/refunds">Refunds</a>
-  </div>
-</footer>
+  <p class="auth-foot">Free to start · No password · Works in your browser</p>
+</aside>
+<div class="auth-side2">
+  <div class="auth-top"><a href="/" class="back">← Home</a><a href="/guide/" class="hide-s">Guide</a><a href="/app" class="btn">Open the editor</a><span id="userSlot"></span></div>
+  <main class="auth-panel" id="main" aria-live="polite"><p class="muted">Loading…</p></main>
+  <footer class="auth-legal"><span>© Tracé</span><a href="/terms">Terms</a><a href="/privacy">Privacy</a><a href="/refunds">Refunds</a></footer>
+</div>
+</div>
 <script src="/config.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
 <script src="/profile-ui.js"></script>

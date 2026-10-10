@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Tracé · editor</title>
-<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64.0 64.0" role="img" aria-label="Trac%C3%A9"%3E%3Ctitle%3ETrac%C3%A9%3C/title%3E%3Cg fill="%230E1116"%3E%3Ccircle cx="13" cy="23" r="5.2"/%3E%3Ccircle cx="22" cy="16" r="5.2"/%3E%3Ccircle cx="32" cy="16" r="5.2"/%3E%3Ccircle cx="42" cy="16" r="5.2"/%3E%3Ccircle cx="52" cy="16" r="5.2"/%3E%3Ccircle cx="32" cy="27" r="5.2"/%3E%3Ccircle cx="32" cy="38" r="5.2"/%3E%3C/g%3E%3Ccircle cx="42" cy="49" r="7.2" fill="%233B5BFD"/%3E%3C/svg%3E">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64.0 64.0' role='img' aria-label='Trac%C3%A9'%3E%3Ctitle%3ETrac%C3%A9%3C/title%3E%3Crect width='64' height='64' rx='14' fill='%233B5BFD'/%3E%3Cg transform='translate%286.4 6.4%29 scale%28.8%29'%3E%3Cg fill='%23FFFFFF'%3E%3Ccircle cx='13' cy='23' r='4.6'/%3E%3Ccircle cx='22' cy='16' r='4.6'/%3E%3Ccircle cx='32' cy='16' r='4.6'/%3E%3Ccircle cx='42' cy='16' r='4.6'/%3E%3Ccircle cx='52' cy='16' r='4.6'/%3E%3Ccircle cx='32' cy='27' r='4.6'/%3E%3Ccircle cx='32' cy='38' r='4.6'/%3E%3C/g%3E%3Ccircle cx='42' cy='49' r='6.8' fill='%23FFFFFF'/%3E%3C/g%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400&display=swap" rel="stylesheet">
@@ -30,7 +30,8 @@ button{cursor:pointer}
 :focus-visible{outline:2px solid var(--pen);outline-offset:2px}
 header{display:flex;align-items:center;gap:4px;padding:8px 14px;border-bottom:1px solid var(--line);background:var(--paper);flex-wrap:wrap}
 .brand{display:flex;align-items:center;gap:10px;margin-right:18px;color:var(--ink)}
-.brand .logo-svg{display:block;height:26px;width:auto;flex:none}
+.brand .logo-svg{display:block;height:32px;width:auto;flex:none;box-sizing:border-box;padding:6px 10px;border-radius:8px;background:#3B5BFD;color:#fff}
+.brand .logo-svg g[fill="#3B5BFD"]{fill:#fff}
 .brand span{color:var(--mute);font-size:13px}
 .tools{display:flex;gap:2px;flex-wrap:wrap}
 .tool{background:transparent;border:none;border-radius:4px;padding:6px 10px;display:flex;align-items:center;gap:5px;font-weight:700}
@@ -158,7 +159,7 @@ hr{border:none;border-top:1px solid var(--line);margin:18px 0}
 .dialog textarea{width:100%;min-height:360px;font:12.5px/1.55 'JetBrains Mono',ui-monospace,monospace;background:var(--desk);border:1px solid var(--line);border-radius:3px;padding:12px;resize:vertical}
 .steps{font-size:13px;color:var(--mute);margin:0}
 .steps code{font-family:'JetBrains Mono',monospace;color:var(--ink);background:var(--desk);padding:1px 5px;border-radius:2px}
-.toast{position:fixed;left:50%;bottom:calc(24px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:var(--ink);color:var(--paper);padding:8px 14px;border-radius:3px;font-size:13px;z-index:60;opacity:0;transition:opacity .2s}
+.toast{position:fixed;left:50%;bottom:calc(24px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:var(--ink);color:var(--paper);padding:8px 14px;border-radius:3px;font-size:13px;z-index:60;opacity:0;transition:opacity .2s;pointer-events:none}
 .toast.show{opacity:1}
 .colophon{color:var(--mute);font-size:12px;margin-top:22px}
 .colophon b{font-weight:700;color:var(--ink)}
@@ -174,7 +175,7 @@ hr{border:none;border-top:1px solid var(--line);margin:18px 0}
 @media (max-width:900px){
   body{overflow-x:hidden;overflow-y:auto;height:auto;min-height:100%}
   header{padding:6px 8px;gap:4px}
-  .brand{margin-right:0}.brand .logo-svg{height:22px}
+  .brand{margin-right:0}.brand .logo-svg{height:30px;padding:6px 9px}
   .proj{flex:1 1 140px;min-width:0}#projName{width:100%;min-width:0}
   header>.sep,header>.spacer{display:none}
   /* the add-object menus become one row you can swipe through */
@@ -183,6 +184,7 @@ hr{border:none;border-top:1px solid var(--line);margin:18px 0}
   .tool{white-space:nowrap}
   #presentBtn{order:2}
   header>.menuwrap:not(.proj),#undo,#preview,#exportBtn{order:6}
+  header>.menuwrap.tourwrap{order:2}.tourbtn{padding:5px 10px 5px 8px;margin:0}
   /* menus open as a sheet at the bottom so nothing is cut off */
   .menu{position:fixed;left:8px!important;right:8px!important;top:auto;bottom:calc(8px + env(safe-area-inset-bottom,0px));max-height:62vh;overflow:auto;max-width:520px;margin:0 auto;z-index:45;box-shadow:0 -10px 40px rgba(0,0,0,.4)}
   .menu button{padding:11px 12px}
@@ -208,6 +210,7 @@ hr{border:none;border-top:1px solid var(--line);margin:18px 0}
   #plive{bottom:calc(62px + env(safe-area-inset-bottom,0px));padding:10px 12px;max-height:40dvh;overflow:auto}
 }
 @media (max-width:600px){
+  .proj{flex-basis:70px}.tourbtn{padding:4px 9px 4px 7px;gap:4px}.brand .logo-svg{height:28px;padding:5px 8px}
   .strip-actions{grid-template-columns:1fr 1fr}
   .row2{grid-template-columns:1fr}
   .props h2{font-size:15px}
@@ -264,6 +267,10 @@ details.more[open]>summary{margin-bottom:8px}
 .tour-card .btn{border-color:var(--line)}
 @media (prefers-reduced-motion:reduce){.tour-spot{transition:none}}
 .helpmenu{min-width:290px}.helpmenu b{color:var(--pen);font-weight:700}
+.tourbtn{display:inline-flex;align-items:center;gap:6px;border:1.5px solid var(--pen);color:var(--pen);background:transparent;border-radius:999px;padding:5px 13px 5px 9px;font-weight:700;margin:0 4px;white-space:nowrap}
+.tourbtn svg{width:16px;height:16px}.tourbtn:hover,.tourbtn[aria-expanded=true]{background:var(--pen);color:var(--pen-ink)}
+.tourmenu button{justify-content:space-between}.tourmenu small{color:var(--mute);font-weight:400;margin-left:12px;white-space:nowrap}.tourmenu b{color:var(--ink)}
+.menuhead{margin:4px 10px 6px;font-size:12px;color:var(--mute)}
 .menu a[role=menuitem]{display:flex;padding:7px 10px;border-radius:3px;color:inherit;text-decoration:none}
 .menu a[role=menuitem]:hover{background:var(--hover)}
 </style>
@@ -276,6 +283,7 @@ details.more[open]>summary{margin-bottom:8px}
   <div class="tools" id="tools" aria-label="Add objects"></div>
   <div class="spacer"></div>
   <div class="menuwrap"><button class="tool" data-menu="ex" aria-haspopup="true" aria-expanded="false">Examples<svg viewBox="0 0 16 16"><path d="M4 6l4 4 4-4" stroke="currentColor" stroke-width="1.5" fill="none"/></svg></button><div class="menu" role="menu" hidden style="left:auto;right:0"><button role="menuitem" data-ex="showcase">Tour: everything Tracé can do (new project)</button><button role="menuitem" data-ex="jamming">Cours : le brouillage des communications (nouveau projet)</button><button role="menuitem" data-ex="signal">Lecture: how a signal travels (new project)</button><button role="menuitem" data-ex="radar">Radar jamming in 3D</button></div></div>
+  <div class="menuwrap tourwrap"><button class="tourbtn" id="tourBtn" data-menu="tours" aria-haspopup="true" aria-expanded="false" title="Interactive tours: learn by doing"><svg viewBox="0 0 16 16" aria-hidden="true"><circle cx="8" cy="8" r="6.6" fill="none" stroke="currentColor" stroke-width="1.4"/><path d="M6.5 5.2v5.6L11 8z" fill="currentColor"/></svg>Tour</button><div class="menu helpmenu tourmenu" role="menu" hidden style="left:auto;right:0"><p class="menuhead">Learn by doing: each tour shows you where to click</p><button role="menuitem" data-tour="first"><b>Your first animated slide</b><small>2 min</small></button><button role="menuitem" data-tour="clicks"><b>Change things on a click</b><small>1 min</small></button><button role="menuitem" data-tour="slides"><b>Animate between slides</b><small>1 min</small></button><button role="menuitem" data-tour="screen"><b>What is on the screen</b><small>under 1 min</small></button></div></div>
   <div class="menuwrap"><button class="tool" data-menu="help" aria-haspopup="true" aria-expanded="false">Help<svg viewBox="0 0 16 16"><path d="M4 6l4 4 4-4" stroke="currentColor" stroke-width="1.5" fill="none"/></svg></button><div class="menu helpmenu" role="menu" hidden style="left:auto;right:0"><button role="menuitem" data-tour="first"><b>Tour:</b> your first animated slide</button><button role="menuitem" data-tour="clicks"><b>Tour:</b> change things on a click</button><button role="menuitem" data-tour="slides"><b>Tour:</b> animate between slides</button><button role="menuitem" data-tour="screen"><b>Tour:</b> what is on the screen</button><a role="menuitem" id="guideLink" href="/guide/" target="_blank" rel="noopener" hidden>Read the full guide</a></div></div>
   <button class="btn" id="undo" title="Undo (Ctrl+Z)">Undo</button>
   <button class="btn" id="preview" title="Play the animation into this slide">Preview</button>
@@ -1569,7 +1577,9 @@ function renderThumbs(){const box=$('#thumbs');box.innerHTML='';
     const sv=document.createElementNS(NS,'svg');sv.setAttribute('viewBox',`${-FW/2} ${-FH/2} ${FW} ${FH}`);drawStatic(sv,finalOf(s));setCam(layerOf(sv),CAM0);b.appendChild(sv);
     const n=document.createElement('span');n.className='n';n.textContent=i+1;b.appendChild(n);
     b.onclick=()=>{cur=i;sel=null;editStep=null;refresh();};wrap.appendChild(b);box.appendChild(wrap);});
-  const on=box.querySelector('.thumb.on');if(on)on.scrollIntoView({block:'nearest'});}
+  const on=box.querySelector('.thumb.on');if(on){/* scroll only the slide strip, never the page */const b=box.getBoundingClientRect(),r=on.getBoundingClientRect();
+    if(box.scrollWidth>box.clientWidth+1){if(r.left<b.left)box.scrollLeft+=r.left-b.left-8;else if(r.right>b.right)box.scrollLeft+=r.right-b.right+8;}
+    if(box.scrollHeight>box.clientHeight+1){if(r.top<b.top)box.scrollTop+=r.top-b.top-8;else if(r.bottom>b.bottom)box.scrollTop+=r.bottom-b.bottom+8;}}}
 let thumbT;const thumbsSoon=()=>{clearTimeout(thumbT);thumbT=setTimeout(renderThumbs,220);};
 
 /* ---------- properties ---------- */
@@ -3586,7 +3596,7 @@ const TOURS={
     {target:()=>$('#props'),title:'Settings',body:'Everything about the selected object. With nothing selected: the slide’s settings and a list of every object on it.',next:'Next'},
     {target:()=>$('#preview'),title:'Preview',body:'Plays the animation into this slide.',next:'Next'},
     {target:()=>$('#presentBtn'),title:'Present',body:'Full screen. Click or press → to go forward, Esc to stop.',next:'Next'},
-    {target:()=>$('[data-menu="help"]'),title:'Help is here',body:'Come back to these tours at any time.',next:'Finish'},
+    {target:()=>$('#tourBtn'),title:'Tours are always here',body:'Press <b>Tour</b> at any time to take a tour again. <b>Help</b> next to it opens the full guide.',next:'Finish'},
   ],
 };
 function tourBuild(){if(tourUI.card)return;
