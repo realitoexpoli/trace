@@ -3,8 +3,8 @@
 // database rules in supabase/migrations/001_init.sql, and the Paddle token is a client-side token.
 // NEVER put the Supabase service role key or the Paddle API key in this file.
 window.TRACE_CONFIG = {
-  supabaseUrl: '',          // e.g. 'https://abcdefghijk.supabase.co'
-  supabaseAnonKey: '',      // Project Settings → API → anon / publishable key
+  supabaseUrl: 'https://hlzkdphhbnmwdixpuvwk.supabase.co/',          // e.g. 'https://abcdefghijk.supabase.co'
+  supabaseAnonKey: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhsemtkcGhoYm5td2RpeHB1dndrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTE1NjM2MTksImV4cCI6MjEwNzEzOTYxOX0.z_bXy-KWrClO4BLWZYXLmUefK4A_g3l1rOo8KCzqGDU',      // Project Settings → API → anon / publishable key
   googleSignIn: false,      // true once Google is enabled in Supabase → Authentication → Providers
 
   paddleEnv: 'sandbox',     // 'sandbox' while testing, 'production' when live
