@@ -1,0 +1,19 @@
+// Cloudflare Workers settings for Tracé.
+// The website files are in ./public; worker.js answers /api/* (payments) and /v/* (share links).
+// Secrets (SUPABASE_SERVICE_ROLE_KEY, PADDLE_WEBHOOK_SECRET, PADDLE_API_KEY) are added in the
+// Cloudflare dashboard → your Worker → Settings → Variables and secrets. Never put them in this file.
+{
+  // Must be exactly the name of your Worker in the Cloudflare dashboard.
+  "name": "trace",
+  "main": "worker.js",
+  "compatibility_date": "2025-09-01",
+  "assets": {
+    "directory": "./public",
+    "binding": "ASSETS",
+    "html_handling": "auto-trailing-slash",
+    "not_found_handling": "none"
+  },
+  // Keep the variables you typed in the dashboard (SUPABASE_URL, PADDLE_ENV) when deploying.
+  "keep_vars": true,
+  "observability": { "enabled": true }
+}
