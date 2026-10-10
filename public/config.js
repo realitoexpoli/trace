@@ -5,7 +5,7 @@
 window.TRACE_CONFIG = {
   supabaseUrl: 'https://hlzkdphhbnmwdixpuvwk.supabase.co/',          // e.g. 'https://abcdefghijk.supabase.co'
   supabaseAnonKey: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhsemtkcGhoYm5td2RpeHB1dndrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTE1NjM2MTksImV4cCI6MjEwNzEzOTYxOX0.z_bXy-KWrClO4BLWZYXLmUefK4A_g3l1rOo8KCzqGDU',      // Project Settings → API → anon / publishable key
-  googleSignIn: false,      // true once Google is enabled in Supabase → Authentication → Providers
+  signInWith: { google: false, github: false },      // true once Google is enabled in Supabase → Authentication → Providers
 
   supportEmail: 'support@traceanim.com',
 
