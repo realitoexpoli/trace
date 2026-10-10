@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Objects and equations · Tracé guide</title>
+<meta name="description" content="Text, maths, graphs, 3D, science: how to use Tracé, the editor for animated maths and physics slides.">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<link rel="stylesheet" href="/site.css">
+</head>
+<body>
+<header class="top">
+  <div class="wrap">
+    <a class="logo" href="/" aria-label="Tracé home"><img src="/img/logo-tile.svg" alt="Tracé" width="96" height="34"></a>
+    <nav aria-label="Main">
+      <a href="/guide/" class="hide-s">Guide</a>
+      <a href="/#pricing">Pricing</a>
+    </nav>
+    <a class="btn primary" href="/app">Open the editor</a>
+  </div>
+</header>
+<div class="wrap guide">
+  <nav class="gnav" aria-label="Guide">
+    <p>Guide</p>
+    <ol><li><a href="/guide/">Guide</a></li><li><a href="/guide/start">Getting started</a></li><li><a href="/guide/objects" aria-current="page">Objects and equations</a></li><li><a href="/guide/animate">Animating</a></li><li><a href="/guide/present">Presenting</a></li><li><a href="/guide/share">Saving and sharing</a></li><li><a href="/guide/cheatsheet">Cheat sheet</a></li></ol>
+    <p class="search">Looking for something? Press Ctrl+F on any page, or see the <a href="/guide/cheatsheet">cheat sheet</a>.</p>
+  </nav>
+  <main class="article">
+
+<h1>Objects and equations</h1>
+<p class="lead">Every object on a slide has settings on the right. Most of them can also change on a click, which is how you animate them.</p>
+<nav class="toc" aria-label="On this page"><b>On this page</b><ul><li><a href="#add">Adding objects</a></li><li><a href="#edit">Moving and resizing</a></li><li><a href="#text">Text</a></li><li><a href="#equations">Equations</a></li><li><a href="#graphs">Graphs</a></li><li><a href="#3d">3D</a></li><li><a href="#counter">Counters</a></li><li><a href="#more">Other objects</a></li></ul></nav>
+<h2 id="add">Adding objects</h2>
+<p>Open a menu at the top and pick an object. It appears in the middle of the slide, selected, with its settings on the right.</p>
+<div class="tbl-wrap"><table class="tbl"><thead><tr><th>Menu</th><th>What is in it</th></tr></thead><tbody><tr><td><span class="ui">Write</span></td><td>Text, Equation, Bullet list, Code, Matrix, Table, Counter</td></tr><tr><td><span class="ui">Draw</span></td><td>Image, Circle, Ellipse, Rectangle, Polygon, Star, Arc, Sector or ring, Line, Arrow, Dot, Brace, Cross mark</td></tr><tr><td><span class="ui">Geometry</span></td><td>Labelled point, Triangle, Angle, Number plane, Venn diagram</td></tr><tr><td><span class="ui">Plot</span></td><td>Graph, Parametric curve, Polar plot, Number line, Vector, Vector field, Complex plane</td></tr><tr><td><span class="ui">3D</span></td><td>Sphere, Cube, Cuboid, Ellipsoid, Cylinder, Cone, Prism, Pyramid, Torus, the regular polyhedra, 3D arrow, 3D axes, a 3D scene with several shapes</td></tr><tr><td><span class="ui">Science</span></td><td>Wave, Phasor, Signal and spectrum, Chart, Network, plus four signal-jamming simulations (symbols in noise, J/S map, frequency hopping, spread spectrum)</td></tr></tbody></table></div>
+<figure class="narrow" style="--w:232px"><img src="/guide/img/menu-plot.webp" alt="The Plot menu open, listing Graph, Parametric curve, Polar plot, Number line, Vector, Vector field and Complex plane" width="232" height="311" loading="lazy"><figcaption>The Plot menu.</figcaption></figure>
+
+<h2 id="edit">Moving and resizing</h2>
+<ul>
+<li><b>Select:</b> click the object. <kbd>Alt</kbd>+click selects the one underneath, <kbd>Tab</kbd> goes to the next one; see <a href="/guide/start#select">Selecting objects</a>.</li>
+<li><b>Move:</b> drag the object, or nudge it with the arrow keys (<kbd>Shift</kbd> for bigger steps).</li>
+<li><b>Resize:</b> drag a corner handle. Side handles stretch shapes and graphs in one direction.</li>
+<li><b>Rotate:</b> drag the round handle above the object.</li>
+<li><b>Exact values:</b> open <span class="ui">Position, size and turn</span> in the settings and type position x and y, scale, rotation, opacity.</li>
+<li><b>In front or behind:</b> <span class="ui">Bring to front</span> and <span class="ui">Send to back</span> at the bottom of the settings.</li>
+<li><b>Duplicate:</b> <kbd>Ctrl</kbd>+<kbd>D</kbd>, or <span class="ui">Duplicate</span> at the bottom of the settings. <b>Delete:</b> <kbd>Delete</kbd>.</li>
+</ul>
+<p>If the same object is on several slides (because you duplicated the slide), the settings say <span class="ui">On 2 slides: changes between them animate</span>. Changing it on one slide does not change the others.</p>
+
+<h2 id="text">Text</h2>
+<p>Choose the font, size, bold, italic, underline, alignment and line spacing in the bar at the top of the settings, as in PowerPoint. To format only some words, select them in the text box and press a button or a colour.</p>
+<figure class="narrow" style="--w:296px"><img src="/guide/img/text-panel.webp" alt="Font bar with font, size, bold, italic, underline, alignment and line spacing above the text box" width="296" height="233" loading="lazy"><figcaption>Select words in the box to colour or format just those words.</figcaption></figure>
+<p class="tip"><b>Bullet lists and tables</b> work the same way. A list can reveal its items one by one: animate <span class="ui">Items shown</span> on successive clicks. Tables have <span class="ui">Rows shown</span> and code has <span class="ui">Lines shown</span>.</p>
+
+<h2 id="equations">Equations</h2>
+<p>An equation can be written in two ways, set by <span class="ui">Write it as</span>:</p>
+<ul>
+<li><span class="ui">Normal maths</span>: type it like on a calculator, for example <code>y = A sin(k x) e^(-x/4)</code>. Tracé typesets it and can plot it.</li>
+<li><span class="ui">LaTeX</span>: for anything else, such as integrals, matrices or chemistry notation.</li>
+</ul>
+<figure class="narrow" style="--w:296px"><img src="/guide/img/equation-panel.webp" alt="Equation settings: Write it as Normal maths, the Equation box, and a hint listing what you can type" width="296" height="280" loading="lazy"><figcaption>The hint under the box lists what you can type. The full list is on the cheat sheet.</figcaption></figure>
+<p>Two settings help you explain an equation step by step: <span class="ui">Show only the first terms</span> reveals a long sum term by term (animate it on clicks), and <span class="ui">Highlight a term</span> colours one part, for example <code>P_j</code>.</p>
+<p>When a formula has a mistake, a red note under the box says what is wrong and the slide keeps the last correct version.</p>
+<h3 id="plot">From equation to graph</h3>
+<p>Press <span class="ui">Plot this equation as a graph</span>. The button adapts to what you typed: a pair like <code>(cos(t), sin(2t))</code> becomes a curve, <code>F = (-y, x)</code> a vector field, <code>v = (2, 1)</code> a vector, and an equation in x and y a 3D surface.</p>
+<p>The graph stays <b>linked</b> to the equation: edit the equation and the graph updates on every slide. Under <span class="ui">Plotting</span>, Tracé tells you how it reads the equation (“y against x, holding A, k fixed”). Each fixed letter has a value and a <span class="ui">Live slider</span> box: tick it to get a slider under the slide and while presenting. Several equations that use the same letter share one slider.</p>
+
+<h2 id="graphs">Graphs</h2>
+<p>Select a graph to see its options. <span class="ui">Fit ranges to the curve</span> picks sensible axes. Other options include:</p>
+<ul>
+<li><b>A point on the curve:</b> <span class="ui">Mark a point on the curve</span>, then add a <span class="ui">Tangent line at the point</span>, a <span class="ui">Secant line</span> (animate Δx down to 0 to show a derivative), or <span class="ui">Trace the curve up to the point</span>. <span class="ui">Slider for the point while presenting</span> lets you move it live.</li>
+<li><b>Area and integrals:</b> <span class="ui">Shade the area under the curve</span> between two x values, and <span class="ui">Riemann rectangles</span>: animate their number from 4 to 40 to show the integral appear.</li>
+<li><b>Series:</b> set <span class="ui">Curve</span> to <span class="ui">Fourier or Taylor series</span> and animate <span class="ui">Number of terms</span>.</li>
+<li><b>Drawing the curve:</b> <span class="ui">Curve drawn so far</span> from 0 to 1 on a click draws the curve while the axes stay put.</li>
+<li>A logarithmic vertical axis, axis names, a curve label, and an equation in x and y such as a circle.</li>
+</ul>
+<figure class="narrow" style="--w:296px"><img src="/guide/img/graph-panel.webp" alt="Graph settings for a marked point: secant, tangent, trace, point position and a slider while presenting" width="296" height="381" loading="lazy"><figcaption>Point, tangent and slider options of a graph.</figcaption></figure>
+
+<h2 id="3d">3D</h2>
+<p>The <span class="ui">3D</span> menu adds solids (sphere, cube, cone, torus, polyhedra…) or a set of 3D axes. On the free plan you get the basic shapes: sphere, cube, cuboid, ellipsoid, cylinder, cone, prism and pyramid. Items marked <span class="pro-tag">PRO</span> (torus, the regular polyhedra, 3D arrows, 3D axes and surfaces, 3D scenes, and views that keep turning) need Pro.</p>
+<p> 3D axes can show a surface from an equation, a parametric surface, an implicit surface such as <code>x^2 + y^2 + z^2 = 4</code>, or a 3D curve.</p>
+<ul>
+<li><b>Turn the view:</b> hold <kbd>Shift</kbd> and drag the 3D object on the slide, or use <span class="ui">Turn</span> and <span class="ui">Tilt</span>. While presenting, just drag.</li>
+<li><b>Animate the camera:</b> change <span class="ui">Turn</span> or <span class="ui">Tilt</span> on a click, or set <span class="ui">Keeps moving</span> to <span class="ui">Keep turning the view</span> (<span class="pro-tag">PRO</span>).</li>
+<li>Tick <span class="ui">Turn and tilt sliders while presenting</span> to give yourself sliders on stage.</li>
+</ul>
+
+<h2 id="counter">Counters</h2>
+<p><span class="ui">Write</span> → <span class="ui">Counter</span> shows a number that counts up or down. Its <span class="ui">Value comes from</span> setting can follow an equation’s result or the height of a marked point on a graph, so the number changes as you move a slider. Tick <span class="ui">Count automatically when the slide starts</span> to make it count from one value to another, and add text before or after it (for example “Speed:” and “km/h”).</p>
+
+<h2 id="more">Other objects</h2>
+<ul>
+<li><b>Geometry:</b> move a triangle’s corner and its labels and angle marks follow; an angle can show a square mark at 90°; Venn diagrams shade unions, intersections and differences.</li>
+<li><b>Number plane:</b> apply a matrix and watch the grid transform. <b>Complex plane:</b> animate <span class="ui">Apply the map</span> from 0 to 1 for maps like <code>z^2</code>.</li>
+<li><b>Science:</b> waves (travelling, standing, packets), phasors that trace a sine, spectra, charts, networks (circle, tree or neural-network layouts) and the signal simulations.</li>
+<li><b>Images:</b> <span class="ui">Draw</span> → <span class="ui">Image</span>, then choose a picture from your computer.</li>
+<li><b>Code</b> with syntax colours for Python, JavaScript, MATLAB and C, with line-by-line reveal and highlight.</li>
+</ul>
+
+<nav class="pager" aria-label="Previous and next"><a href="/guide/start"><small>Previous</small>← Getting started</a><a href="/guide/animate" style="text-align:right"><small>Next</small>Animating →</a></nav>
+  </main>
+</div>
+<footer>
+  <div class="wrap">
+    <span class="sp">© <span id="yr">2026</span> Tracé</span>
+    <a href="/guide/">Guide</a><a href="/terms">Terms</a><a href="/privacy">Privacy</a><a href="/refunds">Refunds</a><a href="mailto:hello@your-domain.example">Contact</a>
+  </div>
+</footer>
+<script>document.getElementById('yr').textContent = new Date().getFullYear();</script>
+</body>
+</html>

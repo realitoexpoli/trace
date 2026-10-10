@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Your account · Tracé</title>
+<meta name="description" content="Your Tracé profile, plan and billing.">
+<meta name="robots" content="noindex">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<link rel="stylesheet" href="/site.css">
+</head>
+<body data-mode="account" class="auth-page">
+<header class="top">
+  <div class="wrap">
+    <a class="logo" href="/" aria-label="Tracé home"><img src="/img/logo-tile.svg" alt="Tracé" width="96" height="34"></a>
+    <nav aria-label="Main">
+      <a href="/guide/" class="hide-s">Guide</a>
+      <a href="/#pricing" class="hide-s">Pricing</a>
+    </nav>
+    <a class="btn" href="/app">Open the editor</a>
+    <span id="userSlot"></span>
+  </div>
+</header>
+<main class="wrap auth-main" id="main" aria-live="polite">
+  <p class="muted" style="padding:40px 0">Loading…</p>
+</main>
+<footer>
+  <div class="wrap">
+    <span class="sp">© Tracé</span>
+    <a href="/guide/">Guide</a><a href="/terms">Terms</a><a href="/privacy">Privacy</a><a href="/refunds">Refunds</a>
+  </div>
+</footer>
+<script src="/config.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
+<script src="/profile-ui.js"></script>
+<script src="/account.js"></script>
+</body>
+</html>

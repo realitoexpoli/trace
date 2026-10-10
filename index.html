@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Tracé: animated maths and physics slides</title>
+<meta name="description" content="Make maths and physics slides that move. Type an equation and get a graph, animate it click by click, and present it live with sliders. In your browser, nothing to install.">
+<meta property="og:title" content="Tracé: animated maths and physics slides">
+<meta property="og:description" content="Type an equation, get a graph. Animate it click by click and present it live.">
+<meta property="og:image" content="/img/slide-graph.webp">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<link rel="stylesheet" href="/site.css">
+</head>
+<body>
+<header class="top">
+  <div class="wrap">
+    <a class="logo" href="/" aria-label="Tracé home"><img src="/img/logo-tile.svg" alt="Tracé" width="96" height="34"></a>
+    <nav aria-label="Main">
+      <a href="#how" class="hide-s">How it works</a>
+      <a href="/guide/" class="hide-s">Guide</a>
+      <a href="#pricing">Pricing</a>
+      <a href="/login">Sign in</a>
+    </nav>
+    <a class="btn primary" href="/app">Open the editor</a>
+  </div>
+</header>
+
+<main>
+<section class="hero">
+  <div class="wrap grid">
+    <div>
+      <p class="eyebrow">For people who teach maths and physics</p>
+      <h1>Slides where the maths <em>moves</em>.</h1>
+      <p class="lead">Type an equation and get its graph. Build the explanation one click at a time, morph one idea into the next, and change the numbers live in front of your class.</p>
+      <div class="cta">
+        <a class="btn primary" href="/app">Start free</a>
+        <a class="btn" href="/app?demo=showcase">Watch the 3-minute tour</a>
+      </div>
+      <small>Works in the browser on a laptop, tablet or phone. No account needed to try it.</small>
+    </div>
+    <div>
+      <a class="frame" href="/app?demo=showcase" aria-label="Play the tour">
+        <img src="/img/slide-graph.webp" alt="A slide showing y = A sin(kx) e^(-x/4) plotted on axes, with a marked point and its value" width="1280" height="720">
+        <span class="btn play">▶ Play the tour</span>
+      </a>
+    </div>
+  </div>
+</section>
+
+<section id="features">
+  <div class="wrap">
+    <p class="eyebrow">What you can show</p>
+    <h2>Everything you draw on the board, animated</h2>
+    <p class="lead">Every object knows maths. Change a number and the graph, the label and the value that depends on it all follow.</p>
+    <div class="features">
+      <article class="feature"><div class="frame"><img src="/img/slide-taylor.webp" alt="Taylor series of e^x built term by term" loading="lazy" width="1280" height="720"></div>
+        <div class="t"><h3>Equations that draw their graphs</h3><p>Write <code>y = sin(x) e^(-x/4)</code> like on a calculator. Reveal a formula term by term while its curve closes in.</p></div></article>
+      <article class="feature"><div class="frame"><img src="/img/slide-morph.webp" alt="A circle morphing into a star along curved arrows" loading="lazy" width="1280" height="720"></div>
+        <div class="t"><h3>Morph one idea into the next</h3><p>Shapes, equations and graphs turn into each other. Objects move along paths and arrows draw from tail to tip.</p></div></article>
+      <article class="feature"><div class="frame"><img src="/img/slide-3d.webp" alt="A 3D surface z = sin x cos y next to a sphere, cone, cube and dodecahedron" loading="lazy" width="1280" height="720"></div>
+        <div class="t"><h3>3D you can turn while presenting</h3><p>Surfaces from an equation, spheres, prisms and polyhedra. Drag to rotate in front of the room.</p></div></article>
+      <article class="feature"><div class="frame"><img src="/img/slide-fourier.webp" alt="A square wave built from 12 harmonics with a bar chart of their amplitudes" loading="lazy" width="1280" height="720"></div>
+        <div class="t"><h3>Signals and series</h3><p>Fourier series, waves, phasors, spectra and charts, ready to animate. Counters tick up as the picture builds.</p></div></article>
+      <article class="feature"><div class="frame"><img src="/img/slide-geometry.webp" alt="A triangle, an angle with a right-angle mark, and a Venn diagram" loading="lazy" width="1280" height="720"></div>
+        <div class="t"><h3>Geometry that responds</h3><p>Triangles, angles, number planes, vectors and Venn diagrams. Move a corner and every label follows.</p></div></article>
+      <article class="feature"><div class="frame"><img src="/img/slide-graph.webp" alt="A graph with live sliders for its parameters" loading="lazy" width="1280" height="720"></div>
+        <div class="t"><h3>Live sliders on stage</h3><p>Let the audience ask “what if k doubles?” and answer by dragging a slider during the talk.</p></div></article>
+    </div>
+  </div>
+</section>
+
+<section id="how">
+  <div class="wrap split">
+    <div>
+      <p class="eyebrow">How it works</p>
+      <h2>As simple as a slide deck</h2>
+      <p class="lead">No timeline and no keyframes. You decide what appears on each click, and Tracé animates the rest.</p>
+      <ol class="steps">
+        <li><div><b>Add objects</b><span>Text, equations, graphs, shapes, 3D, science diagrams.</span></div></li>
+        <li><div><b>Choose what happens on each click</b><span>Appear, move, morph, draw, count. Or duplicate the slide, change it, and Tracé animates between the two.</span></div></li>
+        <li><div><b>Present, or share a link</b><span>Full-screen with live sliders. Viewers can watch your deck on any device.</span></div></li>
+        <li><div><b>Narrate it, or make a video</b><span>With Pro, record your voice on each click, and export a ready-to-render script for Manim, the open-source engine behind many maths videos.</span></div></li>
+      </ol>
+    </div>
+    <img class="shot" src="/img/editor.webp" alt="The Tracé editor: slide list on the left, a slide with a graph in the middle, animation settings on the right" loading="lazy" width="1600" height="965">
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <p class="eyebrow">Made for</p>
+    <h2>Anyone who explains with equations</h2>
+    <div class="who">
+      <div><h3>Teachers</h3><p>Show how a graph changes instead of drawing it three times on the board.</p></div>
+      <div><h3>Lecturers</h3><p>Build a derivation step by step and keep every slide in sync with its equation.</p></div>
+      <div><h3>Students</h3><p>Present a project or a thesis defence with figures that actually move.</p></div>
+      <div><h3>Science creators</h3><p>Prototype an animation in minutes, then export it for a polished video.</p></div>
+    </div>
+  </div>
+</section>
+
+<section id="pricing">
+  <div class="wrap">
+    <p class="eyebrow">Pricing</p>
+    <h2>Free to make. Pro to keep everything online.</h2>
+    <p class="lead">Every animation is free. Pro adds advanced 3D, your own voice and the video script, and keeps all your decks online.</p>
+    <div class="toggle" role="group" aria-label="Billing period">
+      <button type="button" data-period="month" aria-pressed="false">Monthly</button>
+      <button type="button" data-period="year" aria-pressed="true">Yearly · save 25%</button>
+    </div>
+    <div class="plans">
+      <div class="plan">
+        <h3>Free</h3>
+        <div class="price">$0</div>
+        <div class="note">For trying Tracé and occasional talks</div>
+        <ul>
+          <li>The editor: every animation, and all text, maths, graphs, shapes and science objects</li>
+          <li>Basic 3D shapes</li>
+          <li>Unlimited decks saved in your browser</li>
+          <li>3 decks saved to your account</li>
+          <li>Share links and presenting, with a small “Made with Tracé” badge</li>
+        </ul>
+        <a class="btn" href="/app">Start free</a>
+      </div>
+      <div class="plan best">
+        <span class="tag">Most popular</span>
+        <h3>Pro</h3>
+        <div class="price" data-price-month="$8" data-price-year="$6">$6<small> / month</small></div>
+        <div class="note" data-note-month="Billed monthly, cancel any time" data-note-year="$72 billed once a year">$72 billed once a year</div>
+        <ul>
+          <li>Everything in Free</li>
+          <li>Advanced 3D: surfaces, 3D scenes, polyhedra, turning views</li>
+          <li>Record your voice on each slide and click</li>
+          <li>Python video script for Manim</li>
+          <li>Unlimited decks in your account, up to 20 MB each</li>
+          <li>No “Made with Tracé” badge</li>
+          <li>See how often each shared deck is watched</li>
+        </ul>
+        <a class="btn primary" href="/signup?next=%2Fapp%3Fupgrade%3D1">Get Pro</a>
+      </div>
+      <div class="plan">
+        <h3>Schools and departments</h3>
+        <div class="price" style="font-size:30px">Let’s talk</div>
+        <div class="note">For 5 or more teachers</div>
+        <ul>
+          <li>Pro for every teacher</li>
+          <li>One invoice, paid by card or bank transfer</li>
+          <li>Help getting started with your first decks</li>
+        </ul>
+        <a class="btn" href="mailto:hello@your-domain.example?subject=Tracé for our school">Email us</a>
+      </div>
+    </div>
+    <p class="muted" style="font-size:14px;margin-top:16px">Prices in US dollars. Sales tax or VAT is added at checkout where it applies. Payments are handled by Paddle, our reseller.</p>
+  </div>
+</section>
+
+<section id="faq">
+  <div class="wrap">
+    <h2>Questions</h2>
+    <div class="faq">
+      <details><summary>Do I need to install anything?</summary><p>No. Tracé runs in your web browser on a computer, tablet or phone (Chrome or Edge work best). Making a video (Pro) uses Manim on your own computer, which is optional.</p></details>
+      <details><summary>Do I need an account?</summary><p>Not to make slides: your decks are kept in your browser. An account saves them online so they open on any device and can be shared with a link.</p></details>
+      <details><summary>Can I present without internet?</summary><p>Once the editor is open, presenting works without a connection. Decks in your account sync again when you are back online.</p></details>
+      <details><summary>Can I keep my work if I stop paying?</summary><p>Yes. Nothing is deleted when you cancel. You keep every deck; above 3 decks you just cannot add new ones online until you remove some or come back to Pro. You can also download any deck as a file at any time.</p></details>
+      <details><summary>Is there a discount for students?</summary><p>The Free plan has the whole editor, which is what most students need. For classes or departments, email us.</p></details>
+      <details><summary>How do refunds work?</summary><p>If Pro is not for you, ask within 14 days of paying and you get your money back. See the <a href="/refunds">refund policy</a>.</p></details>
+    </div>
+  </div>
+</section>
+
+<section class="end">
+  <div class="wrap">
+    <h2>Your next lesson, moving</h2>
+    <p class="lead" style="margin:0 auto">Start with an example deck or a blank slide. It takes a minute.</p>
+    <div class="cta"><a class="btn primary" href="/app">Open the editor</a><a class="btn" href="/app?demo=showcase">Watch the tour</a></div>
+  </div>
+</section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <span class="sp">© <span id="yr">2026</span> Tracé</span>
+    <a href="/guide/">Guide</a><a href="/terms">Terms</a><a href="/privacy">Privacy</a><a href="/refunds">Refunds</a><a href="mailto:hello@your-domain.example">Contact</a>
+  </div>
+</footer>
+<script>
+document.getElementById('yr').textContent = new Date().getFullYear();
+const price = document.querySelector('[data-price-month]'), note = document.querySelector('[data-note-month]');
+document.querySelectorAll('[data-period]').forEach(b => b.addEventListener('click', () => {
+  const p = b.dataset.period;
+  document.querySelectorAll('[data-period]').forEach(x => x.setAttribute('aria-pressed', String(x === b)));
+  price.innerHTML = price.dataset['price' + (p === 'month' ? 'Month' : 'Year')] + '<small> / month</small>';
+  note.textContent = note.dataset['note' + (p === 'month' ? 'Month' : 'Year')];
+}));
+</script>
+</body>
+</html>
