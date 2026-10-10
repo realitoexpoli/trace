@@ -2,14 +2,14 @@
 
 Tracé is a browser editor for animated maths and physics slides. This package turns it into an online product with:
 
-- **Accounts** (sign in with an email link, optionally Google)
+- **Accounts** with their own sign-up and sign-in pages (email link, optionally Google), a **profile** people fill in before their projects are saved online, and an **account page**
 - **Decks saved to the account**, opening on any device
 - **Share links** (`/v/…`) that anyone can watch, with live sliders
 - **Free and Pro plans**, with limits enforced by the database
 - **Payments** through Paddle, which also collects VAT and sales tax worldwide
 - A **home page** with pricing, a **user guide** at `/guide`, and **terms / privacy / refund** templates
 
-Everything was tested on a full local copy of the stack (110 automated checks, see [Tests](#tests)).
+Everything was tested on a full local copy of the stack (217 automated checks, see [Tests](#tests)).
 
 ---
 
@@ -19,20 +19,26 @@ Everything was tested on a full local copy of the stack (110 automated checks, s
 public/                  the website (served as static files)
   index.html             home page with features, pricing and questions
   app.html               the editor (built from trace.html, see tools/make-app.mjs)
+  signup.html, login.html, account.html   create an account, sign in, edit your profile / plan / billing
+  account.js             the logic of those three pages
+  profile-ui.js          the profile form and the Free/Pro comparison, shared by the pages and the editor
   cloud.js               accounts, cloud saving, sharing, Pro plan (added to the editor)
   config.js              PUBLIC settings: Supabase URL + public key, Paddle client token, price ids
   site.css, img/         home page style and screenshots
   guide/                 the user guide (/guide): getting started, objects, animating, presenting,
                          sharing, cheat sheet. Plain HTML pages; edit them directly. Linked from the
-                         editor's Help button and the home page.
+                         editor's Help menu (which also starts the interactive tours) and the home page.
   terms.html, privacy.html, refunds.html   legal templates to fill in
   _redirects, _headers   Cloudflare rules: /v/<link> opens the viewer; security headers
 functions/api/           two small server functions (run on Cloudflare)
   paddle-webhook.js      Paddle tells us a subscription started or ended → switch Free/Pro
   billing-portal.js      gives Pro users a link to Paddle's billing page (card, invoices, cancel)
 lib/server.js            helpers for those functions (signature check, database calls)
-supabase/migrations/001_init.sql   the whole database: tables, security rules, plan limits
-tests/                   database tests, function tests, end-to-end browser test
+supabase/migrations/001_init.sql      the database: tables, security rules, plan limits
+supabase/migrations/002_profiles.sql  profiles (name, role, subject, school, badge colour), required
+                                      before projects are saved online; author names on shared decks;
+                                      deleting your own account
+tests/                   database tests, function tests, end-to-end browser test, editor tests (tours, selecting)
 tools/make-app.mjs       rebuilds public/app.html when you update trace.html
 ```
 
@@ -74,14 +80,14 @@ You need: a GitHub account, and accounts at Supabase, Cloudflare, Paddle and Res
 ### 1. Supabase (database and sign-in)
 
 1. Create a project at [supabase.com](https://supabase.com). Choose a region close to your users (for Europe: Frankfurt). Save the database password somewhere safe.
-2. **SQL Editor → New query**: paste the whole of `supabase/migrations/001_init.sql`, then **Run**. It is safe to run again.
+2. **SQL Editor → New query**: paste the whole of `supabase/migrations/001_init.sql`, then **Run**. Then do the same with `supabase/migrations/002_profiles.sql`. Both are safe to run again (in that order).
 3. **Project Settings → API**: copy
    - the **Project URL** → `supabaseUrl` in `public/config.js`
    - the **anon / publishable** key → `supabaseAnonKey` in `public/config.js`
    - the **service_role / secret** key → keep it for step 3 (never put it in `config.js`).
 4. **Authentication → URL Configuration**:
-   - Site URL: `https://YOUR-DOMAIN/app`
-   - Redirect URLs: add `https://YOUR-DOMAIN/app` and, for local testing, `http://localhost:8788/app`.
+   - Site URL: `https://YOUR-DOMAIN`
+   - Redirect URLs: add `https://YOUR-DOMAIN/**` (this covers `/signup`, `/login` and `/app`) and, for local testing, `http://localhost:8788/**`.
 5. **Sign-in emails.** Supabase's built-in mailer sends only 2 emails an hour, and only to your own team, so it cannot serve real users. Create a free [Resend](https://resend.com) account (3,000 emails a month), verify your domain there, then in Supabase **Authentication → Emails → SMTP Settings** enter Resend's SMTP details (host `smtp.resend.com`, port 465, user `resend`, password = a Resend API key).
 6. Optional: **Authentication → Providers → Google** to offer “Continue with Google”, then set `googleSignIn: true` in `config.js`.
 
@@ -123,7 +129,7 @@ Start in the **sandbox** ([sandbox-vendors.paddle.com](https://sandbox-vendors.p
 
 ### 4. Check it works
 
-1. Open `https://YOUR-DOMAIN` → **Open the editor** → **Sign in** → the email arrives → you are signed in, and the cloud mark next to the project name says **Saved**.
+1. Open `https://YOUR-DOMAIN` → **Sign in** → **Create an account** → the email arrives → the link opens the profile step → fill it in → the editor opens and the cloud mark next to the project name says **Saved**.
 2. **Share** → turn the link on → open it in a private window: the deck plays.
 3. Account menu → **Upgrade to Pro** → pay with a [Paddle test card](https://developer.paddle.com/concepts/payment-methods/credit-debit-card) → within a few seconds the menu says **Pro plan**.
    If it does not, look at Paddle → Notifications → the destination's logs, and Cloudflare → your project → Functions logs.
@@ -133,23 +139,38 @@ Before launch, fill in every highlighted part of `terms.html`, `privacy.html` an
 
 ---
 
+## Updating a site that is already running
+
+1. In Supabase → **SQL Editor**, run `supabase/migrations/002_profiles.sql` (once; safe to repeat).
+2. In Supabase → **Authentication → URL Configuration**, set the Site URL to `https://YOUR-DOMAIN` and add `https://YOUR-DOMAIN/**` to the Redirect URLs.
+3. Upload the changed files from `public/` to GitHub (keep your own `config.js`). Cloudflare redeploys by itself.
+
+People who already have an account are asked for their profile the next time they open the editor; their projects are saved online again once it is done.
+
 ## Tests
 
 ```
-npm test                       # server functions (11 checks) + database rules (35 checks)
+npm test                       # server functions (11 checks) + database rules (47 checks)
 ```
 
 The database tests need a local PostgreSQL (`createdb`, `psql`). The end-to-end test runs real browsers against a local copy of the whole stack: Postgres with the migration, [PostgREST](https://postgrest.org) (the data server Supabase uses), a small stand-in for Supabase Auth, and Cloudflare's own local runtime (wrangler) running the functions:
 
 ```
 sh tests/e2e/start-stack.sh    # needs postgres, a postgrest binary, and wrangler
-python3 tests/e2e/e2e_test.py <MathJax tex-svg.js> <supabase-js dist/umd folder>   # 47 checks
+python3 tests/e2e/e2e_test.py <MathJax tex-svg.js> <supabase-js dist/umd folder>   # 67 checks
 sh tests/e2e/stop-stack.sh
 ```
 
 `tests/e2e/guide_walkthrough.py` follows the guide's first-slide steps in the real editor (17 checks), so you notice if a change to the editor makes the guide wrong.
 
-The end-to-end test covers: the home page and legal pages, the demo tour, sign-in by email link, saving edits online, the free limit, sharing and the viewer, a second device, upgrading through a signed webhook, the billing portal, cancelling, deleting, signing out, and that the public key can neither read other decks nor grant Pro.
+Two editor tests need no server, only the editor file (or the running site):
+
+```
+python3 tests/editor/tours_test.py file:///path/to/trace.html    # every interactive tour, done with real clicks and typing (58 checks)
+python3 tests/editor/select_test.py file:///path/to/trace.html   # picking thin lines, overlapping objects, Alt+click, Tab, the object list (17 checks)
+```
+
+The end-to-end test covers: signing up on the sign-up page, the profile step and the profile reminder in the editor, the account page (editing the profile, signing out, deleting the account), the home page and legal pages, the demo tour, sign-in by email link, saving edits online, the free limit, sharing and the viewer, a second device, upgrading through a signed webhook, the billing portal, cancelling, deleting, signing out, and that the public key can neither read other decks nor grant Pro.
 
 ## Updating the editor
 

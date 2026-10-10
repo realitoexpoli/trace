@@ -54,6 +54,13 @@
   #cloudModal ul{margin:0;padding-left:18px;color:var(--ink);font-size:13.5px;line-height:1.6}
   #cloudModal label.sw2{display:flex;gap:10px;align-items:center;font-size:14px}
   .msg-ok{color:var(--ink)!important}
+  .acct-choice{display:grid;gap:8px}
+  #cloudModal .btn.wide{display:block;text-align:center;text-decoration:none}
+  #cloudModal .fine{font-size:12.5px}
+  #cloudModal .dialog{max-height:calc(100vh - 32px);overflow:auto}
+  #cloudModal:has(#cloudPf) .dialog,#cloudModal:has(.t-plans) .dialog{width:min(620px,100%)}
+  .acctmenu .menulink{display:flex;padding:7px 10px;border-radius:3px;color:inherit;text-decoration:none}
+  .acctmenu .menulink:hover{background:var(--hover)}
   body.viewer>header,body.viewer>main{display:none}
   #present .badge{position:fixed;left:12px;bottom:calc(12px + env(safe-area-inset-bottom,0px));background:rgba(255,255,255,.08);color:#cfd4d0;font-size:12px;padding:5px 9px;border-radius:3px;text-decoration:none;z-index:57}
   #present .badge b{color:#fff}
@@ -62,12 +69,12 @@
   #vend h1{font-size:24px;margin:0}#vend p{color:#949e96;margin:0}
   #vend .btn{border:1px solid #2a302b;color:#e2e5e0}#vend .btn.primary{background:#a3bcff;color:#111412;border:none}
   #acctBtn{padding:4px 6px}
-  #helpLink{text-decoration:none;color:inherit}
+  
   /* the account controls take room in the header: keep it on one row on laptop screens */
   header .brand span{display:none}
   @media (max-width:1500px){.cloudstat span{display:none}}
   @media (max-width:1400px) and (min-width:901px){header .btn{padding:6px 7px}header .tool{padding:6px 6px}#projName{width:8em}header .sep{margin:0 4px}}
-  @media (max-width:900px){#shareBtn,#helpLink{order:6}header>.menuwrap.acctwrap{order:3}.cloudstat span{display:none}#present .badge{left:50%;transform:translateX(-50%);bottom:calc(46px + env(safe-area-inset-bottom,0px))}}`;
+  @media (max-width:900px){#shareBtn{order:6}header>.menuwrap.acctwrap{order:3}.cloudstat span{display:none}#present .badge{left:50%;transform:translateX(-50%);bottom:calc(46px + env(safe-area-inset-bottom,0px))}}`;
   document.head.appendChild(css);
 
   /* ---------- saving a project file as a real download (outside claude.ai) ---------- */
@@ -83,6 +90,8 @@
     setTimeout(() => URL.revokeObjectURL(a.href), 4000);
     toast('Project file saved to your downloads.');
   };
+
+  { const gl = document.getElementById('guideLink'); if (gl) gl.hidden = false; }   // the full guide exists on the real site
 
   /* ---------- shared link viewer: /v/<link id> ---------- */
   const demo = params.get('demo');   // /app?demo=showcase: a built-in deck, played without saving anything
@@ -102,12 +111,16 @@
   let session = null, user = null, profile = null;
   const isPro = () => profile && profile.plan === 'pro';
   const meta = id => projects.find(p => p.id === id);
+  // Each edit bumps m.rev; m.savedRev is the last edit that reached the account.
+  const dirty = m => (m.rev || 0) > (m.savedRev || 0);
 
   /* header: save status, Share, account */
   const proj = $q('.proj');
   const stat = document.createElement('div');
   stat.className = 'cloudstat'; stat.id = 'cloudStat'; stat.setAttribute('aria-live', 'polite');
   proj.after(stat);
+  stat.style.cursor = 'pointer';
+  stat.addEventListener('click', () => { if (!user) return; const m = curMeta(); if (!profileDone()) profileDialog(); else if (m && (m.localOnly || m.tooBig)) upgradeDialog(m.tooBig ? 'This project is over 2 MB, the free limit for one project online. Pro allows 20 MB.' : `The free plan keeps ${CFG.freeDecks || 3} projects online. This one is saved on this device only.`); });
   const shareBtn = document.createElement('button');
   shareBtn.className = 'btn'; shareBtn.id = 'shareBtn'; shareBtn.textContent = 'Share';
   const acct = document.createElement('div');
@@ -127,11 +140,12 @@
   function showStatus() {
     const m = curMeta();
     if (!user) return setStatus('off', '');
+    if (!profileDone()) return setStatus('warn', 'Finish your profile to save projects online', 'Finish profile');
     if (!m) return;
     if (m.tooBig) return setStatus('warn', 'Too big for the cloud on your plan', 'Too big');
     if (m.localOnly) return setStatus('warn', `On this device only: the free plan keeps ${CFG.freeDecks || 3} decks online`, 'Device only');
     if (pending.has(m.id) || busy) return setStatus('saving', 'Saving to your account…', 'Saving…');
-    if (m.cloudId && m.syncedAt >= m.updated) return setStatus('ok', 'Saved to your account', 'Saved');
+    if (m.cloudId && !dirty(m)) return setStatus('ok', 'Saved to your account', 'Saved');
     if (m.cloudId) return setStatus('saving', 'Waiting to save', 'Saving…');
     return setStatus('saving', 'Not saved online yet', 'Not online yet');
   }
@@ -148,37 +162,46 @@
   modal.addEventListener('click', e => { if (e.target === modal) closeDialog(); });
   document.addEventListener('keydown', e => { if (e.key === 'Escape' && !modal.hidden) { e.stopPropagation(); closeDialog(); } }, true);
 
-  function signInDialog(why) {
-    openDialog(`<h2 id="cloudTitle">Sign in to Tracé</h2>
-      <p>${esc(why || 'Your decks are saved to your account and open on any device.')}</p>
-      <form id="otpForm" class="row"><input type="email" id="otpEmail" required placeholder="you@school.edu" autocomplete="email" aria-label="Email"><button class="btn primary" type="submit">Send link</button></form>
-      <p id="otpMsg">We email you a link. No password needed.</p>
-      ${CFG.googleSignIn ? '<div class="or">or</div><button class="btn wide" id="googleBtn">Continue with Google</button>' : ''}`);
-    $q('#otpForm').onsubmit = async e => {
-      e.preventDefault();
-      const email = $q('#otpEmail').value.trim(), msg = $q('#otpMsg');
-      msg.textContent = 'Sending…';
-      const { error } = await sb.auth.signInWithOtp({ email, options: { emailRedirectTo: location.origin + location.pathname } });
-      if (error) { msg.textContent = error.status === 429 ? 'Too many emails just now. Please wait a minute and try again.' : 'Could not send the email: ' + error.message; return; }
-      msg.className = 'msg-ok';
-      msg.innerHTML = `Check <b>${esc(email)}</b> and click the link in the email. You can close this window.`;
-    };
-    const g = $q('#googleBtn');
-    if (g) g.onclick = () => sb.auth.signInWithOAuth({ provider: 'google', options: { redirectTo: location.origin + location.pathname } });
+  /* Sign in and sign up happen on their own pages (/login, /signup); work on this device is already saved. */
+  const backHere = extra => encodeURIComponent(location.pathname + (extra || ''));
+  function signInDialog(why, extra) {
+    openDialog(`<h2 id="cloudTitle">Save your work online</h2>
+      <p>${esc(why || 'With a free account, your projects open on any device and you can share them with a link.')}</p>
+      <div class="acct-choice"><a class="btn primary wide" href="/signup?next=${backHere(extra)}">Create a free account</a>
+      <a class="btn wide" href="/login?next=${backHere(extra)}">I already have an account</a></div>
+      <p class="fine">Your projects stay in this browser while you sign in.</p>`);
   }
+
+  /* People finish a short profile before their projects are saved online (the database insists too). */
+  function profileDialog(why) {
+    openDialog(`<h2 id="cloudTitle">Finish your profile</h2><p>${esc(why || 'One last step: your projects are saved online once your profile is complete.')}</p><div id="cloudPf"></div>`);
+    TraceUI.profileForm($q('#cloudPf'), profile, user.email, {
+      submitLabel: 'Save and start saving online',
+      onSubmit: async v => {
+        const { data, error } = await sb.from('profiles').update(v).eq('id', user.id).select().maybeSingle();
+        if (error) throw new Error('Could not save your profile. Check your connection and try again.');
+        Object.assign(profile, data || v);
+        closeDialog(); renderAcct();
+        await syncAll();
+        toast('Profile saved. Your projects are now saved to your account.');
+      },
+    });
+  }
+  const profileDone = () => TraceUI.isComplete(profile);
 
   function upgradeDialog(reason) {
     const ready = CFG.paddleClientToken && (CFG.prices.monthly || CFG.prices.yearly);
     openDialog(`<h2 id="cloudTitle">Tracé Pro</h2>
-      ${reason ? `<p>${esc(reason)}</p>` : ''}
-      <ul><li>Unlimited decks in the cloud (Free keeps ${CFG.freeDecks || 3})</li><li>Decks up to 20 MB, for slides with images</li><li>Share links without the “Made with Tracé” badge</li><li>See how many times each shared deck was watched</li></ul>
+      ${reason ? `<p>${esc(reason)}</p>` : '<p>Everything in Free, plus more room online and cleaner share links.</p>'}
+      ${TraceUI.planTable(profile && profile.plan)}
       ${ready ? `<div class="plans">${CFG.prices.monthly ? `<button data-price="${esc(CFG.prices.monthly)}"><b>Monthly</b>${esc(CFG.priceLabels.monthly)}</button>` : ''}${CFG.prices.yearly ? `<button data-price="${esc(CFG.prices.yearly)}"><b>Yearly</b>${esc(CFG.priceLabels.yearly)}</button>` : ''}</div>
       <p>Secure payment by Paddle. Cancel any time from “Manage billing”.</p>` : '<p>Payments are not set up yet on this site.</p>'}`);
     body().querySelectorAll('[data-price]').forEach(b => b.onclick = () => checkout(b.dataset.price));
   }
 
   async function shareDialog() {
-    if (!user) return signInDialog('Sign in to share a link to this deck.');
+    if (!user) return signInDialog('Create a free account or sign in to share a link to this deck.');
+    if (!profileDone()) return profileDialog('Finish your profile to share decks: your name appears on decks you share.');
     let m = curMeta();
     openDialog('<h2 id="cloudTitle">Share</h2><p>Getting the link ready…</p>');
     await flush(true);
@@ -194,8 +217,8 @@
       openDialog(`<h2 id="cloudTitle">Share “${esc(m.name)}”</h2>
         <label class="sw2"><input type="checkbox" id="shareOn" ${on ? 'checked' : ''}> Anyone with the link can watch this deck</label>
         ${on ? `<div class="row"><input type="text" id="shareLink" readonly value="${esc(link(m.share))}" aria-label="Share link"><button class="btn primary" id="copyLink">Copy</button></div>
-        <p>Viewers see the presentation with its live sliders, on any device. They cannot edit it.${m.views ? ` Watched ${m.views} time${m.views === 1 ? '' : 's'}.` : ''}</p>` : '<p>Only you can see this deck.</p>'}
-        ${on && !isPro() ? '<p>Shared decks show a small “Made with Tracé” badge. <a href="#" id="shareUp">Pro removes it.</a></p>' : ''}`);
+        <p>Viewers see the presentation with its live sliders, on any device. They cannot edit it.${isPro() ? ` Watched ${m.views || 0} time${m.views === 1 ? '' : 's'}.` : ''}</p>` : '<p>Only you can see this deck.</p>'}
+        ${on && !isPro() ? '<p>Shared decks show a small “Made with Tracé” badge. <span class="pro-tag">PRO</span> removes it and shows how often each deck is watched. <a href="#" id="shareUp">Compare plans</a></p>' : ''}`);
       $q('#shareOn').onchange = async e => {
         const want = e.target.checked;
         const { data, error } = await sb.rpc('set_deck_sharing', { p_deck: m.cloudId, p_on: want });
@@ -222,15 +245,17 @@
     }
     btn.setAttribute('data-menu', 'acct');
     btn.onclick = null;
-    btn.innerHTML = `<span class="avatar">${esc((user.email || '?')[0].toUpperCase())}</span>`;
-    btn.setAttribute('aria-label', 'Account: ' + user.email);
-    btn.title = user.email;
+    btn.innerHTML = TraceUI.avatar(profile, user.email, 24);
+    btn.setAttribute('aria-label', 'Account: ' + (profile && profile.display_name || user.email));
+    btn.title = (profile && profile.display_name ? profile.display_name + ' · ' : '') + user.email;
     const used = projects.filter(p => p.cloudId).length;
-    menu.innerHTML = `<div class="who">${esc(user.email)}</div>
+    menu.innerHTML = `<div class="who">${profile && profile.display_name ? `<b style="color:var(--ink)">${esc(profile.display_name)}</b><br>` : ''}${esc(user.email)}</div>
+      ${profileDone() ? '' : '<button role="menuitem" class="up" data-acct="profile">Finish your profile to save online</button>'}
       <div class="plan">${isPro() ? 'Pro plan' : 'Free plan'}<small>${isPro()
         ? (profile.subscription_status === 'past_due' ? 'Payment problem: please update your card' : profile.plan_renews_at ? 'Renews ' + new Date(profile.plan_renews_at).toLocaleDateString() : '')
-        : `${used} of ${CFG.freeDecks || 3} cloud decks used`}</small></div>
+        : `${used} of ${CFG.freeDecks || 3} projects online · <span class="pro-tag">PRO</span> unlimited`}</small></div>
       ${isPro() ? '<button role="menuitem" data-acct="billing">Manage billing</button>' : '<button role="menuitem" class="up" data-acct="upgrade">Upgrade to Pro</button>'}
+      <a role="menuitem" href="/account" class="menulink">Profile, plan and billing</a>
       <button role="menuitem" data-acct="sync">Sync now</button>
       <hr><button role="menuitem" data-acct="signout">Sign out</button>`;
   }
@@ -241,7 +266,8 @@
     const k = a.dataset.acct;
     if (k === 'upgrade') upgradeDialog();
     else if (k === 'billing') openBilling();
-    else if (k === 'sync') { await syncAll(); toast('Your decks are up to date.'); }
+    else if (k === 'profile') profileDialog();
+    else if (k === 'sync') { if (!profileDone()) return profileDialog(); await syncAll(); toast('Your decks are up to date.'); }
     else if (k === 'signout') signOut();
   });
 
@@ -253,7 +279,7 @@
     document.querySelectorAll('#projMenu [data-proj]').forEach(b => {
       const m = meta(b.dataset.proj);
       if (!m) return;
-      const tag = m.localOnly ? 'device only' : m.remote ? 'in the cloud' : m.share ? 'shared' : '';
+      const tag = !profileDone() ? '' : m.localOnly ? 'device only' : m.remote ? 'in the cloud' : m.share ? 'shared' : '';
       if (tag) b.querySelector('span').insertAdjacentHTML('beforeend', `<span class="tag">${tag}</span>`);
     });
   };
@@ -283,10 +309,10 @@
   }
 
   async function push(m) {
-    if (!user || m.owner && m.owner !== user.id) return;
+    if (!user || m.owner && m.owner !== user.id || !profileDone()) return;
     const d = m.id === curProj ? deck : readDeck(m.id);
     if (!d) return;
-    const data = deckWithImages(d), stamp = m.updated;   // an edit made while this request runs is saved by the next one
+    const data = deckWithImages(d), stamp = m.updated, rev = m.rev || 0;   // an edit made while this request runs is saved by the next one
     let res;
     if (m.cloudId) {
       res = await sb.from('decks').update({ name: m.name, data }).eq('id', m.cloudId).select('updated_at').maybeSingle();
@@ -296,6 +322,7 @@
     }
     if (res.error) {
       const msg = res.error.message || '';
+      if (msg.includes('profile_required')) { await loadProfile(); renderAcct(); showStatus(); profileDialog(); saveIndex(); return; }
       if (msg.includes('free_limit')) { m.localOnly = true; nudge(`Saved on this device only: the free plan keeps ${CFG.freeDecks || 3} decks in the cloud.`); }
       else if (msg.includes('deck_too_large')) { m.tooBig = true; nudge('This deck is too big to save online on your plan. It is still saved on this device.'); }
       else { pending.add(m.id); clearTimeout(timer); timer = setTimeout(flush, 15000); }   // offline or server busy: try again soon
@@ -305,6 +332,7 @@
     m.cloudAt = res.data.updated_at;
     m.owner = user.id;
     m.syncedAt = stamp;
+    m.savedRev = Math.max(m.savedRev || 0, rev);
     m.localOnly = false; m.tooBig = false;
     saveIndex();
   }
@@ -316,8 +344,8 @@
 
   /* every edit already calls persist(): copy it to the cloud a moment later */
   const _persist = window.persist;
-  window.persist = function () { _persist(); if (user && curProj) { const m = curMeta(); if (m && !m.localOnly && !m.tooBig) queue(curProj); else showStatus(); } };
-  $q('#projName').addEventListener('change', () => queue(curProj, 300));
+  window.persist = function () { _persist(); { const m0 = curMeta(); if (m0) { m0.rev = (m0.rev || 0) + 1; saveIndex(); } } if (user && curProj) { const m = curMeta(); if (m && !m.localOnly && !m.tooBig) queue(curProj); else showStatus(); } };
+  $q('#projName').addEventListener('change', () => { const m = curMeta(); if (m) { m.rev = (m.rev || 0) + 1; saveIndex(); } queue(curProj, 300); });
 
   /* opening a deck that was saved from another device downloads it first */
   const _openProject = window.openProject;
@@ -341,6 +369,7 @@
     Object.assign(m, { name: data.name, remote: false, stale: false, cloudAt: data.updated_at, updated: Date.parse(data.updated_at), owner: user.id,
                        share: data.share_mode === 'link' ? data.share_slug : null, views: data.view_count });
     m.syncedAt = m.updated;
+    m.savedRev = m.rev || 0;
     saveIndex();
   }
 
@@ -380,7 +409,7 @@
       }
       Object.assign(m, { cloudId: r.id, owner: user.id, share, views: r.view_count });
       if (m.cloudAt !== r.updated_at) {
-        const changedHere = !m.syncedAt || m.updated > m.syncedAt;
+        const changedHere = !m.syncedAt || dirty(m);
         if (changedHere && m.updated > Date.parse(r.updated_at)) pending.add(m.id);   // this device has the newer version
         else if (readDeck(m.id)) { m.stale = true; m.name = r.name; }                // the cloud has the newer version
         else m.remote = true;
@@ -403,16 +432,18 @@
 
   /* ---------- sign in / out ---------- */
   async function loadProfile() {
-    const { data } = await sb.from('profiles').select('plan,subscription_status,plan_renews_at,paddle_customer_id').eq('id', user.id).maybeSingle();
+    const { data } = await sb.from('profiles').select('plan,subscription_status,plan_renews_at,paddle_customer_id,display_name,role,subject,organization,avatar_color').eq('id', user.id).maybeSingle();
     profile = data || { plan: 'free' };
   }
   async function onSession(s) {
     const was = user && user.id;
     session = s; user = s ? s.user : null;
+    signedOutElsewhere();
     if (!user) { profile = null; renderAcct(); showStatus(); return; }
     if (was === user.id) return;
     await loadProfile();
     renderAcct();
+    if (!profileDone()) { showStatus(); profileDialog('Welcome! One last step: your projects are saved online once your profile is complete.'); return; }
     const before = projects.filter(p => !p.cloudId && !p.owner).length;
     await syncAll();
     // after a fresh upgrade, decks that were "device only" can now go to the cloud
@@ -420,10 +451,26 @@
     if (!was && before && projects.some(p => p.cloudId)) toast('Signed in. Your decks are saved to your account.');
     try { if (localStorage.getItem('trace-want-upgrade') === '1') { localStorage.removeItem('trace-want-upgrade'); if (!isPro()) upgradeDialog(); } } catch (_) {}
   }
+  /* Signed out from the account page: remove that account's saved projects from this browser too. */
+  function signedOutElsewhere() {
+    let gone = null;
+    try { gone = localStorage.getItem('trace-pending-signout'); } catch (_) {}
+    if (!gone || (user && user.id === gone)) return;
+    const mine = projects.filter(p => p.owner === gone);
+    const safe = mine.filter(p => p.cloudId && !dirty(p));
+    for (const p of safe) { try { localStorage.removeItem('trace-proj:' + p.id); } catch (_) {} }
+    projects = projects.filter(p => !safe.includes(p));
+    for (const p of projects) if (p.owner === gone) delete p.owner;
+    if (!projects.length) { projects = [{ id: newPid(), name: 'Untitled project', updated: Date.now() }]; saveDeckRaw(projects[0].id, blankDeck()); }
+    saveIndex();
+    if (!projects.find(p => p.id === curProj)) { curProj = ''; _openProject(projects[0].id); }
+    updateProjectUI();
+    try { localStorage.removeItem('trace-pending-signout'); } catch (_) {}
+  }
   async function signOut() {
     await flush(true);
     const mine = projects.filter(p => p.owner === user.id);
-    const unsaved = mine.filter(p => !p.cloudId || p.updated > (p.syncedAt || 0));
+    const unsaved = mine.filter(p => !p.cloudId || dirty(p));
     if (unsaved.length && !confirm(`${unsaved.length} deck(s) have changes that are not saved online yet. Sign out anyway? They stay on this device.`)) return;
     for (const p of mine) if (!unsaved.includes(p)) { try { localStorage.removeItem('trace-proj:' + p.id); } catch (_) {} }
     projects = projects.filter(p => p.owner !== user.id || unsaved.includes(p));
@@ -452,7 +499,7 @@
     }));
   }
   async function checkout(priceId) {
-    if (!user) return signInDialog('Sign in first, so Pro is added to your account.');
+    if (!user) return signInDialog('Create a free account or sign in first, so Pro is added to your account.', '?upgrade=1');
     closeDialog();
     try {
       const P = await loadPaddle();
@@ -488,8 +535,8 @@
   sb.auth.onAuthStateChange((ev, s) => { setTimeout(() => onSession(s), 0); });   // outside the auth lock, as Supabase recommends
   sb.auth.getSession().then(async ({ data }) => {
     await onSession(data.session);
-    if (!user && wantsUpgrade()) signInDialog('Sign in first, then choose monthly or yearly.');
-    else if (!user && params.get('signin')) signInDialog();          // "Sign in" on the home page
+    if (!user && wantsUpgrade()) signInDialog('Create a free account or sign in first, then choose monthly or yearly.', '?upgrade=1');
+    else if (!user && params.get('signin')) location.replace('/login');   // old "Sign in" links
     if (params.get('signin')) history.replaceState(null, '', location.pathname);
   });
   if (params.get('upgraded')) { history.replaceState(null, '', location.pathname); waitForPro(); }
@@ -533,10 +580,11 @@
     deck = d; cur = 0; sel = null;
     document.title = row.name + ' · Tracé';
     const present = $q('#present');
+    if (row.owner_name) document.title = row.name + ' by ' + row.owner_name + ' · Tracé';
     if (row.owner_plan !== 'pro') present.insertAdjacentHTML('beforeend', '<a class="badge" href="/" target="_blank" rel="noopener">Made with <b>Tracé</b></a>');
     const end = document.createElement('div');
     end.id = 'vend'; end.hidden = true;
-    end.innerHTML = `<h1>${esc(row.name)}</h1><p>You have reached the end.</p><div class="row" style="display:flex;gap:10px"><button class="btn" id="vAgain">Watch again</button><a class="btn primary" href="/">Make your own with Tracé</a></div>`;
+    end.innerHTML = `<h1>${esc(row.name)}</h1>${row.owner_name ? `<p>by ${esc(row.owner_name)}</p>` : ''}<p>You have reached the end.</p><div class="row" style="display:flex;gap:10px"><button class="btn" id="vAgain">Watch again</button><a class="btn primary" href="/">Make your own with Tracé</a></div>`;
     document.body.appendChild(end);
     $q('#vAgain').onclick = () => { end.hidden = true; openPresent(); };
     window.closePresent = function () { finishAnim(); stopLoop(); end.hidden = false; };

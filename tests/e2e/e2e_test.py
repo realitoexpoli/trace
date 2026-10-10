@@ -5,7 +5,7 @@ portal, deleting, and signing out.
 
 Run: python3 tests/e2e/e2e_test.py <path to MathJax tex-svg.js> <path to supabase-js dist/umd folder>
 """
-import asyncio, hashlib, hmac, json, os, subprocess, sys, time, urllib.request
+import asyncio, hashlib, hmac, json, os, subprocess, sys, time, urllib.request, urllib.parse
 from playwright.async_api import async_playwright
 
 SITE = 'http://127.0.0.1:8788'
@@ -45,6 +45,7 @@ async def new_device(browser, errors, name):
     await ctx.route('https://customer-portal.paddle.example/**', lambda r: r.fulfill(body='<h1>Paddle customer portal (fake)</h1>', content_type='text/html'))
     await ctx.route('https://fonts.googleapis.com/**', lambda r: r.abort())
     await ctx.route('https://fonts.gstatic.com/**', lambda r: r.abort())
+    await ctx.add_init_script("try{localStorage.setItem('trace-toured','1')}catch(e){}")   # skip the first-visit tour offer
     pg = await ctx.new_page()
     pg.on('pageerror', lambda e: errors.append(f'{name}: {e}'))
     pg.on('dialog', lambda d: asyncio.ensure_future(d.accept()))
@@ -56,14 +57,33 @@ async def wait_for(pg, js, timeout=15000, what=''):
     except Exception:
         raise AssertionError('FAIL (timed out): ' + (what or js))
 
-async def sign_in(pg):
-    await pg.goto(SITE + '/app'); await pg.wait_for_timeout(1200)
-    await pg.click('#acctBtn')
-    await pg.fill('#otpEmail', EMAIL)
-    await pg.click('#otpForm button[type=submit]')
-    await wait_for(pg, "document.querySelector('#otpMsg').textContent.includes('Check')", what='email sent message')
-    code = json.load(urllib.request.urlopen(SB + '/__test/code?email=' + EMAIL))['code']
-    await pg.goto(SITE + '/app?code=' + code)         # what clicking the link in the email does
+async def email_link(pg, page, email):
+    """Asks for a sign-in link on /signup or /login and follows it, like clicking the link in the email."""
+    await pg.goto(SITE + page); await pg.wait_for_timeout(900)
+    await pg.fill('#email', email)
+    await pg.click('#sendBtn')
+    await wait_for(pg, "document.body.innerText.includes('Check your inbox')", what='email sent')
+    code = json.load(urllib.request.urlopen(SB + '/__test/code?email=' + urllib.parse.quote(email)))['code']
+    sep = '&' if '?' in page else '?'
+    await pg.goto(SITE + page + sep + 'code=' + code)
+
+async def fill_profile(pg, name, role='teacher', subject='Physics', org='Lycée Ibn Sina'):
+    await pg.wait_for_selector('#pf_name')
+    await pg.fill('#pf_name', name)
+    await pg.check(f'input[name=pf_role][value={role}]', force=True)
+    if subject: await pg.fill('#pf_subject', subject)
+    if org: await pg.fill('#pf_org', org)
+    await pg.click('#pf_colors button:nth-child(3)')
+    await pg.click('#pf_save')
+
+async def sign_in(pg, new=False):
+    if new:
+        await email_link(pg, '/signup', EMAIL)
+        await wait_for(pg, "document.body.innerText.includes('Tell us a little about you')", what='profile step')
+        await fill_profile(pg, 'Prof Ada')
+    else:
+        await email_link(pg, '/login', EMAIL)
+    await pg.wait_for_url('**/app', timeout=15000)
     await wait_for(pg, "window.__traceCloud && window.__traceCloud.state().user", what='signed in')
 
 def webhook(event_type, status, user_id, occurred):
@@ -100,13 +120,29 @@ async def main():
         check(await A.evaluate('deck.slides.length') > 0, 'the editor works without an account')
         check(sql('select count(*) from decks') == '0', 'nothing is uploaded before signing in')
 
-        print('Device A: sign in with an email link')
-        await sign_in(A)
+        print('Device A: sign up on the sign-up page')
+        await A.goto(SITE + '/'); await A.click('header >> text=Sign in'); await A.wait_for_timeout(600)
+        check(A.url.endswith('/login'), 'Sign in on the home page opens the sign-in page')
+        await A.fill('#email', EMAIL); await A.click('#sendBtn'); await A.wait_for_timeout(700)
+        check('no account with this email' in (await A.inner_text('#emailErr')).lower(), 'signing in with an unknown email offers to create an account')
+        await A.goto(SITE + '/signup'); await A.wait_for_timeout(600)
+        check('Projects saved to your account' in await A.inner_text('.t-plans'), 'the sign-up page shows what Free and Pro include')
+        await email_link(A, '/signup', EMAIL)
+        await wait_for(A, "document.body.innerText.includes('Tell us a little about you')", what='profile step')
+        check(True, 'after the email link, new people are asked for their profile')
+        await A.click('#pf_save'); await A.wait_for_timeout(300)
+        check('enter your name' in (await A.inner_text('#pf_err')).lower(), 'the profile needs a name')
         uid = sql(f"select id from auth.users where email = '{EMAIL}'")
+        await A.goto(SITE + '/app'); await A.wait_for_timeout(2500)
+        check(await A.get_attribute('#cloudStat', 'title') == 'Finish your profile to save projects online', 'in the editor, an unfinished profile is pointed out')
+        check(not await A.is_hidden('#cloudModal') and 'Finish your profile' in await A.inner_text('#cloudBody'), 'and the editor asks for it')
+        check(sql(f"select count(*) from decks where owner = '{uid}'") == '0', 'nothing is saved online before the profile is complete')
+        await fill_profile(A, 'Prof Ada')
         check(sql(f"select plan from profiles where id = '{uid}'") == 'free', 'a free account is created')
         await wait_for(A, "document.querySelector('#cloudStat').title === 'Saved to your account'", what='saved status')
         check(sql(f"select count(*) from decks where owner = '{uid}'") == '1', 'the project on this device is saved to the account')
-        check(await A.inner_text('#acctBtn') == 'P' and EMAIL in await A.get_attribute('#acctBtn', 'aria-label'), 'the account button shows the user')
+        check(await A.inner_text('#acctBtn') == 'PA' and 'Prof Ada' in await A.get_attribute('#acctBtn', 'aria-label'), 'the account button shows the person\'s initials')
+        check(sql(f"select display_name || '|' || role || '|' || subject || '|' || avatar_color from profiles where id = '{uid}'") == 'Prof Ada|teacher|Physics|#7a3b8f', 'the profile is saved with name, role, subject and colour')
 
         print('Device A: edits are saved online')
         await A.evaluate("snap(); deck.slides[0].objects.push(Object.assign(make('circle'), {id: 'e2e_circle', x: 1.5})); persist(); refresh();")
@@ -124,7 +160,7 @@ async def main():
         check(sql(f"select count(*) from decks where owner = '{uid}'") == '3', 'only 3 decks go to the cloud on Free')
         check('on this device only' in (await A.get_attribute('#cloudStat', 'title')).lower(), 'the 4th deck says it is on this device only')
         await wait_for(A, "!document.querySelector('#cloudModal').hidden", what='upgrade suggestion')
-        check('Tracé Pro' in await A.inner_text('#cloudBody'), 'an upgrade suggestion explains the limit')
+        check('Tracé Pro' in await A.inner_text('#cloudBody') and 'Unlimited' in await A.inner_text('#cloudBody .t-plans'), 'an upgrade suggestion explains the limit and compares Free and Pro')
         await A.click('#cloudClose')
 
         print('Device A: share a deck')
@@ -136,6 +172,7 @@ async def main():
         await wait_for(A, "!!document.querySelector('#shareLink')", what='share link')
         link = await A.input_value('#shareLink')
         check('/v/' in link and len(link.rsplit('/', 1)[1]) == 12, 'a share link is created')
+        check(await A.is_visible('#cloudBody .pro-tag'), 'the share window marks what Pro adds (no badge, view counts)')
         await A.click('#cloudClose')
 
         print('Viewer: anyone with the link')
@@ -147,6 +184,7 @@ async def main():
         check(await V.evaluate("projects.every(p => !p.cloudId)") and await V.evaluate("!localStorage.getItem('trace-projects').includes('e2e_circle')"), "the shared deck is not copied into the viewer's own projects")
         await V.click('#exitPres'); await V.wait_for_timeout(300)
         check(await V.is_visible('#vend'), 'closing shows an end card with "Make your own"')
+        check('by Prof Ada' in await V.inner_text('#vend'), 'viewers see who made the deck')
         check(sql(f"select view_count from decks where share_slug = '{link.rsplit('/', 1)[1]}'") == '1', 'the view is counted')
         await V.goto(SITE + '/v/notarealslug1'); await V.wait_for_timeout(1500)
         check('not shared' in (await V.inner_text('#vend')).lower(), 'a wrong link explains itself')
@@ -200,6 +238,19 @@ async def main():
         check(sql(f"select plan from profiles where id = '{uid}'") == 'free', 'cancelling returns the account to Free')
         check(sql(f"select count(*) from decks where owner = '{uid}'") == '4', 'no deck is lost after cancelling')
 
+        print('Account page')
+        await B.goto(SITE + '/account'); await B.wait_for_timeout(2000)
+        check('Prof Ada' in await B.inner_text('h1') and 'Free plan' in await B.inner_text('.plan-badge'), 'the account page shows the profile and plan')
+        check('projects saved online' in await B.inner_text('main') and 'free plan keeps 3' in await B.inner_text('main'), 'it shows how much of the free plan is used')
+        await B.fill('#pf_name', 'Ada Lovelace'); await B.click('#pf_save'); await B.wait_for_timeout(1200)
+        check(sql(f"select display_name from profiles where id = '{uid}'") == 'Ada Lovelace', 'people can change their profile')
+        await B.click('#signout'); await B.wait_for_timeout(1500)
+        check('/login' in B.url, 'signing out on the account page goes to the sign-in page')
+        await B.goto(SITE + '/app'); await B.wait_for_timeout(2500)
+        check(await B.evaluate("projects.every(p => !p.cloudId)"), 'and the next time the editor opens, the account\'s projects are gone from that browser')
+        await B.goto(SITE + '/account'); await B.wait_for_timeout(1500)
+        check('/login' in B.url, 'the account page needs you to be signed in')
+
         print('Device A: delete and sign out')
         extra = await A.evaluate("projects.find(p => p.name === 'Extra 3').id")
         await A.evaluate(f"openProject('{extra}')"); await A.wait_for_timeout(500)
@@ -210,6 +261,19 @@ async def main():
         check(await A.inner_text('#acctBtn') == 'Sign in', 'signed out')
         check(await A.evaluate("projects.every(p => !p.cloudId)"), "the account's decks are removed from this browser")
         check(sql(f"select count(*) from decks where owner = '{uid}'") == '3', 'and they are still safe in the account')
+
+        print('Deleting an account')
+        ctxD, D = await new_device(browser, errors, 'D')
+        await email_link(D, '/signup', 'leaving@school.example')
+        await fill_profile(D, 'Lea Ving', role='student', subject='', org='')
+        await D.wait_for_url('**/app', timeout=15000); await D.wait_for_timeout(2500)
+        did = sql("select id from auth.users where email = 'leaving@school.example'")
+        check(sql(f"select count(*) from decks where owner = '{did}'") == '1', 'a new account saves its first project')
+        await D.goto(SITE + '/account'); await D.wait_for_timeout(1500)
+        await D.click('.danger-zone summary')
+        check(await D.is_disabled('#delBtn'), 'deleting needs a confirmation tick first')
+        await D.check('#delOk'); await D.click('#delBtn'); await D.wait_for_timeout(2000)
+        check(sql(f"select count(*) from auth.users where id = '{did}'") == '0' and sql(f"select count(*) from decks where owner = '{did}'") == '0', 'people can delete their account and its projects')
 
         print('Security from the browser')
         r = await V.evaluate("""async (k) => { const c = supabase.createClient('%s', k);

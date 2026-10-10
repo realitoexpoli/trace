@@ -6,6 +6,8 @@ cd "$(dirname "$0")/.."
 createdb "$DB"
 trap 'dropdb "$DB"' EXIT
 psql -q -v ON_ERROR_STOP=1 -d "$DB" -f tests/supabase_stub.sql
-psql -q -v ON_ERROR_STOP=1 -d "$DB" -f supabase/migrations/001_init.sql 2>/dev/null
-psql -q -v ON_ERROR_STOP=1 -d "$DB" -f supabase/migrations/001_init.sql   # running it twice must be safe
+for pass in 1 2; do   # applying the migrations again, in order, must be safe
+  psql -q -v ON_ERROR_STOP=1 -d "$DB" -f supabase/migrations/001_init.sql 2>/dev/null
+  psql -q -v ON_ERROR_STOP=1 -d "$DB" -f supabase/migrations/002_profiles.sql 2>/dev/null
+done
 psql -q -v ON_ERROR_STOP=1 -d "$DB" -f tests/db_test.sql 2>&1 | sed -n 's/^psql:[^ ]* NOTICE:  /  /p; /ERROR\|PASSED/p'

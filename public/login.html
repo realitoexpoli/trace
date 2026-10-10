@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Sign in · Tracé</title>
+<meta name="description" content="Sign in to Tracé with an email link.">
+
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%2322488a'/%3E%3Cpath d='M5 21c4-12 7-12 11 0s7 12 11 0' fill='none' stroke='%23fff' stroke-width='2.6' stroke-linecap='round'/%3E%3C/svg%3E">
+<link rel="stylesheet" href="/site.css">
+</head>
+<body data-mode="login" class="auth-page">
+<header class="top">
+  <div class="wrap">
+    <a class="logo" href="/">Tracé</a>
+    <nav aria-label="Main">
+      <a href="/guide/" class="hide-s">Guide</a>
+      <a href="/#pricing" class="hide-s">Pricing</a>
+    </nav>
+    <a class="btn" href="/app">Open the editor</a>
+    <span id="userSlot"></span>
+  </div>
+</header>
+<main class="wrap auth-main" id="main" aria-live="polite">
+  <p class="muted" style="padding:40px 0">Loading…</p>
+</main>
+<footer>
+  <div class="wrap">
+    <span class="sp">© Tracé</span>
+    <a href="/guide/">Guide</a><a href="/terms">Terms</a><a href="/privacy">Privacy</a><a href="/refunds">Refunds</a>
+  </div>
+</footer>
+<script src="/config.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
+<script src="/profile-ui.js"></script>
+<script src="/account.js"></script>
+</body>
+</html>

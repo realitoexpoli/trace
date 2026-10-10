@@ -9,6 +9,7 @@ SECRET=local-test-jwt-secret-that-is-long-enough-123456
 dropdb --if-exists "$DB"; createdb "$DB"
 psql -q -v ON_ERROR_STOP=1 -d "$DB" -f "$ROOT/tests/supabase_stub.sql" >/dev/null
 psql -q -v ON_ERROR_STOP=1 -d "$DB" -f "$ROOT/supabase/migrations/001_init.sql" >/dev/null 2>&1
+psql -q -v ON_ERROR_STOP=1 -d "$DB" -f "$ROOT/supabase/migrations/002_profiles.sql" >/dev/null 2>&1
 psql -q -d "$DB" -c "do \$\$begin if not exists(select from pg_roles where rolname='authenticator') then create role authenticator login noinherit password 'pw'; end if; end\$\$;
   grant anon, authenticated, service_role to authenticator;
   grant all on all tables in schema public to service_role; grant usage on schema public to service_role;

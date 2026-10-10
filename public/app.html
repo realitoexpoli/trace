@@ -206,6 +206,49 @@ hr{border:none;border-top:1px solid var(--line);margin:18px 0}
 /* while presenting, the editor underneath is not drawn at all */
 body.presenting>header,body.presenting>main{display:none}
 @media (prefers-reduced-motion:reduce){.toast{transition:none}.flowdash{animation:none}}
+/* selecting */
+.frame{position:relative}
+#canvas.hovering{cursor:move}
+#hoverBox{position:absolute;display:none;pointer-events:none;border:1.5px dashed var(--mark);border-radius:3px;z-index:2}
+#hoverBox span{position:absolute;left:-1.5px;background:var(--mark);color:#1c221f;font-size:11.5px;font-weight:700;padding:2px 7px;border-radius:3px;white-space:nowrap}
+.objlist{display:grid;gap:2px;max-height:240px;overflow:auto;margin-bottom:6px}
+.objlist button{display:flex;justify-content:space-between;gap:8px;align-items:center;border:1px solid transparent;background:none;border-radius:3px;padding:5px 8px;text-align:left;font-size:13px}
+.objlist button:hover{background:var(--hover);border-color:var(--line)}
+.objlist .on{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.objlist .os{color:var(--mute);font-size:11.5px;flex:none}
+/* settings panel sections */
+.psec{margin-bottom:6px}
+.psec h3,.anim h3{font-size:12.5px;font-weight:700;margin:14px 0 8px;color:var(--ink);display:flex;justify-content:space-between;gap:8px;align-items:baseline}
+.animsum{font-weight:400;color:var(--mute);font-size:11.5px;text-align:right}
+details.more{border-top:1px solid var(--line);margin:6px 0;padding-top:6px}
+details.more>summary{cursor:pointer;font-size:12.5px;font-weight:600;color:var(--mute);padding:4px 0;list-style:none}
+details.more>summary::before{content:'▸ ';color:var(--pen)}details.more[open]>summary::before{content:'▾ '}
+details.more[open]>summary{margin-bottom:8px}
+/* empty slide */
+.emptyhint{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;pointer-events:none;padding:16px;z-index:1}
+.emptyhint[hidden]{display:none}
+.emptyhint .card{pointer-events:auto;background:rgba(20,22,21,.86);color:#e2e5e0;border:1px solid rgba(255,255,255,.12);border-radius:6px;padding:18px 20px;display:grid;gap:10px;justify-items:center;text-align:center;max-width:420px}
+.emptyhint .card span{color:#a9b1aa;font-size:13.5px}
+.emptyhint .row{display:flex;gap:6px;flex-wrap:wrap;justify-content:center}
+.emptyhint .btn{border:1px solid rgba(255,255,255,.22);color:#e8ebe6}
+.emptyhint .btn:hover{background:rgba(255,255,255,.08)}
+.emptyhint .btn.primary{background:#a3bcff;border-color:#a3bcff;color:#111412}
+/* tours */
+.tour-dim{position:fixed;inset:0;background:rgba(8,10,9,.45);z-index:70;pointer-events:none}
+.tour-spot{position:fixed;z-index:71;border-radius:6px;box-shadow:0 0 0 3px var(--mark),0 0 0 9999px rgba(8,10,9,.45);pointer-events:none;transition:left .2s,top .2s,width .2s,height .2s}
+.tour-card{position:fixed;z-index:80;width:min(340px,calc(100vw - 24px));background:var(--paper);color:var(--ink);border:1px solid var(--line);border-radius:8px;box-shadow:0 18px 40px -12px rgba(0,0,0,.45);padding:14px 16px;font-size:14px}
+.tour-card h3{margin:2px 0 6px;font-size:16px}
+.tour-card p{margin:0 0 8px;line-height:1.45}
+.tour-card code{background:var(--desk);padding:1px 5px;border-radius:3px}
+.tour-top{display:flex;justify-content:space-between;align-items:center;color:var(--mute);font-size:12px}
+.tour-x{border:none;background:none;font-size:20px;line-height:1;color:var(--mute);padding:0 4px}
+.tour-wait{color:var(--mute);font-size:12.5px;font-style:italic}
+.tour-btns,.tour-more{display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-end;margin-top:6px}
+.tour-more{justify-content:flex-start}
+.tour-card .btn{border-color:var(--line)}
+@media (prefers-reduced-motion:reduce){.tour-spot{transition:none}}
+.helpmenu{min-width:290px}.helpmenu b{color:var(--pen);font-weight:700}
+.menu a[role=menuitem]{display:flex;padding:7px 10px;border-radius:3px;color:inherit;text-decoration:none}
+.menu a[role=menuitem]:hover{background:var(--hover)}
 </style>
 </head>
 <body>
@@ -216,7 +259,7 @@ body.presenting>header,body.presenting>main{display:none}
   <div class="tools" id="tools" aria-label="Add objects"></div>
   <div class="spacer"></div>
   <div class="menuwrap"><button class="tool" data-menu="ex" aria-haspopup="true" aria-expanded="false">Examples<svg viewBox="0 0 16 16"><path d="M4 6l4 4 4-4" stroke="currentColor" stroke-width="1.5" fill="none"/></svg></button><div class="menu" role="menu" hidden style="left:auto;right:0"><button role="menuitem" data-ex="showcase">Tour: everything Tracé can do (new project)</button><button role="menuitem" data-ex="jamming">Cours : le brouillage des communications (nouveau projet)</button><button role="menuitem" data-ex="signal">Lecture: how a signal travels (new project)</button><button role="menuitem" data-ex="radar">Radar jamming in 3D</button></div></div>
-  <a class="btn" id="helpLink" href="/guide/" target="_blank" rel="noopener" title="How to use Tracé">Help</a>
+  <div class="menuwrap"><button class="tool" data-menu="help" aria-haspopup="true" aria-expanded="false">Help<svg viewBox="0 0 16 16"><path d="M4 6l4 4 4-4" stroke="currentColor" stroke-width="1.5" fill="none"/></svg></button><div class="menu helpmenu" role="menu" hidden style="left:auto;right:0"><button role="menuitem" data-tour="first"><b>Tour:</b> your first animated slide</button><button role="menuitem" data-tour="clicks"><b>Tour:</b> change things on a click</button><button role="menuitem" data-tour="slides"><b>Tour:</b> animate between slides</button><button role="menuitem" data-tour="screen"><b>Tour:</b> what is on the screen</button><a role="menuitem" id="guideLink" href="/guide/" target="_blank" rel="noopener" hidden>Read the full guide</a></div></div>
   <button class="btn" id="undo" title="Undo (Ctrl+Z)">Undo</button>
   <button class="btn" id="preview" title="Play the animation into this slide">Preview</button>
   <button class="btn" id="exportBtn">Export</button>
@@ -1380,7 +1423,7 @@ function renderCanvas(){if(anim&&anim.svg===canvas)return;if(loopSvg===canvas)st
   L.grid.innerHTML='';if(showGrid){let d='';for(let x=-7;x<=7;x++)d+=`M${x} -4V4`;for(let y=-4;y<=4;y++)d+=`M-7.2 ${y}H7.2`;el('path',{d,stroke:'#ffffff',opacity:.09,'stroke-width':0.012},L.grid);el('path',{d:'M-7.2 0H7.2M0 -4V4',stroke:'#ffffff',opacity:.18,'stroke-width':0.014},L.grid);}
   const vis=editStep===null?null:new Set(visibleAt(slide(),editStep).map(o=>o.id));
   let shownObjs=slide().objects;if(editStep!==null&&shownObjs.some(o=>o.keys)){shownObjs=shownObjs.map(o=>({...objAt(o,editStep)}));syncEq(shownObjs);syncLinks(shownObjs);syncSeries(shownObjs);syncCounters(shownObjs);}
-  drawItems(canvas,shownObjs.map(o=>({obj:o,op:vis&&!vis.has(o.id)?0.18:1})),{interactive:true});drawHud(L);
+  drawItems(canvas,shownObjs.map(o=>({obj:o,op:vis&&!vis.has(o.id)?0.18:1})),{interactive:true});drawHud(L);updateEmptyHint();
   const so=sel&&obj(sel),kk=so&&animK(so);if(kk!==null&&kk!=null){const A=objAt(so,kk-1),B=objAt(so,kk),col=getComputedStyle(document.documentElement).getPropertyValue('--mark').trim()||'#e8b923',ph=so.paths&&so.paths[kk];let d='';
     if(ph){const tg=obj(ph.target);if(tg)d=pth(pathPts(objAt(tg,kk)));}else if(Math.hypot(A.x-B.x,A.y-B.y)>1e-3){if(Math.abs(+so.arc||0)>0.5){const th=so.arc*Math.PI/180,pts=[];for(let i=0;i<=40;i++){const q=interp(A,{...B,arc:so.arc},i/40);pts.push([q.x,q.y]);}d=pth(pts);}else d=pth([[A.x,A.y],[B.x,B.y]]);}
     if(d){el('path',{d,fill:'none',stroke:col,'stroke-width':2,'stroke-dasharray':'5 5','vector-effect':'non-scaling-stroke','pointer-events':'none'},L.hud);el('circle',{cx:A.x,cy:-A.y,r:0.07,fill:'none',stroke:col,'stroke-width':2,'vector-effect':'non-scaling-stroke','pointer-events':'none'},L.hud);}}
@@ -1412,7 +1455,7 @@ function drawHud(L){L.hud.innerHTML='';const o0=sel&&obj(sel);if(!o0)return;cons
   el('path',{d:'M'+box.map(p=>p.join(' ')).join('L')+'Z',fill:'none',stroke:col,'stroke-width':1.5,'vector-effect':'non-scaling-stroke','pointer-events':'none'},L.hud);
   const top=T(xm,y0),knob=T(xm,y0-26*u/s);
   el('line',{x1:top[0],y1:top[1],x2:knob[0],y2:knob[1],stroke:col,'stroke-width':1.5,'vector-effect':'non-scaling-stroke','pointer-events':'none'},L.hud);
-  const h=9*u,handle=(p,name,round,cursor)=>{if(COARSE)el('circle',{cx:p[0],cy:p[1],r:22*u,fill:'transparent','data-handle':name,style:'cursor:'+cursor},L.hud);const e2=round?el('circle',{cx:p[0],cy:p[1],r:h*0.65,'data-handle':name},L.hud):el('rect',{x:p[0]-h/2,y:p[1]-h/2,width:h,height:h,'data-handle':name,transform:`rotate(${-o.rot} ${p[0]} ${p[1]})`},L.hud);
+  const h=11*u,handle=(p,name,round,cursor)=>{el('circle',{cx:p[0],cy:p[1],r:(COARSE?22:12)*u,fill:'transparent','data-handle':name,style:'cursor:'+cursor},L.hud);const e2=round?el('circle',{cx:p[0],cy:p[1],r:h*0.65,'data-handle':name},L.hud):el('rect',{x:p[0]-h/2,y:p[1]-h/2,width:h,height:h,'data-handle':name,transform:`rotate(${-o.rot} ${p[0]} ${p[1]})`},L.hud);
     e2.setAttribute('fill','#ffffff');e2.setAttribute('stroke',col);e2.setAttribute('stroke-width',1.5);e2.setAttribute('vector-effect','non-scaling-stroke');e2.style.cursor=cursor;return e2;};
   handle(box[0],'nw',false,'nwse-resize');handle(box[1],'ne',false,'nesw-resize');handle(box[2],'se',false,'nwse-resize');handle(box[3],'sw',false,'nesw-resize');
   if(RESIZE[o.type]){handle(T(x1,ym),'e',false,'ew-resize');handle(T(x0,ym),'w',false,'ew-resize');handle(T(xm,y0),'n',false,'ns-resize');handle(T(xm,y1),'s',false,'ns-resize');}
@@ -1423,10 +1466,13 @@ let drag=null;
 canvas.addEventListener('pointerdown',e=>{if(anim)return;const hd=e.target.closest('[data-handle]');
   if(hd&&sel){const o=sel&&obj(sel)?liveOf(obj(sel)):null;if(!o)return;const u=toUnits(e),v=[u.x-o.x,u.y-o.y],a=o.rot*Math.PI/180,loc=[(v[0]*Math.cos(a)+v[1]*Math.sin(a))/o.scale,(-v[0]*Math.sin(a)+v[1]*Math.cos(a))/o.scale];
     drag={id:o.id,handle:hd.dataset.handle,v0:v,d0:Math.hypot(v[0],v[1])||1e-6,a0:Math.atan2(v[1],v[0]),s0:o.scale,r0:o.rot,w0:o.w,h0:o.h,l0:loc,snapped:false};canvas.setPointerCapture(e.pointerId);e.preventDefault();return;}
-  const g=e.target.closest('g[data-id]');
-  if(!g){if(sel){sel=null;renderCanvas();renderProps();}return;}
-  const id=g.dataset.id,o0=obj(id);if(!o0)return;if(sel!==id){sel=id;renderProps();}const o=liveOf(o0);
-  if(o.type==='axes3d'&&(e.shiftKey||e.altKey)){drag={id,orbit:true,cx:e.clientX,cy:e.clientY,az:o.az,tilt:o.tilt,snapped:false};canvas.setPointerCapture(e.pointerId);e.preventDefault();return;}
+  const ids=pickAt(e.clientX,e.clientY);showHover(null);
+  if(!ids.length){if(sel){sel=null;renderCanvas();renderProps();}return;}
+  let id=ids[0];
+  if(e.altKey&&ids.length>1&&ids.includes(sel))id=ids[(ids.indexOf(sel)+1)%ids.length];   // Alt+click: the object underneath
+  else if(sel&&ids.includes(sel)&&!ids.painted.has(id))id=sel;                             // keep dragging what is selected
+  const o0=obj(id);if(!o0)return;if(sel!==id){sel=id;renderProps();}const o=liveOf(o0);
+  if(o.type==='axes3d'&&e.shiftKey){drag={id,orbit:true,cx:e.clientX,cy:e.clientY,az:o.az,tilt:o.tilt,snapped:false};canvas.setPointerCapture(e.pointerId);e.preventDefault();return;}
   const u=toUnits(e);drag={id,sx:u.x,sy:u.y,ox:o.x,oy:o.y,snapped:false};canvas.setPointerCapture(e.pointerId);renderCanvas();e.preventDefault();});
 const orbitVals=(d,e)=>{let az=d.az+(e.clientX-d.cx)*0.5;az=((az+180)%360+360)%360-180;return{az:Math.round(az),tilt:Math.round(Math.max(0,Math.min(90,d.tilt-(e.clientY-d.cy)*0.4)))};};
 canvas.addEventListener('pointermove',e=>{if(!drag)return;const base=obj(drag.id);if(!base)return;
@@ -1445,7 +1491,7 @@ canvas.addEventListener('pointermove',e=>{if(!drag)return;const base=obj(drag.id
   w.x=Math.round((drag.ox+u.x-drag.sx)*20)/20;w.y=Math.round((drag.oy+u.y-drag.sy)*20)/20;renderCanvas();setField('x',w.x);setField('y',w.y);});
 const endDrag=()=>{if(drag&&drag.snapped){persist();renderThumbs();if(drag.handle)renderProps();}drag=null;};
 canvas.addEventListener('pointerup',endDrag);canvas.addEventListener('pointercancel',endDrag);
-canvas.addEventListener('dblclick',e=>{/* the first click re-draws the selection, so the two clicks can land on different nodes: fall back to what is under the pointer, then to the selection */const g=e.target.closest('g[data-id]')||(document.elementFromPoint(e.clientX,e.clientY)||canvas).closest('g[data-id]');const id=g?g.dataset.id:sel;if(!id)return;const o=obj(id);if(!o||!['text','latex','matrix'].includes(o.type))return;sel=o.id;renderProps();renderCanvas();
+canvas.addEventListener('dblclick',e=>{/* the first click re-draws the selection, so look again at what is under the pointer, then fall back to the selection */const id=sel||pickAt(e.clientX,e.clientY)[0];if(!id)return;const o=obj(id);if(!o||!['text','latex','matrix'].includes(o.type))return;sel=o.id;renderProps();renderCanvas();
   const f=document.querySelector('#f_src')||document.querySelector('#f_tex')||document.querySelector('#props .rte')||document.querySelector('#f_rows');if(f){f.focus();if(f.select)f.select();else{const r=document.createRange();r.selectNodeContents(f);const s2=getSelection();s2.removeAllRanges();s2.addRange(r);}}});
 
 /* ---------- slide strip ---------- */
@@ -1547,17 +1593,20 @@ function animHTML(o){const s2=slide(),K=maxStep(s2),st=stepOf(o),ex=exitOf(o),op
   const steps=[opt(0,'With the slide',st)];for(let k=1;k<=K+1;k++)steps.push(opt(k,`On click ${k}${k===K+1?' (new)':''}`,st));
   const leaves=[opt(0,'Stays',ex)];for(let k=st+1;k<=K+1;k++)leaves.push(opt(k,`On click ${k}${k===K+1?' (new)':''}`,ex));
   const loops=Object.entries(LOOPS).map(([k,v])=>opt(k,k==='flow'?flowLabel(o):v,o.loop||'none')).join('');
-  return`<div class="anim"><h3>Animation</h3>
+  const moreSet=!!(exitOf(o)||+o.arc||(o.loop&&o.loop!=='none')||(o.emph&&o.emph!=='none'));
+  return`<section class="psec anim" aria-label="Animation"><h3>Animation <span class="animsum">${animSummary(o)}</span></h3>
     <div class="row2"><div class="field"><label for="f_step">Appears</label><select id="f_step" data-k="step" data-num="1">${steps.join('')}</select></div>
       <div class="field"><label for="f_enter">Enters with</label><select id="f_enter" data-k="enter">${Object.entries(ENTER).map(([k,v])=>opt(k,v,o.enter)).join('')}</select></div>
       <div class="field" style="grid-column:1/-1"><label for="f_morphFrom">Or appears by morphing out of</label><select id="f_morphFrom" data-k="morphFrom"><option value="">Nothing (use the entrance above)</option>${[...(cur?finalOf(deck.slides[cur-1]).filter(t=>!s2.objects.some(q=>q.id===t.id)).map(t=>[t,' (previous slide)']):[]),...s2.objects.filter(t=>t.id!==o.id&&stepOf(t)<st).map(t=>[t,''])].map(([t,suf])=>`<option value="${t.id}"${o.morphFrom===t.id?' selected':''}>${TYPES[t.type]||t.type}: ${String(t.text||t.src||t.label||t.id).replace(/<[^>]*>/g,'').slice(0,24)}${suf}</option>`).join('')}</select></div>
+      </div><details class="more" data-more="anim"${moreOpen('anim',moreSet)}><summary>Leaving, moving and looping</summary><div class="row2">
       <div class="field"><label for="f_exitStep">Leaves</label><select id="f_exitStep" data-k="exitStep" data-num="1">${leaves.join('')}</select></div>
       <div class="field"><label for="f_exit">Leaves with</label><select id="f_exit" data-k="exit">${Object.entries(EXIT).map(([k,v])=>opt(k,v,o.exit||'fade')).join('')}</select></div>
       <div class="field"><label for="f_arc">When it moves</label><select id="f_arc" data-k="arc" data-num="1">${opt(0,'Straight line',+o.arc||0)}${opt(90,'Curve to the left',+o.arc||0)}${opt(-90,'Curve to the right',+o.arc||0)}</select></div>
       <div class="field"><label for="f_loop">Keeps moving</label><select id="f_loop" data-k="loop">${loops}</select></div></div>
-    ${o.loop&&o.loop!=='none'?`<div class="field"><label for="f_loopTime">One cycle takes<output>${(+o.loopTime||4).toFixed(1)} s</output></label><input id="f_loopTime" data-k="loopTime" type="range" min="0.5" max="12" step="0.5" value="${+o.loopTime||4}"></div>`:''}${fieldHTML(EMPH,o)}</div><hr><h3 style="font-size:12.5px;margin:0 0 8px">Look</h3>`;}
+    ${o.loop&&o.loop!=='none'?`<div class="field"><label for="f_loopTime">One cycle takes<output>${(+o.loopTime||4).toFixed(1)} s</output></label><input id="f_loopTime" data-k="loopTime" type="range" min="0.5" max="12" step="0.5" value="${+o.loopTime||4}"></div>`:''}${fieldHTML(EMPH,o)}</details></section>`;}
 function renderProps(){const P=$('#props');const o=sel&&obj(sel);
   if(!o){const s=slide();P.innerHTML=`<h2>Slide ${cur+1}</h2><p class="sub">${cur?'Animates from slide '+cur+': '+diffSummary(deck.slides[cur-1].objects,s.objects):'Objects appear with their entry animation.'}</p>
+    ${s.objects.length?`<section class="psec"><h3>On this slide <span class="animsum">${s.objects.length} object${s.objects.length>1?'s':''}, front first</span></h3><div class="objlist">${[...s.objects].reverse().map(x=>`<button data-pick="${x.id}"><span class="on">${objName(x).replace(/&/g,'&amp;').replace(/</g,'&lt;')}</span><span class="os">${stepOf(x)?'click '+stepOf(x):'start'}</span></button>`).join('')}</div></section>`:''}
     <div class="field"><label for="f_rt">Transition length<output>${(+s.runTime).toFixed(1)} s</output></label><input id="f_rt" type="range" min="0.3" max="4" step="0.1" value="${s.runTime}"></div>
     <div class="field"><label for="f_feel">Motion feel</label><select id="f_feel">${Object.entries(FEELS).map(([k,v])=>`<option value="${k}"${(s.feel||'smooth')===k?' selected':''}>${v.label}</option>`).join('')}</select></div>
     <div class="field check"><label><input type="checkbox" id="f_stagger"${s.stagger?' checked':''}>Objects that appear together come in one after another</label></div>
@@ -1565,25 +1614,29 @@ function renderProps(){const P=$('#props');const o=sel&&obj(sel);
     <div class="field"><label><span>Show grid</span><input type="checkbox" id="f_grid" ${showGrid?'checked':''}></label></div>
     <hr><button class="btn del" id="delSlide" ${deck.slides.length<2?'disabled':''}>Delete slide</button>
     <div class="note">Two ways to animate. <b>Clicks</b>: give objects “Appears on click 1, 2…” to build the slide step by step, and zoom the view on any click. <b>Slides</b>: duplicate a slide and change it; everything that moved, grew or changed animates across.</div>
-    <p class="colophon"><b>Tracé</b> is a personal project for drawing maths that moves.</p><div class="note">Handles: corners resize, side squares stretch shapes and graphs, the round handle rotates. Shortcuts: Delete removes, arrows nudge (Shift for bigger steps), Ctrl+D duplicates an object, Ctrl+Z undoes, ← → in Present.</div>`;
+    <p class="colophon"><b>Tracé</b> is a personal project for drawing maths that moves.</p><div class="note">Click an object to select it; the dashed outline shows what you will pick. <b>Alt+click</b> picks the object underneath and <b>Tab</b> the next one, or choose it in the list above. New here? <a href="#" data-tour="first">Take the 2-minute tour</a>.</div>`;
     $('#f_rt').oninput=e=>{if(!P._s){snap();P._s=1;}s.runTime=+e.target.value;e.target.previousElementSibling.querySelector('output').textContent=(+e.target.value).toFixed(1)+' s';persist();};
     $('#f_feel').onchange=e=>{snap();s.feel=e.target.value;persist();};$('#f_stagger').onchange=e=>{snap();s.stagger=e.target.checked;persist();};
     $('#bgsw').onclick=e=>{const b=e.target.closest('[data-c]');if(!b)return;snap();deck.bg=b.dataset.c;refresh();};
     $('#f_grid').onchange=e=>{showGrid=e.target.checked;renderCanvas();};
-    $('#delSlide').onclick=delSlide;P._s=0;return;}
+    $('#delSlide').onclick=delSlide;P._s=0;
+    P.querySelectorAll('[data-pick]').forEach(b=>{b.onclick=()=>{sel=b.dataset.pick;renderCanvas();renderProps();};b.onmouseenter=()=>showHover(b.dataset.pick);b.onmouseleave=()=>showHover(null);});return;}
   const uses=deck.slides.filter(s=>s.objects.some(x=>x.id===o.id)).length;
   P.innerHTML=`<h2>${o.type==='axes3d'&&o.showAxes===false?((o.solids||[]).length===1?SOLID_KINDS[o.solids[0].kind]||'3D object':'3D scene'):TYPES[o.type]}</h2><p class="sub">${uses>1?`On ${uses} slides: changes between them animate.`:'Only on this slide.'}</p>
     ${animK(o)!==null?`<div class="note" style="border-left-color:var(--pen);color:var(--ink)"><b>Click ${editStep}:</b> whatever you change now (drag it, resize, turn, recolour, edit a value) animates on this click.
       <div class="field" style="margin:8px 0 0"><label for="f_path">Travels</label><select id="f_path"><option value="">Straight to where you put it</option>${slide().objects.filter(t=>t.id!==o.id&&PATHABLE.has(t.type)).map((t,i)=>`<option value="${t.id}"${o.paths&&o.paths[editStep]&&o.paths[editStep].target===t.id?' selected':''}>Along the ${TYPES[t.type].toLowerCase()} (${i+1})</option>`).join('')}</select></div>
       <button class="btn" id="clearKey" style="margin-top:4px">Undo this click’s changes</button></div>`:''}
-    ${animHTML(o)}
+    <section class="psec" aria-label="Content and look"><h3>Content and look</h3>
     ${SPEC[o.type].map(f=>fieldHTML(f,liveOf(o))).join('')}
     ${fieldHTML(['color','color','Colour'],liveOf(o))}
-    <div class="row2">${COMMON.slice(0,2).map(f=>fieldHTML(f,liveOf(o))).join('')}</div>
-    ${COMMON.slice(2).map(f=>fieldHTML(f,liveOf(o))).join('')}
     <div id="plotWrap">${o.type==='latex'?(()=>{const k=plotKind(o);return k.error?`<div class="note">Plot this equation: ${String(k.error).replace(/</g,'&lt;')}</div>`:`<button class="btn" id="plotEq" style="width:100%;margin-top:4px">Plot this equation as ${k.label}</button>`;})():''}</div>
-    <div id="plotSyms">${o.type==='latex'?symsHTML(o):''}</div>
-    <hr><div class="row2"><button class="btn" id="dupObj">Duplicate</button><button class="btn del" id="delObj">Delete</button></div>`;
+    <div id="plotSyms">${o.type==='latex'?symsHTML(o):''}</div></section>
+    <details class="more" data-more="pos"${moreOpen('pos')}><summary>Position, size and turn</summary>
+    <div class="row2">${COMMON.slice(0,2).map(f=>fieldHTML(f,liveOf(o))).join('')}</div>
+    ${COMMON.slice(2).map(f=>fieldHTML(f,liveOf(o))).join('')}</details>
+    ${animHTML(o)}
+    <hr><div class="row2"><button class="btn" id="dupObj">Duplicate</button><button class="btn del" id="delObj">Delete</button>
+    <button class="btn" id="toFront" title="Put it above the other objects">Bring to front</button><button class="btn" id="toBack" title="Put it behind the other objects">Send to back</button></div>`;
   let snapped=false;
   P.querySelectorAll('[data-k]').forEach(inp=>{inp.addEventListener('focus',()=>snapped=false);
     inp.addEventListener(inp.type==='checkbox'?'change':'input',()=>{const k=inp.dataset.k;let v=inp.type==='checkbox'?inp.checked:inp.value;if(inp.dataset.num)v=parseFloat(v)||0;if(inp.type==='number'||inp.type==='range'){v=parseFloat(v);if(!isFinite(v))return;}
@@ -1607,7 +1660,7 @@ function renderProps(){const P=$('#props');const o=sel&&obj(sel);
   const f3=$('#fit3d');if(f3)f3.onclick=()=>{snap();if(fit3d(o))refresh();else toast('Nothing to fit yet. Check the formula.');};
   const fg=$('#fitGraph');if(fg)fg.onclick=()=>{snap();if(fitGraph(o))refresh();else toast('The curve has no plottable points yet. Check the function.');};
   bindSyms(o);
-  $('#dupObj').onclick=dupObj;$('#delObj').onclick=delObj;}
+  $('#dupObj').onclick=dupObj;$('#delObj').onclick=delObj;$('#toFront').onclick=()=>moveZ(o.id,true);$('#toBack').onclick=()=>moveZ(o.id,false);}
 function symsHTML(eq){const syms=eqSymbols(eq);if(!syms.length)return'';const vm=effVm(eq),auto=!(eq.vmap&&eq.vmap.x)&&eq.vmapAuto,pr=liveOf(eq).params||{},pos=positiveSyms(eq,syms);const esc=t=>String(t).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/"/g,'&quot;');
   const hasX=eq.mode==='plain'?/(^|[^A-Za-z_])x([^A-Za-z_]|$)/.test(eq.src||''):/(^|[^A-Za-z\\])x([^A-Za-z]|$)/.test(eq.tex||''),vx=vm.x||(hasX?'x':'');   /* x is the horizontal axis unless another symbol is chosen */
   const opt=(sel,isX)=>`<option value="">${isX&&hasX?'x':'None'}</option>${syms.map(n=>`<option value="${esc(n)}"${n===sel?' selected':''}>${esc(prettySym(n))}${isX&&auto&&n===sel?' (suggested)':''}</option>`).join('')}`;
@@ -1665,6 +1718,7 @@ function fitGraph(o){if(o.ckind==='implicit')return fitImplicit2(o);const f=comp
   Object.assign(o,{xmin:+best[0].toFixed(3),xmax:+best[1].toFixed(3),ymin:+ymin.toFixed(3),ymax:+ymax.toFixed(3)});return true;}
 function plotEquation(eq){const k=plotKind(eq);if(k.error)return;snap();const n=make(k.type);n.source=eq.id;{const ax=effVm(eq).x||(eqAnalyze(eq).used||new Set()).has('t')&&'t'||'';n._pos=!!ax&&(POS_AXES.test(ax)||positiveSyms(eq,eqSymbols(eq)).has(ax));}if(k.type==='polar')n.y=-0.8;
   if(k.type==='axes')Object.assign(n,{x:0,y:-1.2,w:8,h:4});else if(k.type==='vector'){n.x=0;n.y=-1;}else if(k.type==='curve')n.y=-1;else if(k.type==='axes3d')n.y=-0.8;
+  {/* keep the equation readable: if the new plot would cover it, lift the equation above the plot */const half=n.type==='axes'?n.h/2:2,top=n.y+half;if(Math.abs(eq.y-n.y)<half+0.5&&!(eq.keys&&Object.keys(eq.keys).length)){eq.y=+Math.min(3.3,top+0.75).toFixed(2);}}
   slide().objects.push(n);syncLinks(slide().objects);if(n.type==='axes')fitGraph(n);if(n.type==='axes3d')fit3d(n);if(n.type==='polar'){const f=compileFn(n.rfn,'theta');if(f){let m=0;for(let k=0;k<=720;k++){let r;try{r=Math.abs(f(n.tmin+(n.tmax-n.tmin)*k/720));}catch(e){r=NaN;}if(isFinite(r)&&r<1e6)m=Math.max(m,r);}if(m>0)n.rmax=+niceUp(m*1.05).toPrecision(3);}}sel=n.id;refresh();toast(`Plotted ${k.label}. Edit the equation and it follows.`);}
 function fit3d(o){const kind=o.skind||'z',pts=[];
   if(kind==='z'){const f=compileFn(o.zfn,'x,y');if(!f)return false;const zs=[];for(let i=0;i<=20;i++)for(let j=0;j<=20;j++){let z;try{z=f(o.xmin+(o.xmax-o.xmin)*i/20,o.ymin+(o.ymax-o.ymin)*j/20);}catch(e){z=NaN;}if(isFinite(z))zs.push(z);}
@@ -3321,6 +3375,161 @@ $('#modal').addEventListener('click',e=>{if(e.target.id==='modal')$('#modal').hi
 $('#copyBtn').onclick=async()=>{const t=$('#out');try{await navigator.clipboard.writeText(t.value);toast('Copied');}catch(e){t.select();try{document.execCommand('copy');toast('Copied');}catch(_){toast('Select the text and copy it with Ctrl+C');}}};
 $('#loadJson').onclick=()=>{try{let d=JSON.parse($('#out').value);if(d&&d.format==='trace'&&d.deck)d=d.deck;if(!d.slides||!d.slides.length)throw 0;if(d.images){for(const[k,v]of Object.entries(d.images)){IMG.set(k,v);idb.put(k,v);}delete d.images;}snap();deck=d;cur=0;sel=null;refresh();$('#modal').hidden=true;toast('Deck loaded');}catch(e){toast('That text is not a Tracé deck. Check that it starts with { and has "slides".');}};
 
+
+/* ---------- picking objects: forgiving clicks ----------
+   Clicking near a thin line or curve counts, and when objects overlap the one drawn under the
+   pointer wins; otherwise the smallest object around the pointer (a label inside a graph beats the graph). */
+const PICK_R=7;
+function pickAt(cx,cy){const L=layerOf(canvas),ids=[],seen=new Set(),add=id=>{if(id&&!seen.has(id)&&obj(id)){seen.add(id);ids.push(id);}};
+  for(const[dx,dy]of[[0,0],[PICK_R,0],[-PICK_R,0],[0,PICK_R],[0,-PICK_R],[5,5],[-5,5],[5,-5],[-5,-5]])
+    for(const el of document.elementsFromPoint(cx+dx,cy+dy)){if(!L.g.contains(el))continue;const g=el.closest('g[data-id]');if(g)add(g.dataset.id);}
+  ids.painted=new Set(ids);
+  const boxes=[];for(const[k,r]of L.cache){const id=k.split('#')[0];if(seen.has(id)||!obj(id))continue;const b=r.g.getBoundingClientRect();
+    if(b.width+b.height>0&&cx>=b.left-PICK_R&&cx<=b.right+PICK_R&&cy>=b.top-PICK_R&&cy<=b.bottom+PICK_R)boxes.push([Math.max(1,b.width)*Math.max(1,b.height),id]);}
+  const painted=ids.painted;boxes.sort((a,b)=>a[0]-b[0]).forEach(([,id])=>add(id));ids.painted=painted;return ids;}
+function objName(o){const src=o.source&&slide().objects.find(q=>q.id===o.source),t=String((src&&(src.src||src.tex))??o.text??o.src??o.tex??o.label??o.items??o.code??o.rfn??(o.type==='axes'&&o.fn&&!/\(\(/.test(o.fn)?o.fn:'')??'').split('\n')[0].replace(/<[^>]*>/g,'').replace(/\*\*|\[|\]\{[^}]*\}/g,'').trim();
+  const kind=o.type==='axes3d'&&o.showAxes===false?((o.solids||[]).length===1?(SOLID_KINDS[o.solids[0].kind]||'3D object'):'3D scene'):(TYPES[o.type]||o.type);
+  return t?`${kind}: ${t.length>26?t.slice(0,25)+'…':t}`:kind;}
+/* the dashed outline that shows what a click would pick */
+const hoverBox=document.createElement('div');hoverBox.id='hoverBox';hoverBox.innerHTML='<span></span>';$('.frame').appendChild(hoverBox);
+function showHover(id){const g=id&&canvas.querySelector(`g[data-id="${CSS.escape(id)}"]`);if(!g||id===sel||drag){hoverBox.style.display='none';canvas.classList.remove('hovering');return;}
+  const f=$('.frame').getBoundingClientRect(),b=g.getBoundingClientRect(),p=4;
+  Object.assign(hoverBox.style,{display:'block',left:(b.left-f.left-p)+'px',top:(b.top-f.top-p)+'px',width:(b.width+2*p)+'px',height:(b.height+2*p)+'px'});
+  const lab=hoverBox.firstChild;lab.textContent=objName(obj(id));lab.style.top=b.top-f.top<26?'auto':'-22px';lab.style.bottom=b.top-f.top<26?'-22px':'auto';canvas.classList.add('hovering');}
+let hoverRAF=0;
+canvas.addEventListener('pointermove',e=>{if(drag||e.pointerType==='touch')return;cancelAnimationFrame(hoverRAF);hoverRAF=requestAnimationFrame(()=>{const ids=pickAt(e.clientX,e.clientY);showHover(ids.includes(sel)?null:ids[0]);});});
+canvas.addEventListener('pointerleave',()=>showHover(null));
+/* Tab and Shift+Tab walk through the objects on the slide */
+document.addEventListener('keydown',e=>{const ae=document.activeElement,typing=ae&&ae!==document.body&&(/^(INPUT|TEXTAREA|SELECT|BUTTON|A)$/.test(ae.tagName)||ae.isContentEditable);
+  if(e.key!=='Tab'||!sel||typing||!$('#present').hidden||!$('#modal').hidden||tour)return;   // only while an object is selected, so Tab still moves through the page otherwise
+  const os=slide().objects;if(!os.length)return;e.preventDefault();const i=os.findIndex(o=>o.id===sel);sel=os[((i<0?(e.shiftKey?0:-1):i)+(e.shiftKey?-1:1)+os.length)%os.length].id;renderCanvas();renderProps();});
+/* order on the slide */
+function moveZ(id,front){const os=slide().objects,i=os.findIndex(o=>o.id===id);if(i<0)return;snap();const[o]=os.splice(i,1);front?os.push(o):os.unshift(o);persist();renderCanvas();thumbsSoon();toast(front?'Brought to the front.':'Sent to the back.');}
+
+/* ---------- folding sections in the settings panel (remembered) ---------- */
+const MORE=(()=>{try{return JSON.parse(localStorage.getItem('trace-more')||'{}')||{};}catch(e){return{};}})();
+const moreOpen=(k,force)=>force||MORE[k]?' open':'';
+document.addEventListener('toggle',e=>{const d=e.target;if(d.matches&&d.matches('details[data-more]')){MORE[d.dataset.more]=d.open;try{localStorage.setItem('trace-more',JSON.stringify(MORE));}catch(_){}}},true);
+function animSummary(o){const st=stepOf(o),ex=exitOf(o);return`${st?'On click '+st:'With the slide'} · ${o.morphFrom?'morphs':(ENTER[o.enter]||'Write')}${ex?' · leaves on click '+ex:''}`;}
+
+/* ---------- empty slide: a place to start ---------- */
+const emptyHint=document.createElement('div');emptyHint.className='emptyhint';emptyHint.id='emptyHint';emptyHint.hidden=true;
+emptyHint.innerHTML='<div class="card"><b>This slide is empty</b><span>Add something to start, or let the tour show you around.</span><div class="row"><button class="btn" data-quick="text">Text</button><button class="btn" data-quick="latex">Equation</button><button class="btn" data-quick="axes">Graph</button><button class="btn" data-quick="circle">Shape</button></div><button class="btn primary" data-tour="first">Take the 2-minute tour</button></div>';
+$('.frame').appendChild(emptyHint);
+emptyHint.addEventListener('click',e=>{const q=e.target.closest('[data-quick]');if(q)addObj(q.dataset.quick);});
+function updateEmptyHint(){const emptyHint=document.getElementById('emptyHint');if(!emptyHint)return;emptyHint.hidden=!(slide().objects.length===0&&editStep===null&&!(anim&&anim.svg===canvas));}
+
+/* ---------- interactive tours ----------
+   A spotlight shows where to act; the step moves on by itself once you have done it.
+   "Do it for me" performs the step, so nobody gets stuck. */
+const tourUI={dim:null,spot:null,card:null};let tour=null,tourTimer=0,tourDragging=false;
+const firstOf=t=>slide().objects.find(o=>o.type===t);
+const toolBtn=name=>[...document.querySelectorAll('#tools [data-menu]')].find(b=>b.textContent.trim().startsWith(name));
+const menuItem=t=>document.querySelector(`#tools .menu:not([hidden]) [data-t="${t}"]`);
+const objEl=o=>o&&canvas.querySelector(`g[data-id="${CSS.escape(o.id)}"]`);
+const selectId=id=>{sel=id;editStep=null;renderCanvas();renderProps();renderStepBar();};
+const setInput=(sel2,v)=>{const el=$(sel2);if(!el)return;el.value=v;el.dispatchEvent(new Event('input',{bubbles:true}));el.dispatchEvent(new Event('change',{bubbles:true}));};
+const tourFlags={};
+document.addEventListener('click',e=>{if(e.target.closest('#preview'))tourFlags.preview=true;if(e.target.closest('#playStep'))tourFlags.play=true;},true);
+function tourDeck(name,build){const d=blankDeck();build(d.slides[0].objects);createProject(name,d);cur=0;sel=null;editStep=null;refresh();}
+const TOURS={
+  first:()=>{let presented=false;return[
+    {title:'Your first animated slide',body:'You will make a slide with a title and an equation, then a graph that <b>draws itself on a click</b>, and a slider you can move while presenting. About 2 minutes, and you do each step yourself.<br><br>We start in a new project, so your work is safe.',place:'center',next:'Start',action:()=>tourDeck('My first animation',()=>{})},
+    {target:()=>toolBtn('Write'),title:'Add a title',body:'Everything you can add is in these menus. Open <b>Write</b>.',wait:()=>toolBtn('Write')?.getAttribute('aria-expanded')==='true'||!!firstOf('text'),auto:()=>toolBtn('Write').click()},
+    {target:()=>menuItem('text')||toolBtn('Write'),title:'Add a title',body:'Choose <b>Text</b>.',wait:()=>!!firstOf('text'),auto:()=>addObj('text')},
+    {target:()=>$('#props .rte'),title:'Type your title',body:'The settings of the selected object are on the right. Replace “Your text” with a title, for example <i>Waves</i>.',wait:()=>{const t=firstOf('text');return t&&plainOf(t.text)!=='Your text'&&plainOf(t.text).trim()!=='';},auto:()=>{const t=firstOf('text');snap();t.text='Waves';persist();refresh();},optional:true,before:()=>{const t=firstOf('text');if(t&&sel!==t.id)selectId(t.id);}},
+    {target:()=>objEl(firstOf('text'))||$('.frame'),title:'Move it',body:'Drag the title up to the top of the slide. Click anywhere on an object to select it: a dashed outline shows what you are about to pick.',wait:()=>(firstOf('text')?.y||0)>=1.5,auto:()=>{const t=firstOf('text');snap();t.y=3.2;persist();refresh();},optional:true},
+    {target:()=>toolBtn('Write'),title:'Add an equation',body:'Open <b>Write</b> again…',wait:()=>toolBtn('Write')?.getAttribute('aria-expanded')==='true'||!!firstOf('latex'),auto:()=>toolBtn('Write').click()},
+    {target:()=>menuItem('latex')||toolBtn('Write'),title:'Add an equation',body:'…and choose <b>Equation</b>.',wait:()=>!!firstOf('latex'),auto:()=>addObj('latex')},
+    {target:()=>$('#f_src'),title:'Type it like on a calculator',body:'Replace the example with <code>y = sin(k x)</code>. Tracé writes it properly on the slide.',wait:()=>/k/.test(firstOf('latex')?.src||''),auto:()=>setInput('#f_src','y = sin(k x)'),before:()=>{const q=firstOf('latex');if(q&&sel!==q.id)selectId(q.id);}},
+    {target:()=>$('#plotEq'),title:'Plot it',body:'Press <b>Plot this equation as a graph</b>.',wait:()=>!!firstOf('axes'),auto:()=>$('#plotEq')?.click()},
+    {target:()=>$('#f_step'),title:'Draw the graph on a click',body:'The graph is selected. Under <b>Animation</b>, set <b>Appears</b> to <b>On click 1</b>.',wait:()=>stepOf(firstOf('axes')||{})>=1,auto:()=>setInput('#f_step','1'),before:()=>{const a=firstOf('axes');if(a&&sel!==a.id)selectId(a.id);}},
+    {target:()=>$('#f_enter'),title:'How it comes in',body:'<b>Enters with</b> sets how an object arrives. Graphs start with <b>Draw</b>: the curve is traced from left to right. Text can be written, objects can fade, grow or slide in.',next:'Next',before:()=>{const a=firstOf('axes');if(a&&sel!==a.id)selectId(a.id);if(a&&a.enter!=='create')setInput('#f_enter','create');}},
+    {target:()=>$('#stepbar'),title:'The clicks bar',body:'<b>Opens</b> is what people see when the slide starts. <b>Click 1</b> is your first click: the graph appears there. Click a step to see and edit the slide at that moment.',next:'Next'},
+    {target:()=>$('#preview'),title:'Watch it',body:'Press <b>Preview</b> to play the slide right here.',wait:()=>tourFlags.preview,auto:()=>$('#preview').click(),before:()=>{tourFlags.preview=false;}},
+    {target:()=>$('[data-live="k"]')?.closest('label')||$('#plotSyms'),title:'A slider for k',body:'The equation is selected again. Tick <b>Live slider</b> next to <b>k</b>: you can then change k while presenting.',wait:()=>!!firstOf('latex')?.live?.k?.on,auto:()=>$('[data-live="k"]')?.click(),before:()=>{const q=firstOf('latex');if(q&&sel!==q.id)selectId(q.id);}},
+    {target:()=>$('#presentBtn'),title:'Present it',body:'Press <b>Present</b>.',wait:()=>!$('#present').hidden,auto:()=>$('#presentBtn').click()},
+    {title:'You are presenting',body:'Click once: the graph draws itself. Drag the <b>k</b> slider at the bottom to change the wave. Press <b>Esc</b> when you are done.',place:'corner',dim:false,wait:()=>{if(!$('#present').hidden)presented=true;return presented&&$('#present').hidden;},auto:()=>closePresent()},
+    {title:'That is the whole idea',body:'Add objects, then decide on which click each one appears. Next, learn to <b>move or change things on a click</b>, or to <b>animate between two slides</b>:<div class="tour-more"><button class="btn" data-tour="clicks">Change things on a click</button><button class="btn" data-tour="slides">Animate between slides</button></div>',place:'center',next:'Finish'},
+  ];},
+  clicks:()=>{let cid=null;const C=()=>slide().objects.find(o=>o.id===cid);return[
+    {title:'Change things on a click',body:'Objects can move, grow, turn or change colour on a click, and Tracé animates the change. We start in a small practice project.',place:'center',next:'Start',action:()=>tourDeck('Practice: change on a click',os=>{os.push(Object.assign(make('text'),{text:'Moving on a click',y:3.2}));const c=Object.assign(make('circle'),{x:-4,y:-0.5,radius:0.8});cid=c.id;os.push(c);})},
+    {target:()=>$('#addClick'),title:'Add a click',body:'Press <b>+ Click</b> under the slide.',wait:()=>maxStep(slide())>=1&&editStep>=1,auto:()=>$('#addClick').click(),before:()=>{if(sel){sel=null;renderCanvas();renderProps();}}},
+    {target:()=>objEl(C()),title:'You are now editing Click 1',body:'The bar shows <b>Click 1</b> highlighted. Select the circle.',wait:()=>sel===cid,auto:()=>{sel=cid;renderCanvas();renderProps();}},
+    {target:()=>objEl(C())||$('.frame'),title:'Move it',body:'Drag the circle to the right. Because Click 1 is selected, the circle will <b>move there on that click</b>. A dashed line shows its path.',wait:()=>(C()?.keys?.[1]?.x??-4)>-2,auto:()=>{snap();writeOf(C(),'x').x=3;persist();refresh();},before:()=>{if(editStep!==1){editStep=1;refresh();}}},
+    {target:()=>$('#props [data-ck="color"]'),title:'Change its colour too',body:'Pick another colour. Everything you change while Click 1 is selected happens on that click.',wait:()=>!!C()?.keys?.[1]?.color,auto:()=>{snap();writeOf(C(),'color').color='#FC6255';persist();refresh();},optional:true,before:()=>{if(sel!==cid){sel=cid;renderCanvas();renderProps();}}},
+    {target:()=>$('#playStep'),title:'Watch the click',body:'Press <b>▶ Play</b> to play just this click.',wait:()=>tourFlags.play,auto:()=>$('#playStep')?.click(),before:()=>{tourFlags.play=false;}},
+    {target:()=>$('#stepbar'),title:'Leaving click editing',body:'Click <b>Click 1</b> again (or <b>Opens</b>) to go back to editing the slide as a whole. Each step shows what happens on it: <b>~1</b> means one object changes.',next:'Next'},
+    {title:'Done',body:'Try more: with a click selected, choose <b>Travels → Along the…</b> in the settings to send an object along a curve, or zoom the <b>View</b> on a click.',place:'center',next:'Finish'},
+  ];},
+  slides:()=>{let rid=null;const R=()=>slide().objects.find(o=>o.id===rid);return[
+    {title:'Animate between slides',body:'The second way to animate: duplicate a slide, change the copy, and Tracé animates everything that changed. We start in a small practice project.',place:'center',next:'Start',action:()=>tourDeck('Practice: between slides',os=>{os.push(Object.assign(make('text'),{text:'Between slides',y:3.2}));const r=Object.assign(make('rect'),{x:-4,y:-0.5,w:1.6,h:1.6});rid=r.id;os.push(r);})},
+    {target:()=>$('#dupSlide'),title:'Duplicate the slide',body:'Press <b>Duplicate</b> under the slide list.',wait:()=>deck.slides.length>=2&&cur>=1,auto:()=>$('#dupSlide').click()},
+    {target:()=>objEl(R())||$('.frame'),title:'Change the copy',body:'You are on slide 2, a copy. Drag the square to the right.',wait:()=>cur>=1&&(R()?.x??-4)>-2,auto:()=>{snap();R().x=3;persist();refresh();}},
+    {target:()=>objEl(R())||$('.frame'),title:'Make it bigger',body:'Select the square and drag a <b>corner handle</b> outwards.',wait:()=>(R()?.scale||1)>1.25,auto:()=>{snap();R().scale=1.7;persist();refresh();},optional:true},
+    {target:()=>$('#preview'),title:'Watch it',body:'Press <b>Preview</b>: the square moves and grows from slide 1 to slide 2.',wait:()=>tourFlags.preview,auto:()=>$('#preview').click(),before:()=>{tourFlags.preview=false;}},
+    {target:()=>$('#thumbs'),title:'The slide list sums it up',body:'Under each slide, Tracé says what will animate, here “1 move”. Present plays the slides in order with these animations.',next:'Next'},
+    {title:'Done',body:'Use clicks to build up one picture, and duplicated slides for a sequence of steps. You can mix both.',place:'center',next:'Finish'},
+  ];},
+  screen:()=>[
+    {target:()=>$('#tools'),title:'Add things',body:'Text and equations, shapes, geometry, graphs, 3D and science diagrams.',next:'Next'},
+    {target:()=>$('.proj'),title:'Your project',body:'Click the name to rename it. The arrow opens your projects: new, duplicate, import, save as a file.',next:'Next'},
+    {target:()=>$('#thumbs'),title:'Slides',body:'Click a slide to edit it. Underneath, a line says what animates into it.',next:'Next'},
+    {target:()=>$('.frame'),title:'The slide',body:'Click an object to select it and drag to move it. Handles resize; the round one rotates. <b>Alt+click</b> picks the object underneath, <b>Tab</b> goes to the next one.',next:'Next'},
+    {target:()=>$('#stepbar'),title:'Clicks',body:'The steps of the slide. Click one to see and edit the slide at that moment; <b>+ Click</b> adds one.',next:'Next'},
+    {target:()=>$('#props'),title:'Settings',body:'Everything about the selected object. With nothing selected: the slide’s settings and a list of every object on it.',next:'Next'},
+    {target:()=>$('#preview'),title:'Preview',body:'Plays the animation into this slide.',next:'Next'},
+    {target:()=>$('#presentBtn'),title:'Present',body:'Full screen. Click or press → to go forward, Esc to stop.',next:'Next'},
+    {target:()=>$('[data-menu="help"]'),title:'Help is here',body:'Come back to these tours at any time.',next:'Finish'},
+  ],
+};
+function tourBuild(){if(tourUI.card)return;
+  tourUI.dim=document.createElement('div');tourUI.dim.className='tour-dim';
+  tourUI.spot=document.createElement('div');tourUI.spot.className='tour-spot';
+  tourUI.card=document.createElement('div');tourUI.card.className='tour-card';tourUI.card.setAttribute('role','dialog');tourUI.card.setAttribute('aria-live','polite');
+  document.body.append(tourUI.dim,tourUI.spot,tourUI.card);
+  tourUI.card.addEventListener('click',e=>{const b=e.target.closest('[data-tb]');if(!b)return;e.stopPropagation();const k=b.dataset.tb,st=tour&&tour.steps[tour.i];if(!st)return;
+    if(k==='end')endTour();else if(k==='back')tourShow(tour.i-1);else if(k==='auto'){setTimeout(()=>{try{st.auto();}catch(_){}},0);}else if(k==='next'){if(st.action)st.action();if(tour.i>=tour.steps.length-1)endTour();else tourShow(tour.i+1);}});}
+function startTour(name){if(!TOURS[name])return;endTour();closeMenus();if(!$('#present').hidden)closePresent();tourBuild();tour={name,steps:TOURS[name](),i:0};try{localStorage.setItem('trace-toured','1');}catch(_){}tourShow(0);tourTimer=setInterval(tourTick,150);}
+function endTour(){clearInterval(tourTimer);tour=null;for(const k of['dim','spot','card'])if(tourUI[k])tourUI[k].remove();tourUI.dim=tourUI.spot=tourUI.card=null;}
+function tourShow(i){if(!tour)return;i=Math.max(0,Math.min(i,tour.steps.length-1));tour.i=i;tour.doneAt=0;const st=tour.steps[i];try{st.before&&st.before();}catch(_){}
+  const n=tour.steps.length,btns=[];
+  if(i>0&&!st.wait)btns.push('<button class="btn" data-tb="back">Back</button>');
+  if(st.auto)btns.push('<button class="btn" data-tb="auto">Do it for me</button>');
+  if(!st.wait||st.optional)btns.push(`<button class="btn${st.plain||st.optional?'':' primary'}" data-tb="next">${st.next||(st.optional?'Skip this step':'Next')}</button>`);
+  tour.lastScroll=0;
+  tourUI.card.innerHTML=`<div class="tour-top"><span>${n>1?`Step ${i+1} of ${n}`:'Tour'}</span><button class="tour-x" data-tb="end" aria-label="End the tour" title="End the tour">×</button></div><h3>${st.title}</h3><p>${st.body}</p>${st.wait?'<p class="tour-wait">Waiting for you… the tour moves on when it is done.</p>':''}<div class="tour-btns">${btns.join('')}</div>`;
+  tourTick();}
+function tourTick(){if(!tour)return;const st=tour.steps[tour.i],t=st.target&&st.target(),presenting=!$('#present').hidden;
+  let r=t&&t.getBoundingClientRect&&t.getBoundingClientRect();const visible=r&&r.width>0&&r.height>0;
+  // bring the place to act into view (again if the page moved it away)
+  if(visible&&!presenting&&(r.top<8||r.bottom>innerHeight-8)&&performance.now()-(tour.lastScroll||0)>1200){tour.lastScroll=performance.now();t.scrollIntoView({block:'center',behavior:matchMedia('(prefers-reduced-motion: reduce)').matches?'auto':'smooth'});}
+  tourUI.dim.style.display=(st.dim===false||presenting||visible)?'none':'block';
+  if(visible&&!presenting){const p=6;Object.assign(tourUI.spot.style,{display:'block',left:(r.left-p)+'px',top:(r.top-p)+'px',width:(r.width+2*p)+'px',height:(r.height+2*p)+'px'});}else tourUI.spot.style.display='none';
+  const c=tourUI.card,cw=c.offsetWidth,ch=c.offsetHeight,W=innerWidth,H=innerHeight,m=12;let x,y;
+  if(presenting){x=m;y=H-ch-m-60;}
+  else if(st.place==='corner'){x=W-cw-m;y=H-ch-m;}
+  else if(!visible||st.place==='center'){x=(W-cw)/2;y=Math.max(m,(H-ch)/2);}
+  else{const cl=([a,b])=>[Math.max(m,Math.min(a,W-cw-m)),Math.max(m,Math.min(b,H-ch-m))];
+    const cand=[[r.right+16,r.top],[r.left-cw-16,r.top],[r.left,r.bottom+16],[r.left,r.top-ch-16]];
+    // no side fits as it is: slide each side into the screen, then try the corners, and keep the place that hides least of the target
+    const over=([a,b])=>Math.max(0,Math.min(a+cw,r.right+8)-Math.max(a,r.left-8))*Math.max(0,Math.min(b+ch,r.bottom+8)-Math.max(b,r.top-8));
+    const fit=cand.find(([a,b])=>a>=m&&a+cw<=W-m&&b+ch<=H-m&&b>=m)||[...cand,[m,m],[W-cw-m,m],[m,H-ch-m],[W-cw-m,H-ch-m],[(W-cw)/2,m],[(W-cw)/2,H-ch-m]].map(cl).reduce((best,q)=>over(q)<over(best)?q:best);
+    x=fit[0];y=fit[1];}
+  // while the person drags something, keep the card still so it does not jump under the pointer
+  if(tourDragging&&c.style.left){}else{c.style.left=Math.max(m,Math.min(x,W-cw-m))+'px';c.style.top=Math.max(m,Math.min(y,H-ch-m))+'px';}
+  if(st.wait){let ok=false;try{ok=st.wait();}catch(_){}if(ok){if(!tour.doneAt)tour.doneAt=performance.now();else if(performance.now()-tour.doneAt>450){if(tour.i>=tour.steps.length-1)endTour();else tourShow(tour.i+1);}}}}
+addEventListener('pointerdown',e=>{if(tour&&!e.target.closest('.tour-card'))tourDragging=true;},true);
+addEventListener('pointerup',()=>{if(tourDragging){tourDragging=false;tour&&tourTick();}},true);
+addEventListener('pointercancel',()=>{tourDragging=false;},true);
+addEventListener('resize',()=>tour&&tourTick());
+document.addEventListener('click',e=>{const b=e.target.closest('[data-tour]');if(!b)return;e.preventDefault();startTour(b.dataset.tour);});
+/* first visit: offer the tour, without getting in the way */
+setTimeout(()=>{let seen=false;try{seen=localStorage.getItem('trace-toured')==='1';}catch(_){seen=true;}
+  if(seen||tour||document.body.classList.contains('viewer')||!$('#present').hidden||/[?&](demo|view)=/.test(location.search)||/^\/v\//.test(location.pathname))return;
+  tourBuild();tour={name:'welcome',i:0,steps:[{title:'Welcome to Tracé',body:'Want a 2-minute tour? You make your first animated slide yourself, step by step.<div class="tour-more"><button class="btn primary" data-tour="first">Take the tour</button><button class="btn" data-tour="screen">Just show me around</button></div>',place:'corner',dim:false,next:'Not now',plain:true}]};
+  try{localStorage.setItem('trace-toured','1');}catch(_){}tourShow(0);tourTimer=setInterval(tourTick,150);},1600);
+
 /* ---------- keyboard ---------- */
 document.addEventListener('keydown',e=>{
   if(!$('#present').hidden){if(e.target&&e.target.type==='range'&&e.key!=='Escape')return;if(e.key==='c'||e.key==='C'){toggleLive();return;}if(['ArrowRight',' ','PageDown','Enter'].includes(e.key)){e.preventDefault();presNext();}else if(['ArrowLeft','PageUp'].includes(e.key)){e.preventDefault();presPrev();}else if(e.key==='Escape')closePresent();return;}
@@ -3341,6 +3550,7 @@ if(window.mjReady)window.onMJ();
 </script>
 <script src="/config.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
+<script src="/profile-ui.js"></script>
 <script src="/cloud.js"></script>
 </body>
 </html>

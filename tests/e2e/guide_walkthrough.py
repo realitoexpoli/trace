@@ -55,6 +55,7 @@ async def m():
         await A.evaluate("()=>{const o=slide().objects.find(o=>o.type==='latex');o.y+=1;persist();refresh();}"); await A.wait_for_timeout(400)
         t=await A.inner_text('#thumbs'); check('1 move' in t, 'The slide list says what animates (e.g. "1 move")')
         # Help link
-        check(await A.get_attribute('#helpLink','href')=='/guide/', 'Help in the header opens the guide')
+        await A.click('[data-menu=help]'); await A.wait_for_timeout(200)
+        check(await A.is_visible('#guideLink') and await A.get_attribute('#guideLink','href')=='/guide/', 'Help in the header lists the tours and the full guide')
         print(errs); print('WALKTHROUGH OK', len(passed))
 asyncio.run(m())

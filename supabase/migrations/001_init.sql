@@ -153,8 +153,9 @@ begin
   return case when p_on then v_slug else null end;
 end $$;
 
--- What a viewer of a shared link receives. Counts the view.
-create or replace function public.get_shared_deck(p_slug text)
+-- What a viewer of a shared link receives. Counts the view. (002_profiles.sql adds the author's name.)
+drop function if exists public.get_shared_deck(text);
+create function public.get_shared_deck(p_slug text)
 returns table (name text, data jsonb, owner_plan text, updated_at timestamptz)
 language plpgsql security definer set search_path = public as $$
 begin

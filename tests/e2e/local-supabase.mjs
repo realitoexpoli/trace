@@ -69,6 +69,9 @@ http.createServer(async (req, res) => {
 
   if (url.pathname === '/auth/v1/otp' && req.method === 'POST') {
     const b = bodyJson(), code = randomUUID();
+    // like Supabase: signing in (not signing up) with an unknown email is refused
+    if (b.create_user === false && !psql(`select id from auth.users where email = '${String(b.email).replace(/'/g, "''")}'`))
+      return send(res, 422, { code: 'otp_disabled', error_code: 'otp_disabled', msg: 'Signups not allowed for otp' });
     codes.set(code, { email: b.email, challenge: b.code_challenge });
     lastCode[b.email] = code;
     return send(res, 200, {});
