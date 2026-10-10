@@ -4,7 +4,9 @@
   "type": "module",
   "scripts": {
     "test": "node --test tests/*.test.mjs && sh tests/run_db_tests.sh",
-    "dev": "npx wrangler@3 pages dev public",
-    "deploy": "npx wrangler@3 pages deploy public --project-name trace"
+    "dev": "npx wrangler@4 dev",
+    "deploy": "npx wrangler@4 deploy",
+    "dev:pages": "npx wrangler@3 pages dev public",
+    "deploy:pages": "npx wrangler@3 pages deploy public --project-name trace"
   }
 }
