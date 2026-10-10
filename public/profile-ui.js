@@ -31,8 +31,16 @@
     ['lecturer', 'Lecturer', 'University or college'],
     ['student', 'Student', 'Projects and presentations'],
     ['creator', 'Science creator', 'Videos and online courses'],
-    ['other', 'Something else', ''],
+    ['other', 'Something else', 'Engineer, researcher…'],
   ];
+  const ICON = {
+    teacher: '<path d="M3 5h14v9H3z"/><path d="M7 17l3-3 3 3M6 8.5h5M6 11h8"/>',
+    lecturer: '<path d="M2 8l8-4 8 4-8 4z"/><path d="M5.5 9.8V13c0 1.4 2 2.5 4.5 2.5s4.5-1.1 4.5-2.5V9.8M18 8v5"/>',
+    student: '<path d="M4 4.5h5a2 2 0 012 2V16a1.6 1.6 0 00-1.6-1.6H4z"/><path d="M16 4.5h-5a2 2 0 00-2 2"/><path d="M11 16a1.6 1.6 0 011.6-1.6H16v-9.9"/>',
+    creator: '<rect x="2.5" y="4.5" width="15" height="11" rx="2"/><path d="M8.5 7.8v4.4l3.8-2.2z"/>',
+    other: '<circle cx="5" cy="10" r="1.2"/><circle cx="10" cy="10" r="1.2"/><circle cx="15" cy="10" r="1.2"/>',
+  };
+  const icon = k => `<svg viewBox="0 0 20 20" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${ICON[k] || ''}</svg>`;
   const SUBJECTS = ['Maths', 'Physics', 'Maths and physics', 'Engineering', 'Chemistry', 'Computer science'];
   const COLORS = ['#22488a', '#1f7a6d', '#7a3b8f', '#b4552d', '#2e6fb7', '#8a6d1f', '#a3324b', '#3d4a43'];
 
@@ -54,25 +62,40 @@
   .t-plans .pro-col{background:color-mix(in srgb,var(--pen) 7%,transparent)}
   .pro-tag{display:inline-block;font-size:10.5px;font-weight:800;letter-spacing:.06em;color:var(--pen-ink);background:var(--pen);border-radius:3px;padding:1px 5px;vertical-align:1px;margin-left:4px}
   .t-form{display:grid;gap:16px}
-  .t-form label.lab{display:block;font-weight:600;font-size:14px;margin-bottom:6px}
+  .t-form label.lab,.t-form .lab{display:block;font-weight:600;font-size:14px;margin-bottom:6px}
   .t-form .opt{font-weight:400;color:var(--mute)}
-  .t-form input[type=text]{width:100%;font:inherit;font-size:16px;padding:10px 12px;border:1px solid var(--line);border-radius:4px;background:var(--desk);color:var(--ink)}
-  .t-form input[type=text]:focus{outline:2px solid var(--pen);outline-offset:1px;border-color:var(--pen)}
-  .t-roles{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:8px}
-  .t-roles label{display:block;border:1px solid var(--line);border-radius:4px;padding:10px 12px;cursor:pointer;background:var(--paper)}
+  .t-form input[type=text]{width:100%;font:inherit;font-size:16px;padding:11px 13px;border:1.5px solid var(--line);border-radius:8px;background:var(--paper);color:var(--ink)}
+  .t-form input[type=text]:focus{outline:none;border-color:#3B5BFD;box-shadow:0 0 0 4px rgba(59,91,253,.16)}
+  .t-pf{container-type:inline-size}
+  .t-pf-grid{display:grid;gap:22px}
+  @container (min-width:600px){.t-pf-grid{grid-template-columns:minmax(0,1fr) 220px;align-items:start}.t-pf-side{position:sticky;top:16px;order:2}}
+  .t-pf-side{display:grid;gap:8px}
+  .t-pf-side .cap{font-size:12px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--mute)}
+  .t-card{border:1px solid var(--line);border-radius:12px;background:var(--paper);padding:18px;display:grid;justify-items:center;text-align:center;gap:10px;box-shadow:0 10px 30px -18px rgba(0,0,0,.35)}
+  .t-card b{display:block;font-size:16px;line-height:1.3;word-break:break-word}
+  .t-card .sub{color:var(--mute);font-size:13px;line-height:1.4}
+  .t-card .deck{width:100%;aspect-ratio:16/9;border-radius:6px;background:#0E1116;position:relative;overflow:hidden}
+  .t-card .deck svg{position:absolute;inset:0;width:100%;height:100%}
+  .t-card .by{display:flex;align-items:center;gap:8px;font-size:12.5px;color:var(--mute);align-self:stretch;justify-content:center}
+  .t-roles{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:8px}
+  .t-roles label{position:relative;display:grid;grid-template-columns:auto 1fr;gap:2px 10px;align-items:center;border:1.5px solid var(--line);border-radius:10px;padding:11px 12px;cursor:pointer;background:var(--paper);transition:border-color .15s,box-shadow .15s}
   .t-roles label:hover{border-color:var(--mute)}
   .t-roles input{position:absolute;opacity:0;pointer-events:none}
-  .t-roles label:has(input:checked){border-color:var(--pen);box-shadow:inset 0 0 0 1px var(--pen)}
-  .t-roles label:has(input:focus-visible){outline:2px solid var(--pen);outline-offset:2px}
-  .t-roles b{display:block;font-size:14.5px}.t-roles small{color:var(--mute);font-size:12.5px}
+  .t-roles svg{grid-row:span 2;color:var(--mute)}
+  .t-roles label:has(input:checked){border-color:#3B5BFD;box-shadow:0 0 0 3px rgba(59,91,253,.14)}
+  .t-roles label:has(input:checked) svg{color:#3B5BFD}
+  .t-roles label:has(input:focus-visible){outline:2px solid #3B5BFD;outline-offset:2px}
+  .t-roles b{display:block;font-size:14.5px;line-height:1.25}.t-roles small{color:var(--mute);font-size:12.5px;line-height:1.3}
   .t-chips{display:flex;flex-wrap:wrap;gap:6px}
-  .t-chips button{border:1px solid var(--line);background:var(--paper);color:var(--ink);border-radius:999px;padding:5px 12px;font:inherit;font-size:13.5px;cursor:pointer}
-  .t-chips button[aria-pressed="true"]{border-color:var(--pen);background:var(--pen);color:var(--pen-ink)}
-  .t-colors{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
-  .t-colors button{width:28px;height:28px;border-radius:50%;border:2px solid transparent;cursor:pointer;padding:0}
+  .t-chips button{border:1.5px solid var(--line);background:var(--paper);color:var(--ink);border-radius:999px;padding:5px 13px;font:inherit;font-size:13.5px;cursor:pointer}
+  .t-chips button:hover{border-color:var(--mute)}
+  .t-chips button[aria-pressed="true"]{border-color:#3B5BFD;background:#3B5BFD;color:#fff}
+  .t-colors{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+  .t-colors button{width:30px;height:30px;border-radius:50%;border:2px solid transparent;cursor:pointer;padding:0}
   .t-colors button[aria-pressed="true"]{box-shadow:0 0 0 2px var(--paper),0 0 0 4px var(--ink)}
-  .t-preview{display:flex;align-items:center;gap:12px;padding:12px;border:1px dashed var(--line);border-radius:4px}
-  .t-preview b{display:block}.t-preview span:not(.t-avatar){color:var(--mute);font-size:13.5px}
+  .t-actions{display:flex;gap:10px;flex-wrap:wrap;align-items:center;padding-top:4px}
+  .t-actions .btn.primary{background:#3B5BFD;border-color:#3B5BFD;color:#fff;padding:11px 22px;border-radius:8px}
+  .t-preview{display:none}
   .t-err{color:var(--danger,#a8352b);font-size:14px;margin:0}`;
   document.head.appendChild(css);
 
@@ -91,22 +114,24 @@
   function profileForm(root, profile, email, opts) {
     const p = Object.assign({ display_name: '', role: null, subject: '', organization: '', avatar_color: COLORS[0] }, profile || {});
     const roleLabel = r => (ROLES.find(x => x[0] === r) || [, ''])[1];
-    root.innerHTML = `<form class="t-form" novalidate>
+    root.innerHTML = `<div class="t-pf"><div class="t-pf-grid">
+      <aside class="t-pf-side" aria-label="Preview"><span class="cap">How you appear</span>
+        <div class="t-card" id="pf_preview" aria-live="polite"></div></aside>
+      <form class="t-form" novalidate>
       <div><label class="lab" for="pf_name">Your name</label>
         <input type="text" id="pf_name" maxlength="60" autocomplete="name" required value="${esc(p.display_name)}" placeholder="e.g. Ana Diaz"></div>
-      <div><span class="lab" id="pf_role_l" style="display:block;font-weight:600;font-size:14px;margin-bottom:6px">I am a…</span>
-        <div class="t-roles" role="radiogroup" aria-labelledby="pf_role_l">${ROLES.map(([v, t, s]) => `<label><input type="radio" name="pf_role" value="${v}"${p.role === v ? ' checked' : ''}><b>${t}</b>${s ? `<small>${s}</small>` : ''}</label>`).join('')}</div></div>
-      <div><span class="lab" style="display:block;font-weight:600;font-size:14px;margin-bottom:6px">What do you teach or study? <span class="opt">(optional)</span></span>
+      <div><span class="lab" id="pf_role_l">I am a…</span>
+        <div class="t-roles" role="radiogroup" aria-labelledby="pf_role_l">${ROLES.map(([v, t, s]) => `<label><input type="radio" name="pf_role" value="${v}"${p.role === v ? ' checked' : ''}>${icon(v)}<b>${t}</b>${s ? `<small>${s}</small>` : ''}</label>`).join('')}</div></div>
+      <div><span class="lab">What do you teach or study? <span class="opt">(optional)</span></span>
         <div class="t-chips" id="pf_subjects">${SUBJECTS.map(s => `<button type="button" aria-pressed="${p.subject === s}">${s}</button>`).join('')}</div>
         <input type="text" id="pf_subject" maxlength="60" style="margin-top:8px" value="${esc(p.subject)}" placeholder="Or type your subject" aria-label="Subject"></div>
       <div><label class="lab" for="pf_org">School, university or channel <span class="opt">(optional)</span></label>
-        <input type="text" id="pf_org" maxlength="120" autocomplete="organization" value="${esc(p.organization)}"></div>
-      <div><span class="lab" style="display:block;font-weight:600;font-size:14px;margin-bottom:6px">Colour of your badge</span>
+        <input type="text" id="pf_org" maxlength="120" autocomplete="organization" value="${esc(p.organization)}" placeholder="e.g. Lycée Victor Hugo"></div>
+      <div><span class="lab">Colour of your badge</span>
         <div class="t-colors" id="pf_colors">${COLORS.map(c => `<button type="button" style="background:${c}" data-c="${c}" aria-label="Colour ${c}" aria-pressed="${p.avatar_color === c}"></button>`).join('')}</div></div>
-      <div class="t-preview" aria-live="polite" id="pf_preview"></div>
-      <p class="t-err" id="pf_err" hidden></p>
-      <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:center"><button class="btn primary" type="submit" id="pf_save">${esc(opts && opts.submitLabel || 'Save')}</button>${opts && opts.secondary || ''}</div>
-    </form>`;
+      <p class="t-err" id="pf_err" role="alert" hidden></p>
+      <div class="t-actions"><button class="btn primary" type="submit" id="pf_save">${esc(opts && opts.submitLabel || 'Save')}</button>${opts && opts.secondary || ''}</div>
+    </form></div></div>`;
     const $ = s => root.querySelector(s);
     let color = p.avatar_color || COLORS[0];
     const vals = () => ({
@@ -118,7 +143,9 @@
     });
     const preview = () => {
       const v = vals();
-      $('#pf_preview').innerHTML = `${avatar(v, email, 44)}<div><b>${esc(v.display_name || 'Your name')}</b><span>${esc([roleLabel(v.role), v.subject, v.organization].filter(Boolean).join(' · ') || 'This is how you appear on shared decks')}</span></div>`;
+      $('#pf_preview').innerHTML = `${avatar(v, email, 64)}<div><b>${esc(v.display_name || 'Your name')}</b><span class="sub">${esc([roleLabel(v.role), v.subject, v.organization].filter(Boolean).join(' · ') || 'Your role and school')}</span></div>
+        <div class="deck" aria-hidden="true"><svg viewBox="0 0 160 90"><path d="M12 45H150M20 12V80" stroke="#4a5160" stroke-width="1"/><path d="M20 45C30 15 40 15 50 45S70 75 80 45 100 15 110 45 130 75 140 45" fill="none" stroke="#58C4DD" stroke-width="2.2" stroke-linecap="round"/></svg></div>
+        <div class="by">${avatar(v, email, 20)}<span>by ${esc(v.display_name || 'you')}</span></div>`;
     };
     $('#pf_subjects').addEventListener('click', e => {
       const b = e.target.closest('button'); if (!b) return;
