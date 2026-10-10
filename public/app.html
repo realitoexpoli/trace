@@ -57,7 +57,7 @@ header{display:flex;align-items:center;gap:4px;padding:8px 14px;border-bottom:1p
 .fbsep{width:1px;height:20px;background:var(--line);margin:0 2px;flex:none}
 @media (max-width:1560px){.brand span{display:none}.brand{margin-right:8px}.tool{padding:6px 8px}header .btn{padding:6px 8px}#projName{width:9em}}
 @media (min-width:901px) and (max-width:1480px){.tool{padding:6px 5px;gap:3px}header .btn{padding:6px 6px}#projName{width:7.5em}.tourbtn{padding:4px 10px 4px 7px;margin:0 2px}header>.sep{margin:0 2px}}
-@media (min-width:901px) and (max-width:1280px){.tool svg{display:none}#projName{width:6em}header{gap:2px}}
+@media (min-width:901px) and (max-width:1280px){.tool:not(.iconbtn)>svg{display:none}#projName{width:6em}header{gap:2px}}
 .proj{display:flex;align-items:center}
 #projName{border:none;background:transparent;font-weight:700;width:12.5em;padding:5px 6px;border-radius:3px;border-bottom:1px dashed transparent}
 #projName:hover{border-bottom-color:var(--line)}#projName:focus{outline:none;background:var(--desk);border-bottom-color:var(--pen)}
@@ -302,6 +302,40 @@ details.more[open]>summary{margin-bottom:8px}
 .menuhead{margin:4px 10px 6px;font-size:12px;color:var(--mute)}
 .menu a[role=menuitem]{display:flex;padding:7px 10px;border-radius:3px;color:inherit;text-decoration:none}
 .menu a[role=menuitem]:hover{background:var(--hover)}
+
+/* ---------- simpler header: essential actions in sight ---------- */
+.addlabel{font-size:12px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--mute);margin:0 4px 0 2px;align-self:center}
+header .videobtn{display:inline-flex;align-items:center;gap:6px;font-weight:600;border:1px solid var(--line);background:var(--paper)}
+header .videobtn:hover{background:var(--hover)}
+header .videobtn svg{color:#3B5BFD}
+.stagebar{width:min(100%,calc((100vh - 210px) * 16 / 9));display:flex;align-items:center;gap:10px}
+.stagebar .stepbar{flex:1;min-width:0;width:auto}
+.stagebar .playbtn{flex:none;gap:6px;font-weight:600;border:1px solid var(--line);white-space:nowrap}
+.stagebar .playbtn svg{color:#3B5BFD}
+/* ---------- add menus: tiles that say what each thing is ---------- */
+.menu.richmenu{width:520px;padding:10px 10px 12px;gap:0;max-height:calc(100vh - 80px);overflow:auto;border-radius:10px}
+.menu.richmenu.wide{width:700px}
+.rm-head{margin:2px 6px 8px;font-size:13px;color:var(--mute)}
+.rm-sec{margin:10px 6px 4px;font-size:11.5px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--mute)}
+.rm-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:2px}
+.menu.richmenu .rm-grid button{display:flex;align-items:center;gap:11px;padding:7px 9px;border-radius:8px;text-align:left;min-height:48px}
+.menu.richmenu .rm-grid button:hover,.menu.richmenu .rm-grid button:focus-visible{background:var(--hover)}
+.menu.richmenu .rm-grid button:focus-visible{outline:2px solid #3B5BFD;outline-offset:-2px}
+.rm-ic{flex:none;width:34px;height:34px;border-radius:8px;display:flex;align-items:center;justify-content:center;background:var(--rm-bg);color:var(--rm-fg)}
+.menu.richmenu .rm-ic svg{width:20px;height:20px;color:var(--rm-fg)}
+.rm-tx{display:flex;flex-direction:column;min-width:0;line-height:1.25}
+.rm-tx b{font-weight:600;font-size:13.5px;display:flex;align-items:center}
+.rm-tx small{font-size:12px;color:var(--mute);margin-top:2px}
+.richmenu[data-c="blue"]{--rm-bg:#E8EDFF;--rm-fg:#2F4FE0}
+.richmenu[data-c="orange"]{--rm-bg:#FFEEDD;--rm-fg:#B4551E}
+.richmenu[data-c="green"]{--rm-bg:#E2F4E8;--rm-fg:#1D7A43}
+.richmenu[data-c="teal"]{--rm-bg:#DFF3F5;--rm-fg:#0F6F7C}
+.richmenu[data-c="purple"]{--rm-bg:#EFE6FA;--rm-fg:#6E3BB8}
+.richmenu[data-c="red"]{--rm-bg:#FDE7E7;--rm-fg:#B3261E}
+:root[data-theme="dark"] .richmenu{--rm-bg:rgba(255,255,255,.08);--rm-fg:#AFC3FF}
+@media (max-width:1280px) and (min-width:901px){.addlabel{display:none}header .videobtn{padding:6px 7px}}
+@media (max-width:1180px) and (min-width:901px){.tourbtn{font-size:0!important;gap:0!important;padding:6px 8px!important}.tourbtn svg{width:18px;height:18px}header .tool{padding:6px 4px}#homeBtn{width:30px;overflow:hidden;flex:none;justify-content:flex-start}#homeBtn .logo-svg{flex:none}#projName{width:5em!important}header .tool{padding:6px 3px!important}}
+@media (max-width:900px){.menu.richmenu,.menu.richmenu.wide{width:auto}.rm-grid{grid-template-columns:1fr}.addlabel{display:none}.stagebar .playbtn{padding:6px 9px}}
 </style>
 </head>
 <body>
@@ -314,7 +348,7 @@ details.more[open]>summary{margin-bottom:8px}
   <div class="menuwrap tourwrap"><button class="tourbtn" id="tourBtn" data-menu="tours" aria-haspopup="true" aria-expanded="false" title="The interactive tutorial: learn every feature by doing it"><svg viewBox="0 0 16 16" aria-hidden="true"><circle cx="8" cy="8" r="6.6" fill="none" stroke="currentColor" stroke-width="1.4"/><path d="M6.5 5.2v5.6L11 8z" fill="currentColor"/></svg>Tour</button><div class="menu helpmenu tourmenu" role="menu" hidden style="left:auto;right:0"></div></div>
   <div class="menuwrap"><button class="tool iconbtn" data-menu="more" aria-haspopup="true" aria-expanded="false" aria-label="More" title="More: export, help, guide"><svg viewBox="0 0 16 16" aria-hidden="true"><circle cx="3.5" cy="8" r="1.4" fill="currentColor"/><circle cx="8" cy="8" r="1.4" fill="currentColor"/><circle cx="12.5" cy="8" r="1.4" fill="currentColor"/></svg></button><div class="menu helpmenu moremenu" role="menu" hidden style="left:auto;right:0"><button role="menuitem" id="videoBtn"><b>Make a video</b>: MP4 of every click, with your voice</button><button role="menuitem" id="exportBtn"><b>Export</b>: deck file or video script</button><button role="menuitem" data-tutmenu><b>Interactive tutorial</b>: every feature</button><button role="menuitem" data-tour="first"><b>Tour:</b> your first animated slide</button><button role="menuitem" data-tour="screen"><b>Tour:</b> what is on the screen</button><a role="menuitem" id="guideLink" href="/guide/" target="_blank" rel="noopener" hidden>Read the full guide</a><button role="menuitem" data-ex="radar">Add example slides: radar jamming in 3D</button><button role="menuitem" data-gohome>All projects and templates</button></div></div>
   <button class="btn iconbtn" id="undo" title="Undo (Ctrl+Z)" aria-label="Undo"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M5.5 4L2.5 7l3 3M2.8 7H10a3.5 3.5 0 0 1 0 7H7" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></button><button class="btn iconbtn" id="redo" title="Redo (Ctrl+Shift+Z)" aria-label="Redo"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M10.5 4l3 3-3 3M13.2 7H6a3.5 3.5 0 0 0 0 7h3" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
-  <button class="btn" id="preview" title="Play the animation into this slide"><svg viewBox="0 0 16 16" width="13" height="13" aria-hidden="true"><path d="M4 2.8v10.4L13 8z" fill="currentColor"/></svg>Preview</button>
+  <button class="btn videobtn" id="videoHdr" title="Make an MP4 video of the whole presentation"><svg viewBox="0 0 16 16" width="15" height="15" aria-hidden="true"><rect x="1.5" y="4" width="9" height="8" rx="1.6" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M10.5 7l4-2.2v6.4l-4-2.2z" fill="currentColor"/></svg>Video</button>
   <button class="btn primary" id="presentBtn">Present</button>
 </header>
 <section id="home" hidden aria-label="Your projects">
@@ -337,7 +371,7 @@ details.more[open]>summary{margin-bottom:8px}
   </aside>
   <section class="stage">
     <div class="frame"><svg id="canvas" viewBox="-7.1111 -4 14.2222 8" aria-label="Slide canvas"></svg></div>
-    <div class="stepbar" id="stepbar" aria-label="Clicks on this slide"></div>
+    <div class="stagebar"><div class="stepbar" id="stepbar" aria-label="Clicks on this slide"></div><button class="btn playbtn" id="preview" title="Play the animation into this slide, as the class will see it"><svg viewBox="0 0 16 16" width="13" height="13" aria-hidden="true"><path d="M4 2.8v10.4L13 8z" fill="currentColor"/></svg>Play this slide</button></div>
     <div class="livebar" id="livebar" hidden aria-label="Live controls"></div>
     <p class="hint" id="hint">Build a slide click by click with “Appears”, or duplicate the slide and change it.</p>
   </section>
@@ -2364,7 +2398,26 @@ function moveSlide(d){const j=cur+d;if(j<0||j>=deck.slides.length)return;snap();
 function toast(m){if(!$('#present').hidden)return;const t=$('#toast');t.textContent=m;t.classList.add('show');clearTimeout(t._t);t._t=setTimeout(()=>t.classList.remove('show'),2600);}
 
 Object.assign(ICONS,ICONS2);
-$('#tools').innerHTML=GROUPS.map(([g,list],i)=>`<div class="menuwrap"><button class="tool" data-menu="${i}" aria-haspopup="true" aria-expanded="false">${g}<svg viewBox="0 0 16 16"><path d="M4 6l4 4 4-4" stroke="currentColor" stroke-width="1.5" fill="none"/></svg></button><div class="menu" role="menu" hidden>${list.map(k=>`<button role="menuitem" data-t="${k}"><svg viewBox="0 0 16 16">${ICONS[k]}</svg>${TYPES[k]||MENU_PRESETS[k]}${PRO_ADD.has(k)?'<span class="protag">PRO</span>':''}</button>`).join('')}</div></div>`).join('');
+/* The add menus: each item says in plain words what it is, grouped, with a coloured tile */
+const ADD_DESC={text:'A title or a sentence',latex:'Type maths like y = x^2, it is typeset for you',bullets:'Points that appear one at a time',code:'Program code, coloured',matrix:'Numbers in rows and columns',table:'A grid of values with headings',counter:'A number that counts up on a click',
+  image:'A photo or picture from your computer',circle:'A round shape',ellipse:'An oval',rect:'A square or rectangle',polygon:'Triangle, hexagon: any number of sides',star:'A star with as many points as you like',arc:'Part of a circle’s edge',sector:'A slice of a circle, or a ring',line:'A straight line between two points',arrow:'Points at something, can draw itself',dot:'A small round point',brace:'A curly bracket to group things',cross:'A cross or a tick',
+  point:'A named point such as A',triangle:'Labels its sides and angles itself',angle:'Marks an angle, with θ',plane:'A grid with x and y axes',venn:'Overlapping circles for sets',
+  axes:'Type an equation, get its graph',curve:'Spirals and loops from x(t) and y(t)',polar:'Roses and spirals from r = f(θ)',numberline:'A ruler of numbers',vector:'An arrow with a size and a direction',field:'Arrows everywhere, showing a flow',cplane:'Complex numbers as points',
+  sphere3:'A ball',cube3:'A cube',box3:'A box with any sides',ellipsoid3:'A stretched ball',cylinder3:'A can shape',cone3:'A cone',prism3:'A prism on any base',pyramid3:'A pyramid',torus3:'A ring doughnut',tetrahedron3:'4 triangle faces',octahedron3:'8 triangle faces',dodecahedron3:'12 pentagon faces',icosahedron3:'20 triangle faces',arrow3:'An arrow in space',axes3d:'A surface z = f(x, y) you can turn',shapes3d:'Several solids in one 3D scene',
+  wave:'A travelling or standing wave',phasor:'A turning arrow that draws a sine wave',spectrum:'A signal and the frequencies inside it',chart:'Bars or lines from your numbers',network:'Dots joined by lines',constellation:'Noisy symbols in digital radio',jsmap:'Where a jammer wins, on a map',hopping:'A signal jumping between frequencies',despread:'How spreading beats a jammer'};
+const ADD_INFO={Write:{c:'blue',intro:'Words, maths and numbers'},Draw:{c:'orange',intro:'Shapes and pictures to colour, move and morph',sec:[['Pictures',['image']],['Shapes',['circle','ellipse','rect','polygon','star','sector']],['Lines and marks',['line','arrow','arc','dot','brace','cross']]]},
+  Geometry:{c:'green',intro:'Figures that label themselves'},Plot:{c:'teal',intro:'Graphs from equations'},
+  '3D':{c:'purple',intro:'Solids and surfaces you can turn',sec:[['Solids',['sphere3','cube3','box3','ellipsoid3','cylinder3','cone3','prism3','pyramid3']],['More solids',['torus3','tetrahedron3','octahedron3','dodecahedron3','icosahedron3']],['Scenes and surfaces',['axes3d','shapes3d','arrow3']]]},
+  Science:{c:'red',intro:'Ready-made physics and signal diagrams',sec:[['Waves and signals',['wave','phasor','spectrum']],['Data',['chart','network']],['Radio and communications',['constellation','jsmap','hopping','despread']]]}};
+const addItem=k=>`<button role="menuitem" data-t="${k}"><span class="rm-ic"><svg viewBox="0 0 16 16" aria-hidden="true">${ICONS[k]}</svg></span><span class="rm-tx"><b>${TYPES[k]||MENU_PRESETS[k]}${PRO_ADD.has(k)?'<span class="protag">PRO</span>':''}</b><small>${ADD_DESC[k]||''}</small></span></button>`;
+$('#tools').innerHTML='<span class="addlabel" aria-hidden="true">Add</span>'+GROUPS.map(([g,list],i)=>{const inf=ADD_INFO[g]||{},secs=inf.sec||[[null,list]],big=list.length>9;
+  return `<div class="menuwrap"><button class="tool" data-menu="${i}" aria-haspopup="true" aria-expanded="false">${g}<svg viewBox="0 0 16 16"><path d="M4 6l4 4 4-4" stroke="currentColor" stroke-width="1.5" fill="none"/></svg></button><div class="menu richmenu${big?' wide':''}" data-c="${inf.c||'blue'}" role="menu" hidden aria-label="Add: ${g}"><p class="rm-head">${inf.intro||''}</p>${secs.map(([t,ks])=>`${t?`<p class="rm-sec">${t}</p>`:''}<div class="rm-grid">${ks.map(addItem).join('')}</div>`).join('')}</div></div>`;}).join('');
+/* arrow keys move between the items of an open menu */
+document.addEventListener('keydown',e=>{const m=e.target.closest&&e.target.closest('.menu:not([hidden])');if(!m||!/^Arrow(Up|Down|Left|Right)$/.test(e.key)||e.target.matches('input,textarea'))return;
+  const items=[...m.querySelectorAll('[role=menuitem],.libtile')].filter(x=>x.offsetParent!==null);const i=items.indexOf(e.target);if(i<0)return;e.preventDefault();
+  const r=e.target.getBoundingClientRect(),cand=items.filter(x=>x!==e.target).map(x=>({x,b:x.getBoundingClientRect()}));const d={ArrowUp:[0,-1],ArrowDown:[0,1],ArrowLeft:[-1,0],ArrowRight:[1,0]}[e.key];
+  let best=null,bs=1e9;for(const c of cand){const dx=(c.b.left+c.b.width/2)-(r.left+r.width/2),dy=(c.b.top+c.b.height/2)-(r.top+r.height/2);if(dx*d[0]+dy*d[1]<=4)continue;const sc=Math.abs(d[0]?dy:dx)*3+Math.abs(d[0]?dx:dy);if(sc<bs){bs=sc;best=c.x;}}
+  (best||items[(i+(d[0]+d[1]>0?1:items.length-1))%items.length]).focus();});
 function closeMenus(){document.querySelectorAll('.menu').forEach(m=>m.hidden=true);document.querySelectorAll('[data-menu]').forEach(b=>b.setAttribute('aria-expanded','false'));}
 document.addEventListener('click',e=>{const mb=e.target.closest('[data-menu]');if(mb){const m=mb.nextElementSibling,open=m.hidden;closeMenus();if(open){m.hidden=false;mb.setAttribute('aria-expanded','true');m.querySelector('button').focus();}return;}if(!e.target.closest('.menu'))closeMenus();});
 document.addEventListener('keydown',e=>{if((e.ctrlKey||e.metaKey)&&!e.shiftKey&&['b','i','u'].includes(e.key.toLowerCase())&&sel&&!e.target.closest('textarea,input')){const o=obj(sel);if(o&&['text','bullets','table'].includes(o.type)){e.preventDefault();const k={b:'bold',i:'italic',u:'underline'}[e.key.toLowerCase()];snap();writeOf(o,k)[k]=!liveOf(o)[k];persist();renderCanvas();thumbsSoon();renderProps();return;}}if(e.key==='Escape')closeMenus();});
@@ -2614,7 +2667,7 @@ function openVideoDialog(){closeMenus();const m=$('#vidModal'),b=$('#vidBody');m
   $('#vidCancel').onclick=()=>{if(job)job.cancel=true;};
   m._job=()=>job;}
 function closeVideoDialog(){const m=$('#vidModal');const j=m._job&&m._job();if(j)j.cancel=true;m.hidden=true;const v=m.querySelector('video');if(v)v.pause();}
-$('#videoBtn').onclick=openVideoDialog;$('#vidClose').onclick=closeVideoDialog;
+$('#videoBtn').onclick=openVideoDialog;$('#videoHdr').onclick=openVideoDialog;$('#vidClose').onclick=closeVideoDialog;
 $('#vidModal').addEventListener('click',e=>{if(e.target.id==='vidModal')closeVideoDialog();});
 document.addEventListener('keydown',e=>{if(e.key==='Escape'&&!$('#vidModal').hidden){e.stopPropagation();closeVideoDialog();}},true);
 
@@ -3859,7 +3912,7 @@ const TOURS={
     {target:()=>$('#f_step'),title:'Draw the graph on a click',body:'The graph is selected. Under <b>Animation</b>, set <b>Appears</b> to <b>On click 1</b>.',wait:()=>stepOf(firstOf('axes')||{})>=1,auto:()=>setInput('#f_step','1'),before:()=>{const a=firstOf('axes');if(a&&sel!==a.id)selectId(a.id);}},
     {target:()=>$('#f_enter'),title:'How it comes in',body:'<b>Enters with</b> sets how an object arrives. Graphs start with <b>Draw</b>: the curve is traced from left to right. Text can be written, objects can fade, grow or slide in.',next:'Next',before:()=>{const a=firstOf('axes');if(a&&sel!==a.id)selectId(a.id);if(a&&a.enter!=='create')setInput('#f_enter','create');}},
     {target:()=>$('#stepbar'),title:'The clicks bar',body:'<b>Opens</b> is what people see when the slide starts. <b>Click 1</b> is your first click: the graph appears there. Click a step to see and edit the slide at that moment.',next:'Next'},
-    {target:()=>$('#preview'),title:'Watch it',body:'Press <b>Preview</b> to play the slide right here.',wait:()=>tourFlags.preview,auto:()=>$('#preview').click(),before:()=>{tourFlags.preview=false;}},
+    {target:()=>$('#preview'),title:'Watch it',body:'Press <b>Play this slide</b> to play the slide right here.',wait:()=>tourFlags.preview,auto:()=>$('#preview').click(),before:()=>{tourFlags.preview=false;}},
     {target:()=>$('[data-live="k"]')?.closest('label')||$('#plotSyms'),title:'A slider for k',body:'The equation is selected again. Tick <b>Live slider</b> next to <b>k</b>: you can then change k while presenting.',wait:()=>!!firstOf('latex')?.live?.k?.on,auto:()=>$('[data-live="k"]')?.click(),before:()=>{const q=firstOf('latex');if(q&&sel!==q.id)selectId(q.id);}},
     {target:()=>$('#presentBtn'),title:'Present it',body:'Press <b>Present</b>.',wait:()=>!$('#present').hidden,auto:()=>$('#presentBtn').click()},
     {title:'You are presenting',body:'Click once: the graph draws itself. Drag the <b>k</b> slider at the bottom to change the wave. Press <b>Esc</b> when you are done.',place:'corner',dim:false,wait:()=>{if(!$('#present').hidden)presented=true;return presented&&$('#present').hidden;},auto:()=>closePresent()},
@@ -3880,7 +3933,7 @@ const TOURS={
     {target:()=>$('#dupSlide'),title:'Duplicate the slide',body:'Press <b>Duplicate</b> under the slide list.',wait:()=>deck.slides.length>=2&&cur>=1,auto:()=>$('#dupSlide').click()},
     {target:()=>objEl(R())||$('.frame'),title:'Change the copy',body:'You are on slide 2, a copy. Drag the square to the right.',wait:()=>cur>=1&&(R()?.x??-4)>-2,auto:()=>{snap();R().x=3;persist();refresh();}},
     {target:()=>objEl(R())||$('.frame'),title:'Make it bigger',body:'Select the square and drag a <b>corner handle</b> outwards.',wait:()=>(R()?.scale||1)>1.25,auto:()=>{snap();R().scale=1.7;persist();refresh();},optional:true},
-    {target:()=>$('#preview'),title:'Watch it',body:'Press <b>Preview</b>: the square moves and grows from slide 1 to slide 2.',wait:()=>tourFlags.preview,auto:()=>$('#preview').click(),before:()=>{tourFlags.preview=false;}},
+    {target:()=>$('#preview'),title:'Watch it',body:'Press <b>Play this slide</b>: the square moves and grows from slide 1 to slide 2.',wait:()=>tourFlags.preview,auto:()=>$('#preview').click(),before:()=>{tourFlags.preview=false;}},
     {target:()=>$('#thumbs'),title:'The slide list sums it up',body:'Under each slide, Tracé says what will animate, here “1 move”. Present plays the slides in order with these animations.',next:'Next'},
     {title:'Done',body:'Use clicks to build up one picture, and duplicated slides for a sequence of steps. You can mix both.',place:'center',next:'Finish'},
   ];},
@@ -3891,7 +3944,7 @@ const TOURS={
     {target:()=>$('.frame'),title:'The slide',body:'Click an object to select it and drag to move it. Handles resize; the round one rotates. <b>Alt+click</b> picks the object underneath, <b>Tab</b> goes to the next one.',next:'Next'},
     {target:()=>$('#stepbar'),title:'Clicks',body:'The steps of the slide. Click one to see and edit the slide at that moment; <b>+ Click</b> adds one.',next:'Next'},
     {target:()=>$('#props'),title:'Settings',body:'Everything about the selected object. With nothing selected: the slide’s settings and a list of every object on it.',next:'Next'},
-    {target:()=>$('#preview'),title:'Preview',body:'Plays the animation into this slide.',next:'Next'},
+    {target:()=>$('#preview'),title:'Play this slide',body:'Plays the animation into this slide, as the class will see it.',next:'Next'},
     {target:()=>$('#presentBtn'),title:'Present',body:'Full screen. Click or press → to go forward, Esc to stop.',next:'Next'},
     {target:()=>$('#tourBtn'),title:'Tours are always here',body:'Press <b>Tour</b> at any time for the tutorial. <b>⋯</b> next to it has <b>Export</b> and the full guide; the logo takes you to <b>all your projects</b> and the templates.',next:'Finish'},
   ],
@@ -3930,7 +3983,7 @@ Object.assign(TOURS,{
     {target:()=>fldBox('shown'),title:'One item at a time',body:'Set <b>Items shown</b> to <b>1</b>: the slide opens with the first item only.',wait:()=>(firstOf('bullets')?.shown||0)===1,auto:()=>setF('shown',1),before:()=>{B=firstOf('bullets');if(B)ensureSel(B.id);}},
     {target:()=>$('#addClick'),title:'Add a click',body:'Press <b>+ Click</b>.',wait:()=>maxStep(slide())>=1&&editStep>=1,auto:()=>$('#addClick').click()},
     {target:()=>fldBox('shown'),title:'Reveal the second item',body:'With <b>Click 1</b> selected, set <b>Items shown</b> to <b>2</b>. Do the same on Click 2 for the third item.',wait:()=>(firstOf('bullets')?.keys?.[1]?.shown||0)>=2,auto:()=>setF('shown',2),before:()=>{const b=firstOf('bullets');if(b)ensureSel(b.id);ensureStep(1);}},
-    {target:()=>$('#preview'),title:'Watch it',body:'Press <b>Preview</b>.',wait:()=>tourFlags.preview,auto:()=>$('#preview').click(),before:()=>{tourFlags.preview=false;}},
+    {target:()=>$('#preview'),title:'Watch it',body:'Press <b>Play this slide</b>.',wait:()=>tourFlags.preview,auto:()=>$('#preview').click(),before:()=>{tourFlags.preview=false;}},
   ];},
   equations:()=>{const Q=()=>firstOf('latex');return[
     {title:'Equations',body:'Type maths like on a calculator, highlight a term, and build an equation up one term at a time.',place:'center',next:'Start',action:()=>tourDeck('Tutorial practice',()=>{})},
@@ -3941,7 +3994,7 @@ Object.assign(TOURS,{
     {target:()=>fldBox('terms'),title:'Build it up',body:'Set <b>Show only the first terms</b> to <b>1</b>: only <b>F</b> shows.',wait:()=>(Q()?.terms||0)===1,auto:()=>setF('terms',1)},
     {target:()=>$('#addClick'),title:'Add a click',body:'Press <b>+ Click</b>.',wait:()=>editStep>=1,auto:()=>$('#addClick').click()},
     {target:()=>fldBox('terms'),title:'The rest on the click',body:'With Click 1 selected, set it back to <b>0</b> (all terms): the rest of the equation is written on that click.',wait:()=>Q()?.keys?.[1]?.terms===0,auto:()=>setF('terms',0),before:()=>{const q=Q();if(q)ensureSel(q.id);ensureStep(1);}},
-    {target:()=>$('#preview'),title:'Watch it',body:'Press <b>Preview</b>.',wait:()=>tourFlags.preview,auto:()=>$('#preview').click(),before:()=>{tourFlags.preview=false;}},
+    {target:()=>$('#preview'),title:'Watch it',body:'Press <b>Play this slide</b>.',wait:()=>tourFlags.preview,auto:()=>$('#preview').click(),before:()=>{tourFlags.preview=false;}},
   ];},
   graphs:()=>{const G=()=>firstOf('axes');return[
     {title:'Graphs',body:'Plot a function, fit the axes, and mark a point with its tangent that you can move while presenting.',place:'center',next:'Start',action:()=>tourDeck('Tutorial practice',os=>{os.push(P2('latex',0,3,{id:'t_eq',src:'y = x^2/4 - 1',fontSize:40}));})},
@@ -3971,14 +4024,14 @@ Object.assign(TOURS,{
     {target:()=>$('#stepbar [data-step="1"]'),title:'Timing of a click',body:'Click <b>Click 1</b> in the clicks bar.',wait:()=>editStep===1,auto:()=>ensureStep(1)},
     {target:()=>$('#stepT'),title:'How long it lasts',body:'<b>Lasts</b> sets this click’s length in seconds. Set it to <b>2</b>.',wait:()=>durOf(slide(),1)>=1.9,auto:()=>{const i=$('#stepT');if(i){i.value=2;i.dispatchEvent(new Event('change'));}},before:()=>ensureStep(1),optional:true},
     {target:()=>$('#stepbar [data-step="2"]')||$('#stepbar'),title:'A click that plays by itself',body:'Select <b>Click 2</b> and tick <b>by itself</b>: it plays right after Click 1, without a click.',wait:()=>!!autoOf(slide(),2),auto:()=>{ensureStep(2);setTimeout(()=>{const a=$('#stepAuto');if(a&&!a.checked)a.click();},0);},optional:true},
-    {target:()=>$('#preview'),title:'Watch it',body:'Press <b>Preview</b>. In the slide settings (click an empty part of the slide) you also set the <b>Motion feel</b>, and whether objects that appear together come in <b>one after another</b>.',wait:()=>tourFlags.preview,auto:()=>$('#preview').click(),before:()=>{tourFlags.preview=false;}},
+    {target:()=>$('#preview'),title:'Watch it',body:'Press <b>Play this slide</b>. In the slide settings (click an empty part of the slide) you also set the <b>Motion feel</b>, and whether objects that appear together come in <b>one after another</b>.',wait:()=>tourFlags.preview,auto:()=>$('#preview').click(),before:()=>{tourFlags.preview=false;}},
   ];},
   morph:()=>{const C='t_c',S=()=>firstOf('star');return[
     {title:'Morphing',body:'Turn one shape into another: a circle becomes a star, one equation becomes the next.',place:'center',next:'Start',action:()=>tourDeck('Tutorial practice',os=>{os.push(P2('circle',0,0,{id:C,radius:1.3,fillOpacity:0.4,color:'#58C4DD'}));})},
     {target:()=>menuItem('star')||toolBtn('Draw'),title:'Add a star',body:'Open <b>Draw</b> and choose <b>Star</b>.',wait:()=>!!S(),auto:()=>{sel=null;addObj('star');}},
     {target:()=>$('#f_step'),title:'On a click',body:'Set <b>Appears</b> to <b>On click 1</b>.',wait:()=>stepOf(S()||{})===1,auto:()=>setInput('#f_step','1'),before:()=>{const s=S();if(s)ensureSel(s.id);}},
     {target:()=>$('#f_morphFrom'),title:'Morph out of the circle',body:'Set <b>Or appears by morphing out of</b> to the <b>circle</b>.',wait:()=>S()?.morphFrom===C,auto:()=>setInput('#f_morphFrom',C),before:()=>{const s=S();if(s)ensureSel(s.id);}},
-    {target:()=>$('#preview'),title:'Watch it',body:'Press <b>Preview</b>. Between slides it is automatic: duplicate a slide, change a shape, and Tracé morphs it.',wait:()=>tourFlags.preview,auto:()=>$('#preview').click(),before:()=>{tourFlags.preview=false;}},
+    {target:()=>$('#preview'),title:'Watch it',body:'Press <b>Play this slide</b>. Between slides it is automatic: duplicate a slide, change a shape, and Tracé morphs it.',wait:()=>tourFlags.preview,auto:()=>$('#preview').click(),before:()=>{tourFlags.preview=false;}},
   ];},
   paths:()=>{const R='t_rocket';return[
     {title:'Paths: orbit, trail, nose first',body:'Send an object along a curve on a click. It can turn to face where it goes and leave a trail.',place:'center',next:'Start',action:()=>tourDeck('Tutorial practice',os=>{os.push(P2('ellipse',0,0,{id:'t_orb',w:9,h:5,color:'#4A5160'}),Object.assign(P2('drawing',0,0,{lib:'earth',name:'Earth',w:1.6}),{id:'t_earth'}),Object.assign(P2('drawing',4.5,0,{lib:'rocket',name:'Rocket',w:0.9,nose:90}),{id:R}));})},
@@ -4002,7 +4055,7 @@ Object.assign(TOURS,{
     {target:()=>$('#f_loop'),title:'Keep it moving',body:'Under <b>Leaving, moving and looping</b>, set <b>Keeps moving</b> to <b>Spin</b>.',wait:()=>byId(S)?.loop==='spin',auto:()=>setInput('#f_loop','spin'),before:()=>{ensureSel(S);openMore('anim');}},
     {target:()=>$('#f_loopTime')||$('#f_loop'),title:'How fast',body:'<b>One cycle takes</b> sets the speed. Graphs, waves and phasors can also <b>keep going</b>: a wave keeps travelling.',next:'Next',before:()=>{ensureSel(S);openMore('anim');}},
     {target:()=>fldBox('emph'),title:'Draw attention to it',body:'Set <b>Emphasis when this slide starts</b> to <b>Pulse and highlight</b>.',wait:()=>byId(S)?.emph==='indicate',auto:()=>setF('emph','indicate'),before:()=>{ensureSel(S);openMore('anim');}},
-    {target:()=>$('#preview'),title:'Watch it',body:'Press <b>Preview</b>.',wait:()=>tourFlags.preview,auto:()=>$('#preview').click(),before:()=>{tourFlags.preview=false;}},
+    {target:()=>$('#preview'),title:'Watch it',body:'Press <b>Play this slide</b>.',wait:()=>tourFlags.preview,auto:()=>$('#preview').click(),before:()=>{tourFlags.preview=false;}},
   ];},
   library:()=>{const D=()=>slide().objects.find(o=>o.type==='drawing');return[
     {title:'The library and your own drawings',body:'For anything that is not in the menus: rockets, magnets, flasks… or any drawing you have as an SVG file.',place:'center',next:'Start',action:()=>tourDeck('Tutorial practice',()=>{})},
@@ -4018,7 +4071,7 @@ Object.assign(TOURS,{
     {target:()=>menuItem('wave')||toolBtn('Science'),title:'Add a wave',body:'Open <b>Science</b> and choose <b>Wave</b>.',wait:()=>!!W(),auto:()=>{sel=null;addObj('wave');}},
     {target:()=>fldBox('kind'),title:'Standing wave',body:'Set <b>Wave</b> to <b>Standing</b>.',wait:()=>W()?.kind==='standing',auto:()=>setF('kind','standing'),before:()=>{const w=W();if(w)ensureSel(w.id);}},
     {target:()=>$('#f_loop'),title:'Make it oscillate',body:'Set <b>Keeps moving</b> to <b>Keep going</b>: the wave oscillates on its own.',wait:()=>W()?.loop==='flow',auto:()=>setInput('#f_loop','flow'),before:()=>{const w=W();if(w)ensureSel(w.id);openMore('anim');}},
-    {target:()=>$('#preview'),title:'Watch it',body:'Press <b>Preview</b>. Any number in the settings (amplitude, wavelength, phase…) can also change on a click.',wait:()=>tourFlags.preview,auto:()=>$('#preview').click(),before:()=>{tourFlags.preview=false;}},
+    {target:()=>$('#preview'),title:'Watch it',body:'Press <b>Play this slide</b>. Any number in the settings (amplitude, wavelength, phase…) can also change on a click.',wait:()=>tourFlags.preview,auto:()=>$('#preview').click(),before:()=>{tourFlags.preview=false;}},
     {target:()=>toolBtn('Science'),title:'More in Science',body:'A <b>phasor</b> traces a sine wave, <b>Signal and spectrum</b> shows a signal and its frequencies, plus charts, networks and signal-jamming simulations. In <b>Write</b>, a <b>Counter</b> can count up or follow an equation’s value.',next:'Next'},
   ];},
   present:()=>{let started=false;return[

@@ -20,8 +20,12 @@
 <link rel="icon" href="/favicon.svg" type="image/svg+xml">
 <link rel="apple-touch-icon" href="/apple-touch-icon.png"><link rel="manifest" href="/site.webmanifest"><meta name="theme-color" content="#3B5BFD">
 <link rel="stylesheet" href="/site.css">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&display=swap">
+<link rel="stylesheet" href="/landing.css">
+<script>document.documentElement.classList.add('js')</script>
 </head>
-<body>
+<body class="lp">
 <header class="top">
   <div class="wrap">
     <a class="logo" href="/" aria-label="Tracé home"><img src="/img/logo-tile.svg" alt="Tracé" width="96" height="34"></a>
@@ -39,72 +43,112 @@
 <section class="hero">
   <div class="wrap grid">
     <div>
-      <p class="eyebrow">For people who teach maths and physics</p>
-      <h1>Slides where the maths <em>moves</em>.</h1>
-      <p class="lead">Type an equation and get its graph. Build the explanation one click at a time, morph one idea into the next, and change the numbers live in front of your class.</p>
+      <span class="pill"><i>New</i> Turn any deck into a video in one click</span>
+      <h1>Slides where the maths <em>moves.<svg class="squig" viewBox="0 0 200 20" preserveAspectRatio="none" aria-hidden="true"><path pathLength="1" d="M3 12Q15 3 27 12T51 12T75 12T99 12T123 12T147 12T171 12T195 12"/></svg></em></h1>
+      <p class="lead">Type an equation and watch it draw itself. Build your explanation one click at a time, then change the numbers live in front of your class.</p>
       <div class="cta">
-        <a class="btn primary" href="/app">Start free</a>
-        <a class="btn" href="/app?demo=showcase">Watch the 3-minute tour</a>
+        <a class="btn primary big" href="/app">Start free</a>
+        <a class="btn big" href="/app?demo=showcase">▶ Watch the 3-minute tour</a>
       </div>
-      <small>Works in the browser on a laptop, tablet or phone. No account needed to try it.</small>
+      <small><span>Nothing to install</span><span>No account needed to try</span><span>Laptop, tablet or phone</span></small>
     </div>
-    <div>
-      <a class="frame" href="/app?demo=showcase" aria-label="Play the tour">
-        <img src="/img/slide-graph.webp" alt="A slide showing y = A sin(kx) e^(-x/4) plotted on axes, with a marked point and its value" width="1280" height="720">
-        <span class="btn play">▶ Play the tour</span>
-      </a>
+    <div class="stagewrap">
+      <div class="stage" id="heroStage">
+        <div class="bar"><span class="dots"><i></i><i></i><i></i></span>A slide in Tracé<span class="live">Live</span></div>
+        <svg id="heroSvg" viewBox="0 0 640 340" role="img" aria-label="A live graph of y equals sine of k x. Drag the slider to change k.">
+          <g id="hGrid" stroke="#1F2530" stroke-width="1"></g>
+          <path d="M40 190H620M60 60V320" stroke="#5B6372" stroke-width="1.5"/>
+          <text class="eq" x="60" y="42">y = sin(<tspan class="kv" id="hK">1.5</tspan> x)</text>
+          <path id="hCurve" fill="none" stroke="#58C4DD" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+          <line id="hGuide" stroke="#F4D345" stroke-width="1.5" stroke-dasharray="4 5" opacity=".7"/>
+          <circle id="hDot" r="9" fill="#F4D345" stroke="#0E1116" stroke-width="3" style="cursor:grab"/>
+          <text id="hLab" fill="#F4D345" font-family="Space Grotesk,sans-serif" font-size="17" font-weight="700"></text>
+        </svg>
+        <div class="ctrl">
+          <label for="hRange">k = <b id="hKv">1.5</b></label>
+          <button type="button" class="stepb" data-d="-0.1" aria-label="Make k smaller">−</button>
+          <input type="range" id="hRange" min="0.5" max="3" step="0.1" value="1.5" aria-label="Wave number k">
+          <button type="button" class="stepb" data-d="0.1" aria-label="Make k bigger">+</button>
+        </div>
+      </div>
+      <span class="hint" id="hHint">Try it: drag the slider or the yellow point</span>
     </div>
   </div>
 </section>
 
-<section id="features">
+<section id="features" class="alt">
   <div class="wrap">
-    <p class="eyebrow">What you can show</p>
-    <h2>Everything you draw on the board, animated</h2>
-    <p class="lead">Every object knows maths. Change a number and the graph, the label and the value that depends on it all follow.</p>
-    <div class="features">
-      <article class="feature"><div class="frame"><img src="/img/slide-taylor.webp" alt="Taylor series of e^x built term by term" loading="lazy" width="1280" height="720"></div>
+    <p class="eyebrow rv">What you can show</p>
+    <h2 class="rv">Everything you draw on the board, now moving</h2>
+    <p class="lead rv">Every object knows maths. Change a number and the graph, the label and every value that depends on it follow.</p>
+    <div class="features live">
+      <article class="feature rv"><div class="frame"><svg id="dTaylor" viewBox="0 0 320 200" role="img" aria-label="The Taylor series of e to the x, built term by term, closing in on the curve"></svg><span class="tagl">Live</span></div>
         <div class="t"><h3>Equations that draw their graphs</h3><p>Write <code>y = sin(x) e^(-x/4)</code> like on a calculator. Reveal a formula term by term while its curve closes in.</p></div></article>
-      <article class="feature"><div class="frame"><img src="/img/slide-morph.webp" alt="A circle morphing into a star along curved arrows" loading="lazy" width="1280" height="720"></div>
+      <article class="feature rv"><div class="frame"><svg id="dMorph" viewBox="0 0 320 200" role="img" aria-label="A circle turning into a star, then a triangle"></svg><span class="tagl cy">Live</span></div>
         <div class="t"><h3>Morph one idea into the next</h3><p>Shapes, equations and graphs turn into each other. Objects move along paths and arrows draw from tail to tip.</p></div></article>
-      <article class="feature"><div class="frame"><img src="/img/slide-3d.webp" alt="A 3D surface z = sin x cos y next to a sphere, cone, cube and dodecahedron" loading="lazy" width="1280" height="720"></div>
-        <div class="t"><h3>3D you can turn while presenting</h3><p>Surfaces from an equation, spheres, prisms and polyhedra. Drag to rotate in front of the room.</p></div></article>
-      <article class="feature"><div class="frame"><img src="/img/slide-fourier.webp" alt="A square wave built from 12 harmonics with a bar chart of their amplitudes" loading="lazy" width="1280" height="720"></div>
+      <article class="feature rv"><div class="frame"><svg id="d3d" viewBox="0 0 320 200" role="img" aria-label="The surface z = sin x cos y turning in 3D"></svg><span class="tagl pr">Live</span></div>
+        <div class="t"><h3>3D you can turn while presenting</h3><p>Surfaces from an equation, spheres, prisms and polyhedra. Drag to rotate them in front of the room.</p></div></article>
+      <article class="feature rv"><div class="frame"><img src="/img/slide-fourier.webp" alt="A square wave built from 12 harmonics with a bar chart of their amplitudes" loading="lazy" width="1280" height="720"></div>
         <div class="t"><h3>Signals and series</h3><p>Fourier series, waves, phasors, spectra and charts, ready to animate. Counters tick up as the picture builds.</p></div></article>
-      <article class="feature"><div class="frame"><img src="/img/slide-geometry.webp" alt="A triangle, an angle with a right-angle mark, and a Venn diagram" loading="lazy" width="1280" height="720"></div>
+      <article class="feature rv"><div class="frame"><img src="/img/slide-geometry.webp" alt="A triangle, an angle with a right-angle mark, and a Venn diagram" loading="lazy" width="1280" height="720"></div>
         <div class="t"><h3>Geometry that responds</h3><p>Triangles, angles, number planes, vectors and Venn diagrams. Move a corner and every label follows.</p></div></article>
-      <article class="feature"><div class="frame"><img src="/img/slide-graph.webp" alt="A graph with live sliders for its parameters" loading="lazy" width="1280" height="720"></div>
-        <div class="t"><h3>Live sliders on stage</h3><p>Let the audience ask “what if k doubles?” and answer by dragging a slider during the talk.</p></div></article>
+      <article class="feature rv"><div class="frame"><img src="/img/slide-graph.webp" alt="A graph slide, ready to be saved as a video" loading="lazy" width="1280" height="720"><span class="tagl">MP4</span></div>
+        <div class="t"><h3>A video in one click</h3><p>Press <b>Video</b> and your whole deck, with its animations and your voice, becomes an MP4 for YouTube, Moodle or Teams.</p></div></article>
     </div>
   </div>
 </section>
 
 <section id="how">
-  <div class="wrap split">
-    <div>
-      <p class="eyebrow">How it works</p>
-      <h2>As simple as a slide deck</h2>
-      <p class="lead">No timeline and no keyframes. You decide what appears on each click, and Tracé animates the rest.</p>
-      <ol class="steps">
-        <li><div><b>Add objects</b><span>Text, equations, graphs, shapes, 3D, science diagrams.</span></div></li>
-        <li><div><b>Choose what happens on each click</b><span>Appear, move, morph, draw, count. Or duplicate the slide, change it, and Tracé animates between the two.</span></div></li>
-        <li><div><b>Present, or share a link</b><span>Full-screen with live sliders. Viewers can watch your deck on any device.</span></div></li>
-        <li><div><b>Narrate it, or make a video</b><span>Turn any deck into an MP4 with one click. With Pro, record your voice on each click and export a ready-to-render script for Manim, the open-source engine behind many maths videos.</span></div></li>
-      </ol>
+  <div class="wrap">
+    <p class="eyebrow rv">How it works</p>
+    <h2 class="rv">As simple as a slide deck. Try it here.</h2>
+    <p class="lead rv">No timeline and no keyframes. You decide what appears on each click, and Tracé animates the rest. Press the button to present this slide.</p>
+    <div class="clicks rv">
+      <div class="stage">
+        <div class="bar"><span class="dots"><i></i><i></i><i></i></span><span id="cCount">Slide 1 · before the first click</span></div>
+        <svg id="cSvg" viewBox="0 0 640 340" role="img" aria-label="A demo slide that builds up one click at a time">
+          <text x="320" y="44" text-anchor="middle" fill="#E8EAEE" font-family="Space Grotesk,sans-serif" font-size="26" font-weight="700">A wave you can change</text>
+          <path d="M50 200H610M70 70V320" stroke="#5B6372" stroke-width="1.5"/>
+          <text x="604" y="222" fill="#8A93A3" font-family="Georgia,serif" font-style="italic" font-size="18">x</text>
+          <text x="80" y="82" fill="#8A93A3" font-family="Georgia,serif" font-style="italic" font-size="18">y</text>
+          <path id="cCurve" class="curve" pathLength="1" fill="none" stroke="#58C4DD" stroke-width="4" stroke-linecap="round"/>
+          <g id="cGuides" class="fade" opacity="0" stroke="#F4D345" stroke-width="1.5" stroke-dasharray="4 5"><line id="cGv"/><line id="cGh"/></g>
+          <circle id="cDot" class="fade" r="10" fill="#F4D345" stroke="#0E1116" stroke-width="3" opacity="0"/>
+          <text id="cLab" class="fade" opacity="0" fill="#F4D345" font-family="Space Grotesk,sans-serif" font-size="19" font-weight="700">sin 2 ≈ 0.91</text>
+          <text id="cX" class="fade" opacity="0" fill="#F4D345" font-family="Space Grotesk,sans-serif" font-size="16" text-anchor="middle">x = 2</text>
+        </svg>
+      </div>
+      <div class="cpanel">
+        <h3>What happens on each click</h3>
+        <ol id="cList">
+          <li><span class="n">1</span><span><b>Draw the curve</b><br>y = sin x, left to right</span></li>
+          <li><span class="n">2</span><span><b>Move the point</b><br>along the curve to x = 2</span></li>
+          <li><span class="n">3</span><span><b>Show its value</b><br>with guide lines</span></li>
+        </ol>
+        <div class="go">
+          <p class="cap" id="cCap" aria-live="polite">The slide starts with its title and axes. Press the button, as you would in class.</p>
+          <button type="button" class="btn primary" id="cNext">Next click ▶</button>
+        </div>
+      </div>
     </div>
-    <img class="shot" src="/img/editor.webp" alt="The Tracé editor: slide list on the left, a slide with a graph in the middle, animation settings on the right" loading="lazy" width="1600" height="965">
+    <ol class="steps row">
+      <li class="rv"><div><b>Add objects</b><span>Text, equations, graphs, shapes, 3D and science diagrams, from the Add menu.</span></div></li>
+      <li class="rv"><div><b>Choose what happens on each click</b><span>Appear, move, morph, draw, count. Or duplicate the slide, change it, and Tracé animates between the two.</span></div></li>
+      <li class="rv"><div><b>Present, or share a link</b><span>Full screen with live sliders. Viewers can watch on any device, and even play with the values.</span></div></li>
+      <li class="rv"><div><b>Make a video</b><span>One button turns the deck into an MP4. With Pro, record your voice on each click.</span></div></li>
+    </ol>
   </div>
 </section>
 
-<section>
+<section class="alt">
   <div class="wrap">
-    <p class="eyebrow">Made for</p>
-    <h2>Anyone who explains with equations</h2>
+    <p class="eyebrow rv">Made for</p>
+    <h2 class="rv">Anyone who explains with equations</h2>
     <div class="who">
-      <div><h3>Teachers</h3><p>Show how a graph changes instead of drawing it three times on the board.</p></div>
-      <div><h3>Lecturers</h3><p>Build a derivation step by step and keep every slide in sync with its equation.</p></div>
-      <div><h3>Students</h3><p>Present a project or a thesis defence with figures that actually move.</p></div>
-      <div><h3>Science creators</h3><p>Prototype an animation in minutes, then export it for a polished video.</p></div>
+      <div class="rv"><svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="12" rx="1.5"/><path d="M7 20h10M12 16v4M6 12l3-3 3 2 5-5"/></svg><h3>Teachers</h3><p>Show how a graph changes instead of drawing it three times on the board.</p></div>
+      <div class="rv"><svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 9l10-5 10 5-10 5z"/><path d="M6 11v5c3 2 9 2 12 0v-5"/></svg><h3>Lecturers</h3><p>Build a derivation step by step and keep every slide in sync with its equation.</p></div>
+      <div class="rv"><svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 19V5a2 2 0 012-2h12v16H6a2 2 0 00-2 2"/><path d="M8 7h6M8 11h4"/></svg><h3>Students</h3><p>Present a project or a thesis defence with figures that actually move.</p></div>
+      <div class="rv"><svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="6" width="14" height="12" rx="2"/><path d="M16 10l6-3v10l-6-3z"/></svg><h3>Science creators</h3><p>Prototype an animation in minutes, then export it as a video.</p></div>
     </div>
   </div>
 </section>
@@ -165,7 +209,7 @@
   </div>
 </section>
 
-<section id="faq">
+<section id="faq" class="alt">
   <div class="wrap">
     <h2>Questions</h2>
     <div class="faq">
@@ -179,11 +223,13 @@
   </div>
 </section>
 
+
 <section class="end">
+  <svg class="bgwave" viewBox="0 0 1200 200" preserveAspectRatio="none" aria-hidden="true"><path id="endWave" fill="none" stroke="#58C4DD" stroke-width="2"/><path id="endWave2" fill="none" stroke="#5B78FF" stroke-width="2"/></svg>
   <div class="wrap">
     <h2>Your next lesson, moving</h2>
     <p class="lead" style="margin:0 auto">Start with an example deck or a blank slide. It takes a minute.</p>
-    <div class="cta"><a class="btn primary" href="/app">Open the editor</a><a class="btn" href="/app?demo=showcase">Watch the tour</a></div>
+    <div class="cta"><a class="btn primary big" href="/app">Open the editor</a><a class="btn big" href="/app?demo=showcase">▶ Watch the tour</a></div>
   </div>
 </section>
 </main>
@@ -203,6 +249,192 @@ document.querySelectorAll('[data-period]').forEach(b => b.addEventListener('clic
   price.innerHTML = price.dataset['price' + (p === 'month' ? 'Month' : 'Year')] + '<small> / month</small>';
   note.textContent = note.dataset['note' + (p === 'month' ? 'Month' : 'Year')];
 }));
+
+/* ---------- live maths ---------- */
+(() => {
+  const $ = id => document.getElementById(id);
+  const NS = 'http://www.w3.org/2000/svg';
+  const calm = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const f1 = v => v.toFixed(1), f2 = v => (Math.abs(v) < 0.005 ? 0 : v).toFixed(2);
+  const ease = t => t < .5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
+  const el = (tag, attrs, parent) => { const e = document.createElementNS(NS, tag); for (const k in attrs) e.setAttribute(k, attrs[k]); parent && parent.appendChild(e); return e; };
+  const path = (pts) => pts.map((p, i) => (i ? 'L' : 'M') + p[0].toFixed(1) + ' ' + p[1].toFixed(1)).join('');
+
+  // Run step(t) on every frame while the element is on screen. With reduced motion, draw one still frame.
+  function animate(node, step, still) {
+    if (calm) { step(still); return; }
+    let on = false, raf = 0, last = 0, t = 0;
+    const tick = now => { t += Math.min(0.05, (now - last) / 1000); last = now; step(t); if (on) raf = requestAnimationFrame(tick); };
+    step(0);
+    new IntersectionObserver(es => es.forEach(e => {
+      if (e.isIntersecting && !on) { on = true; last = performance.now(); raf = requestAnimationFrame(tick); }
+      else if (!e.isIntersecting) { on = false; cancelAnimationFrame(raf); }
+    }), { threshold: 0.1 }).observe(node);
+  }
+
+  /* hero: y = sin(kx), a real slider and a draggable point */
+  {
+    const X0 = 60, X1 = 620, XMAX = 4 * Math.PI, Y0 = 190, SY = 95;
+    const sx = x => X0 + x / XMAX * (X1 - X0), sy = y => Y0 - y * SY;
+    const g = $('hGrid');
+    for (let i = 1; i <= 8; i++) el('line', { x1: sx(i * Math.PI / 2), x2: sx(i * Math.PI / 2), y1: 60, y2: 320 }, g);
+    [-1, 1].forEach(v => el('line', { x1: X0, x2: X1, y1: sy(v), y2: sy(v) }, g));
+    [['π', Math.PI], ['2π', 2 * Math.PI], ['3π', 3 * Math.PI], ['4π', 4 * Math.PI]].forEach(([s, v]) => { const t = el('text', { x: sx(v), y: 212, fill: '#6E7686', 'font-size': 13, 'text-anchor': 'middle', 'font-family': 'Georgia,serif' }, g); t.textContent = s; });
+    const range = $('hRange'), hint = $('hHint'), svg = $('heroSvg');
+    let k = 1.5, px = 2.2, autoK = true, autoX = true;
+    const touched = () => hint.classList.add('gone');
+    function draw() {
+      const pts = [];
+      for (let i = 0; i <= 280; i++) { const x = i / 280 * XMAX; pts.push([sx(x), sy(Math.sin(k * x))]); }
+      $('hCurve').setAttribute('d', path(pts));
+      const y = Math.sin(k * px), cx = sx(px), cy = sy(y);
+      $('hDot').setAttribute('cx', cx); $('hDot').setAttribute('cy', cy);
+      Object.entries({ x1: cx, x2: cx, y1: Y0, y2: cy }).forEach(([a, v]) => $('hGuide').setAttribute(a, v));
+      const lab = $('hLab'); lab.textContent = '(' + f1(px) + ', ' + f2(y) + ')';
+      const right = cx < 470;
+      lab.setAttribute('x', right ? cx + 16 : cx - 16); lab.setAttribute('text-anchor', right ? 'start' : 'end');
+      lab.setAttribute('y', y > 0.6 ? cy + 30 : cy - 16);
+      $('hK').textContent = $('hKv').textContent = f1(k);
+      range.value = k;
+    }
+    const setK = v => { k = Math.min(3, Math.max(0.5, Math.round(v * 10) / 10)); autoK = false; touched(); draw(); };
+    range.addEventListener('input', () => setK(+range.value));
+    document.querySelectorAll('.stepb').forEach(b => b.addEventListener('click', () => setK(k + +b.dataset.d)));
+    let dragging = false;
+    const toX = e => { const r = svg.getBoundingClientRect(), vx = (e.clientX - r.left) / r.width * 640; return Math.min(XMAX, Math.max(0, (vx - X0) / (X1 - X0) * XMAX)); };
+    svg.addEventListener('pointerdown', e => { dragging = true; autoX = false; touched(); svg.setPointerCapture(e.pointerId); px = toX(e); draw(); });
+    svg.addEventListener('pointermove', e => { if (dragging) { px = toX(e); draw(); } });
+    svg.addEventListener('pointerup', () => { dragging = false; });
+    animate($('heroStage'), t => {
+      if (autoK) k = Math.round((1.6 + 0.8 * Math.sin(t * 0.45)) * 100) / 100;
+      if (autoX) px = 2 * Math.PI + 4.6 * Math.sin(t * 0.6);
+      draw();
+    }, 0);
+  }
+
+  /* Taylor series of e^x, term by term */
+  {
+    const svg = $('dTaylor'), X0 = 20, X1 = 300, XA = -3, XB = 2.2, Y0 = 150, SY = 16;
+    const sx = x => X0 + (x - XA) / (XB - XA) * (X1 - X0), sy = y => Y0 - y * SY;
+    const defs = el('defs', {}, svg), cp = el('clipPath', { id: 'tclip' }, defs); el('rect', { x: 0, y: 8, width: 320, height: 170 }, cp);
+    el('path', { d: `M${X0} ${Y0}H${X1}M${sx(0)} 12V176`, stroke: '#5B6372', 'stroke-width': 1 }, svg);
+    const ex = []; for (let i = 0; i <= 120; i++) { const x = XA + i / 120 * (XB - XA); ex.push([sx(x), sy(Math.exp(x))]); }
+    el('path', { d: path(ex), fill: 'none', stroke: '#58C4DD', 'stroke-width': 3, 'clip-path': 'url(#tclip)' }, svg);
+    const poly = el('path', { fill: 'none', stroke: '#F4D345', 'stroke-width': 3, 'stroke-linecap': 'round', 'clip-path': 'url(#tclip)' }, svg);
+    const lab = el('text', { x: 300, y: 30, 'text-anchor': 'end', class: 'demo-txt' }, svg);
+    const eq = el('text', { x: 160, y: 192, 'text-anchor': 'middle', class: 'demo-txt' }, svg);
+    lab.innerHTML = '<tspan fill="#58C4DD">eˣ</tspan>';
+    const TERMS = ['1', 'x', 'x²/2', 'x³/6', 'x⁴/24', 'x⁵/120'], fact = [1, 1, 2, 6, 24, 120];
+    const P = (n, x) => { let s = 0; for (let j = 0; j <= n; j++) s += Math.pow(x, j) / fact[j]; return s; };
+    let shown = -1;
+    animate(svg, t => {
+      const cyc = t % 9, step = Math.min(5, Math.floor(cyc / 1.3)), frac = ease(Math.min(1, (cyc - step * 1.3) / 0.8));
+      const n0 = Math.max(0, step - 1), n1 = step, w = step === 0 ? 1 : frac;
+      const pts = []; for (let i = 0; i <= 120; i++) { const x = XA + i / 120 * (XB - XA); pts.push([sx(x), sy(Math.max(-4, Math.min(14, P(n0, x) * (1 - w) + P(n1, x) * w)))]); }
+      poly.setAttribute('d', path(pts));
+      if (shown !== step) { shown = step; eq.innerHTML = 'eˣ ≈ ' + TERMS.slice(0, step + 1).map((s, i) => i === step ? `<tspan class="new">${s}</tspan>` : s).join(' + '); }
+    }, 3.4 * 1.3 + 0.9);
+  }
+
+  /* circle → star → triangle */
+  {
+    const svg = $('dMorph'), N = 150, cx = 160, cy = 102, R = 72;
+    const poly = verts => { // N points spread evenly along a closed polygon, starting at its first vertex
+      const L = verts.map((v, i) => Math.hypot(verts[(i + 1) % verts.length][0] - v[0], verts[(i + 1) % verts.length][1] - v[1]));
+      const tot = L.reduce((a, b) => a + b, 0), out = [];
+      for (let i = 0; i < N; i++) { let d = i / N * tot, j = 0; while (d > L[j]) { d -= L[j]; j++; } const a = verts[j], b = verts[(j + 1) % verts.length], u = d / L[j]; out.push([a[0] + (b[0] - a[0]) * u, a[1] + (b[1] - a[1]) * u]); }
+      return out;
+    };
+    const ang = (i, n) => -Math.PI / 2 + i / n * 2 * Math.PI;
+    const circle = Array.from({ length: N }, (_, i) => [cx + R * Math.cos(ang(i, N)), cy + R * Math.sin(ang(i, N))]);
+    const star = poly(Array.from({ length: 10 }, (_, i) => { const r = i % 2 ? R * 0.42 : R * 1.08; return [cx + r * Math.cos(ang(i, 10)), cy + r * Math.sin(ang(i, 10))]; }));
+    const tri = poly([0, 1, 2].map(i => [cx + R * 1.12 * Math.cos(ang(i, 3)), cy + 10 + R * 1.12 * Math.sin(ang(i, 3))]));
+    const shapes = [[circle, [88, 196, 221], 'circle'], [star, [244, 211, 69], 'star'], [tri, [199, 184, 255], 'triangle']];
+    const shape = el('path', { 'stroke-width': 3.5, 'stroke-linejoin': 'round' }, svg);
+    const name = el('text', { x: 304, y: 190, 'text-anchor': 'end', class: 'demo-txt' }, svg);
+    animate(svg, t => {
+      const per = 2.4, i = Math.floor(t / per) % 3, u = ease(Math.max(0, Math.min(1, (t % per - 1) / 1.2)));
+      const [A, ca] = shapes[i], [B, cb] = shapes[(i + 1) % 3];
+      const pts = A.map((p, j) => [p[0] + (B[j][0] - p[0]) * u, p[1] + (B[j][1] - p[1]) * u]);
+      const c = ca.map((v, j) => Math.round(v + (cb[j] - v) * u)).join(',');
+      shape.setAttribute('d', path(pts) + 'Z'); shape.setAttribute('stroke', `rgb(${c})`); shape.setAttribute('fill', `rgba(${c},.18)`);
+      name.textContent = u < .5 ? shapes[i][2] : shapes[(i + 1) % 3][2];
+    }, 3.4);
+  }
+
+  /* z = sin x · cos y, turning */
+  {
+    const svg = $('d3d'), G = 18, S = 31, cx = 160, cy = 92, tilt = 1.12;
+    const lines = el('g', { fill: 'none', 'stroke-width': 1.3 }, svg);
+    const a = el('path', { stroke: '#58C4DD' }, lines), b = el('path', { stroke: '#8FA6FF', opacity: .75 }, lines);
+    const lab = el('text', { x: 160, y: 190, 'text-anchor': 'middle', class: 'demo-txt' }, svg); lab.textContent = 'z = sin x · cos y';
+    const z = (x, y) => Math.sin(x) * Math.cos(y);
+    animate(svg, t => {
+      const r = 0.6 + t * 0.35, c = Math.cos(r), s = Math.sin(r), ct = Math.cos(tilt), st = Math.sin(tilt);
+      const P = (x, y) => { const X = x * c - y * s, Y = x * s + y * c, Z = z(x, y) * 1.5; return [cx + X * S, cy + Y * S * ct - Z * S * st]; };
+      let da = '', db = '';
+      for (let i = 0; i <= G; i++) {
+        const u = -Math.PI + i / G * 2 * Math.PI, pa = [], pb = [];
+        for (let j = 0; j <= 36; j++) { const v = -Math.PI + j / 36 * 2 * Math.PI; pa.push(P(u, v)); pb.push(P(v, u)); }
+        da += path(pa); db += path(pb);
+      }
+      a.setAttribute('d', da); b.setAttribute('d', db);
+    }, 1.2);
+  }
+
+  /* click by click */
+  {
+    const X0 = 70, X1 = 600, XMAX = 3 * Math.PI, Y0 = 200, SY = 100;
+    const sx = x => X0 + x / XMAX * (X1 - X0), sy = y => Y0 - y * SY;
+    const pts = []; for (let i = 0; i <= 200; i++) { const x = i / 200 * XMAX; pts.push([sx(x), sy(Math.sin(x))]); }
+    const curve = $('cCurve'); curve.setAttribute('d', path(pts));
+    const dot = $('cDot'), lab = $('cLab'), xl = $('cX'), btn = $('cNext'), items = [...document.querySelectorAll('#cList li')];
+    const put = x => { dot.setAttribute('cx', sx(x)); dot.setAttribute('cy', sy(Math.sin(x))); };
+    const gv = $('cGv'), gh = $('cGh'), P2 = [sx(2), sy(Math.sin(2))];
+    Object.entries({ x1: P2[0], x2: P2[0], y1: Y0, y2: P2[1] }).forEach(([k, v]) => gv.setAttribute(k, v));
+    Object.entries({ x1: X0, x2: P2[0], y1: P2[1], y2: P2[1] }).forEach(([k, v]) => gh.setAttribute(k, v));
+    lab.setAttribute('x', P2[0] + 18); lab.setAttribute('y', P2[1] - 14);
+    xl.setAttribute('x', P2[0]); xl.setAttribute('y', Y0 + 24);
+    const CAP = ['The slide starts with its title and axes. Press the button, as you would in class.',
+      'Click 1: the curve draws itself from left to right.',
+      'Click 2: the point slides along the curve and stops at x = 2.',
+      'Click 3: its value appears. That is the whole slide, built in three clicks.'];
+    let step = 0, raf = 0;
+    function show(n, instant) {
+      step = n; cancelAnimationFrame(raf);
+      curve.classList.toggle('now', !!instant); curve.classList.toggle('on', n >= 1);
+      dot.setAttribute('opacity', n >= 1 ? 1 : 0);
+      if (n < 2) put(0);
+      if (n === 2 && !instant && !calm) { const t0 = performance.now(); const go = now => { const u = Math.min(1, (now - t0) / 1200); put(2 * ease(u)); if (u < 1) raf = requestAnimationFrame(go); }; raf = requestAnimationFrame(go); }
+      else if (n >= 2) put(2);
+      [$('cGuides'), lab, xl].forEach(e => e.setAttribute('opacity', n >= 3 ? 1 : 0));
+      if (n === 1 && !calm) { dot.setAttribute('opacity', 0); setTimeout(() => step === 1 && dot.setAttribute('opacity', 1), 1250); }
+      items.forEach((li, i) => { li.classList.toggle('done', i < n); li.classList.toggle('cur', i === n); });
+      $('cCap').textContent = CAP[n];
+      $('cCount').textContent = n ? `Slide 1 · click ${n} of 3` : 'Slide 1 · before the first click';
+      btn.textContent = n >= 3 ? '↺ Start again' : 'Next click ▶';
+      if (instant) requestAnimationFrame(() => curve.classList.remove('now'));
+    }
+    btn.addEventListener('click', () => show(step >= 3 ? 0 : step + 1, step >= 3));
+    show(0, true);
+  }
+
+  /* the calm wave behind the last call to action */
+  {
+    const w1 = $('endWave'), w2 = $('endWave2');
+    animate(w1.closest('section'), t => {
+      const a = [], b = [];
+      for (let i = 0; i <= 120; i++) { const x = i * 10; a.push([x, 100 + 50 * Math.sin(x / 110 + t * 0.6) * Math.cos(x / 400)]); b.push([x, 120 + 40 * Math.sin(x / 80 - t * 0.45)]); }
+      w1.setAttribute('d', path(a)); w2.setAttribute('d', path(b));
+    }, 0);
+  }
+
+  /* fade sections in as they scroll into view */
+  if (!calm && 'IntersectionObserver' in window) {
+    const io = new IntersectionObserver(es => es.forEach(e => { if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); } }), { threshold: 0.12, rootMargin: '0px 0px -40px 0px' });
+    document.querySelectorAll('.rv').forEach((n, i) => { n.style.transitionDelay = (i % 3) * 70 + 'ms'; io.observe(n); });
+  } else document.querySelectorAll('.rv').forEach(n => n.classList.add('in'));
+})();
 </script>
 </body>
 </html>
