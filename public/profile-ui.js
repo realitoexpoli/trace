@@ -11,16 +11,19 @@
   // Keep this list in step with plan_limits() in the database and the pricing section of index.html.
   window.TRACE_PLANS = {
     rows: [
-      ['The full editor: every object and animation', true, true],
+      ['The editor: every animation, and all text, maths, graphs, shapes and science objects', true, true],
       ['Present full screen with live sliders', true, true],
       ['Unlimited projects in your browser', true, true],
-      ['Video script export for Manim', true, true],
+      ['Basic 3D shapes: sphere, cube, cylinder, cone, prism, pyramid', true, true],
+      ['Advanced 3D: surfaces z = f(x, y), 3D scenes, polyhedra, torus, 3D arrows, turning views', false, true],
+      ['Record your voice on slides and clicks', false, true],
+      ['Python video script (Manim)', CFG.pythonForFree ? 'With a “Made with Tracé” mark' : false, true],
       ['Projects saved to your account', String(FREE_DECKS), 'Unlimited'],
-      ['Size of one project (images included)', '2 MB', '20 MB'],
-      ['Share links', 'With a “Made with Tracé” badge', 'No badge'],
+      ['Size of one project (images and voice included)', '2 MB', '20 MB'],
+      ['“Made with Tracé” badge', 'On share links and while presenting', 'None'],
       ['See how often each shared deck is watched', false, true],
     ],
-    proOnly: ['Unlimited projects in your account', 'Projects up to 20 MB, for slides with images', 'Share links without the badge', 'View counts on shared decks'],
+    proOnly: ['Advanced 3D: surfaces, 3D scenes, polyhedra, turning views', 'Record your voice on slides', 'The Python video script for Manim', 'Unlimited projects in your account, up to 20 MB each', 'No “Made with Tracé” badge', 'View counts on shared decks'],
   };
 
   const ROLES = [

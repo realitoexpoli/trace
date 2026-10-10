@@ -110,6 +110,16 @@
   /* ---------- account state ---------- */
   let session = null, user = null, profile = null;
   const isPro = () => profile && profile.plan === 'pro';
+  // The editor's Pro features (advanced 3D, voice, Python script, no badge) follow the account's plan.
+  PLAN.pro = false; PLAN.badge = true; PLAN.pythonFree = !!CFG.pythonForFree;
+  PLAN.upgrade = what => {
+    const t = (PRO_WHAT[what] || what) + ' is part of Tracé Pro.';
+    if (!user) signInDialog(t + ' Create a free account or sign in first, then choose monthly or yearly.', '?upgrade=1');
+    else upgradeDialog(t);
+  };
+  function syncPlan() { PLAN.pro = !!isPro(); PLAN.badge = !PLAN.pro; planChanged(); }
+  planChanged();
+  const hasVoice = d => (d.slides || []).some(s => s.voice && Object.keys(s.voice).length);
   const meta = id => projects.find(p => p.id === id);
   // Each edit bumps m.rev; m.savedRev is the last edit that reached the account.
   const dirty = m => (m.rev || 0) > (m.savedRev || 0);
@@ -120,7 +130,7 @@
   stat.className = 'cloudstat'; stat.id = 'cloudStat'; stat.setAttribute('aria-live', 'polite');
   proj.after(stat);
   stat.style.cursor = 'pointer';
-  stat.addEventListener('click', () => { if (!user) return; const m = curMeta(); if (!profileDone()) profileDialog(); else if (m && (m.localOnly || m.tooBig)) upgradeDialog(m.tooBig ? 'This project is over 2 MB, the free limit for one project online. Pro allows 20 MB.' : `The free plan keeps ${CFG.freeDecks || 3} projects online. This one is saved on this device only.`); });
+  stat.addEventListener('click', () => { if (!user) return; const m = curMeta(); if (!profileDone()) profileDialog(); else if (m && m.needsPro) upgradeDialog('This project has recorded voice, a Pro feature. It is saved on this device. Upgrade to save it online, or delete its voice clips.'); else if (m && (m.localOnly || m.tooBig)) upgradeDialog(m.tooBig ? 'This project is over 2 MB, the free limit for one project online. Pro allows 20 MB.' : `The free plan keeps ${CFG.freeDecks || 3} projects online. This one is saved on this device only.`); });
   const shareBtn = document.createElement('button');
   shareBtn.className = 'btn'; shareBtn.id = 'shareBtn'; shareBtn.textContent = 'Share';
   const acct = document.createElement('div');
@@ -143,6 +153,7 @@
     if (!profileDone()) return setStatus('warn', 'Finish your profile to save projects online', 'Finish profile');
     if (!m) return;
     if (m.tooBig) return setStatus('warn', 'Too big for the cloud on your plan', 'Too big');
+    if (m.needsPro) return setStatus('warn', 'This project has recorded voice, a Pro feature: saved on this device only', 'Needs Pro');
     if (m.localOnly) return setStatus('warn', `On this device only: the free plan keeps ${CFG.freeDecks || 3} decks online`, 'Device only');
     if (pending.has(m.id) || busy) return setStatus('saving', 'Saving to your account…', 'Saving…');
     if (m.cloudId && !dirty(m)) return setStatus('ok', 'Saved to your account', 'Saved');
@@ -236,6 +247,7 @@
 
   /* ---------- account menu ---------- */
   function renderAcct() {
+    syncPlan();
     const btn = $q('#acctBtn'), menu = $q('#acctMenu');
     if (!user) {
       btn.textContent = 'Sign in';
@@ -312,6 +324,8 @@
     if (!user || m.owner && m.owner !== user.id || !profileDone()) return;
     const d = m.id === curProj ? deck : readDeck(m.id);
     if (!d) return;
+    if (!isPro() && hasVoice(d)) { if (!m.needsPro) { m.needsPro = true; nudge('Saved on this device only: recorded voice is part of Tracé Pro.'); } saveIndex(); return; }
+    m.needsPro = false;
     const data = deckWithImages(d), stamp = m.updated, rev = m.rev || 0;   // an edit made while this request runs is saved by the next one
     let res;
     if (m.cloudId) {
@@ -323,7 +337,8 @@
     if (res.error) {
       const msg = res.error.message || '';
       if (msg.includes('profile_required')) { await loadProfile(); renderAcct(); showStatus(); profileDialog(); saveIndex(); return; }
-      if (msg.includes('free_limit')) { m.localOnly = true; nudge(`Saved on this device only: the free plan keeps ${CFG.freeDecks || 3} decks in the cloud.`); }
+      if (msg.includes('voice_needs_pro')) { m.needsPro = true; nudge('Saved on this device only: recorded voice is part of Tracé Pro.'); }
+      else if (msg.includes('free_limit')) { m.localOnly = true; nudge(`Saved on this device only: the free plan keeps ${CFG.freeDecks || 3} decks in the cloud.`); }
       else if (msg.includes('deck_too_large')) { m.tooBig = true; nudge('This deck is too big to save online on your plan. It is still saved on this device.'); }
       else { pending.add(m.id); clearTimeout(timer); timer = setTimeout(flush, 15000); }   // offline or server busy: try again soon
       saveIndex(); return;
@@ -447,7 +462,7 @@
     const before = projects.filter(p => !p.cloudId && !p.owner).length;
     await syncAll();
     // after a fresh upgrade, decks that were "device only" can now go to the cloud
-    if (isPro()) { let any = false; for (const p of projects) if (p.localOnly || p.tooBig) { p.localOnly = p.tooBig = false; pending.add(p.id); any = true; } if (any) await flush(); }
+    if (isPro()) { let any = false; for (const p of projects) if (p.localOnly || p.tooBig || p.needsPro) { p.localOnly = p.tooBig = p.needsPro = false; pending.add(p.id); any = true; } if (any) await flush(); }
     if (!was && before && projects.some(p => p.cloudId)) toast('Signed in. Your decks are saved to your account.');
     try { if (localStorage.getItem('trace-want-upgrade') === '1') { localStorage.removeItem('trace-want-upgrade'); if (!isPro()) upgradeDialog(); } } catch (_) {}
   }
@@ -513,7 +528,7 @@
       await new Promise(r => setTimeout(r, 2000));
       await loadProfile();
       if (isPro()) {
-        for (const p of projects) if (p.localOnly || p.tooBig) { p.localOnly = p.tooBig = false; pending.add(p.id); }
+        for (const p of projects) if (p.localOnly || p.tooBig || p.needsPro) { p.localOnly = p.tooBig = p.needsPro = false; pending.add(p.id); }
         await flush(); renderAcct(); showStatus();
         toast('Welcome to Tracé Pro. All your decks are now saved online.');
         return;
@@ -587,7 +602,7 @@
     end.innerHTML = `<h1>${esc(row.name)}</h1>${row.owner_name ? `<p>by ${esc(row.owner_name)}</p>` : ''}<p>You have reached the end.</p><div class="row" style="display:flex;gap:10px"><button class="btn" id="vAgain">Watch again</button><a class="btn primary" href="/">Make your own with Tracé</a></div>`;
     document.body.appendChild(end);
     $q('#vAgain').onclick = () => { end.hidden = true; openPresent(); };
-    window.closePresent = function () { finishAnim(); stopLoop(); end.hidden = false; };
+    window.closePresent = function () { voiceStop(); finishAnim(); stopLoop(); end.hidden = false; };
     $q('#exitPres').textContent = 'Close';
     $q('#exitPres').onclick = e => { e.stopPropagation(); window.closePresent(); };
     const go = () => { cur = 0; openPresent(); };

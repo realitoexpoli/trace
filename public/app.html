@@ -14,16 +14,16 @@ window.MathJax={loader:{load:['[tex]/color']},tex:{packages:{'[+]':['color']}},s
 <style>
 /* Tracé: a drafting desk. Paper-grey desk, ink-blue pen, highlighter for what's selected. */
 :root{
-  --desk:#e7e9e4;--paper:#f6f7f4;--ink:#1c221f;--mute:#59625c;--line:#d1d6cf;--hover:#e0e4dd;--gridline:rgba(28,34,31,.055);
+  --desk:#f2f3f0;--paper:#ffffff;--stage:#ffffff;--ink:#1c221f;--mute:#59625c;--line:#d1d6cf;--hover:#e0e4dd;--gridline:rgba(28,34,31,.045);
   --pen:#22488a;--pen-ink:#ffffff;--mark:#e8b923;--danger:#a8352b;
   box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);color-scheme:light;height:100%;
 }
-@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--desk:#111412;--paper:#181c19;--ink:#e2e5e0;--mute:#949e96;--line:#2a302b;--hover:#212722;--gridline:rgba(226,229,224,.04);--pen:#a3bcff;--pen-ink:#111412;--mark:#f0c83a;--danger:#f07a6c;color-scheme:dark}}
-:root[data-theme="dark"]{--desk:#111412;--paper:#181c19;--ink:#e2e5e0;--mute:#949e96;--line:#2a302b;--hover:#212722;--gridline:rgba(226,229,224,.04);--pen:#a3bcff;--pen-ink:#111412;--mark:#f0c83a;--danger:#f07a6c;color-scheme:dark}
+@media (prefers-color-scheme:dark){:root[data-theme="auto"]{--stage:#111412;--desk:#111412;--paper:#181c19;--ink:#e2e5e0;--mute:#949e96;--line:#2a302b;--hover:#212722;--gridline:rgba(226,229,224,.04);--pen:#a3bcff;--pen-ink:#111412;--mark:#f0c83a;--danger:#f07a6c;color-scheme:dark}}
+:root[data-theme="dark"]{--stage:#111412;--desk:#111412;--paper:#181c19;--ink:#e2e5e0;--mute:#949e96;--line:#2a302b;--hover:#212722;--gridline:rgba(226,229,224,.04);--pen:#a3bcff;--pen-ink:#111412;--mark:#f0c83a;--danger:#f07a6c;color-scheme:dark}
 html{scroll-padding-top:env(safe-area-inset-top,0px)}
 *,*::before,*::after{box-sizing:border-box}
 html,body{margin:0;height:100%}
-body{background:var(--desk);color:var(--ink);font:14px/1.45 'Segoe UI',system-ui,-apple-system,Roboto,Arial,sans-serif;display:flex;flex-direction:column;overflow:hidden}
+body{background:var(--paper);color:var(--ink);font:14px/1.45 'Segoe UI',system-ui,-apple-system,Roboto,Arial,sans-serif;display:flex;flex-direction:column;overflow:hidden}
 button,input,select,textarea{font:inherit;color:inherit}
 button{cursor:pointer}
 :focus-visible{outline:2px solid var(--pen);outline-offset:2px}
@@ -80,7 +80,7 @@ aside.strip{border-right:1px solid var(--line);background:var(--paper);display:f
 .strip-actions{display:grid;grid-template-columns:1fr 1fr;gap:6px;padding:10px 12px;border-top:1px solid var(--line)}
 .strip-actions .btn{padding:5px 4px;font-size:12.5px;white-space:nowrap}
 .stage{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:0;padding:22px;gap:12px;
-  background-color:var(--desk);background-image:linear-gradient(var(--gridline) 1px,transparent 1px),linear-gradient(90deg,var(--gridline) 1px,transparent 1px);background-size:22px 22px}
+  background-color:var(--stage);background-image:linear-gradient(var(--gridline) 1px,transparent 1px),linear-gradient(90deg,var(--gridline) 1px,transparent 1px);background-size:22px 22px}
 .frame{width:min(100%,calc((100vh - 210px) * 16 / 9));aspect-ratio:16/9;box-shadow:0 0 0 1px rgba(0,0,0,.12),0 22px 44px -22px rgba(0,0,0,.45);border-radius:2px;overflow:hidden}
 #canvas{display:block;width:100%;height:100%;touch-action:none;user-select:none}
 .hint{color:var(--mute);font-size:12.5px;text-align:center;max-width:72ch;margin:0}
@@ -104,7 +104,7 @@ hr{border:none;border-top:1px solid var(--line);margin:18px 0}
 /* present */
 #present{position:fixed;inset:0;background:#000;z-index:50;display:flex;align-items:center;justify-content:center;touch-action:none}
 #plive{touch-action:pan-y}
-#present[hidden]{display:none}
+#present[hidden]{display:none}.protag{display:inline-block;margin-left:auto;padding:1px 5px;border-radius:3px;background:#e8b923;color:#1c221f;font-size:9.5px;font-weight:700;letter-spacing:.04em;line-height:1.5}.menu .protag,.btn .protag{margin-left:7px}.is-pro .protag{display:none}.tab.locked::after{content:"PRO";margin-left:6px;padding:0 4px;border-radius:3px;background:#e8b923;color:#1c221f;font-size:9px;font-weight:700}.pbadge{position:fixed;left:14px;bottom:calc(12px + env(safe-area-inset-bottom,0px));z-index:3;color:#cfd4d0;background:rgba(255,255,255,.08);border-radius:3px;padding:4px 9px;font-size:12px;text-decoration:none}.pbadge b{color:#fff}.pbadge[hidden]{display:none}.voice{display:inline-flex;align-items:center;gap:4px}.voice .rec{color:#a8352b}.voice .rec.on{background:#a8352b;color:#fff;border-color:#a8352b}.voice .vdur{font-variant-numeric:tabular-nums;color:var(--mute);font-size:12px}.voice .vdot{display:inline-block;width:8px;height:8px;border-radius:50%;background:currentColor;margin-right:5px;vertical-align:0}.chip .vmark{margin-left:4px;font-size:11px}
 #present>svg{width:min(100vw,calc(100vh * 16 / 9));height:auto;aspect-ratio:16/9}
 #present .count{position:fixed;right:16px;bottom:calc(12px + env(safe-area-inset-bottom,0px));color:#7d858f;font-size:12px}
 .stepbar{width:min(100%,calc((100vh - 210px) * 16 / 9));display:flex;align-items:center;gap:6px;flex-wrap:wrap;min-height:30px}
@@ -284,7 +284,7 @@ details.more[open]>summary{margin-bottom:8px}
   <aside class="props" id="props"></aside>
 </main>
 
-<div id="present" hidden><svg id="pcanvas" viewBox="-7.1111 -4 14.2222 8" aria-label="Presentation"></svg><button class="exit" id="exitPres">Exit (Esc)</button><button class="ctl" id="togLive" hidden>Hide controls (C)</button><div id="plive" hidden aria-label="Live controls"></div><div class="count" id="pcount"></div><button class="navbtn" id="pPrev" aria-label="Previous">‹</button><button class="navbtn" id="pNext" aria-label="Next">›</button><p class="rotate">Turn your phone sideways for a bigger slide</p></div>
+<div id="present" hidden><svg id="pcanvas" viewBox="-7.1111 -4 14.2222 8" aria-label="Presentation"></svg><button class="exit" id="exitPres">Exit (Esc)</button><button class="ctl" id="togLive" hidden>Hide controls (C)</button><div id="plive" hidden aria-label="Live controls"></div><div class="count" id="pcount"></div><button class="navbtn" id="pPrev" aria-label="Previous">‹</button><button class="navbtn" id="pNext" aria-label="Next">›</button><p class="rotate">Turn your phone sideways for a bigger slide</p><a id="pbadge" class="pbadge" href="/" target="_blank" rel="noopener" hidden>Made with <b>Tracé</b></a></div>
 
 <div id="modal" hidden>
   <div class="dialog" role="dialog" aria-label="Export">
@@ -365,6 +365,56 @@ function startLoop(svg,getObjs){stopLoop();if(!hasLoop(getObjs()))return;loopSvg
   const tick=now=>{if(!anim||anim.svg!==svg){const t=loopNow();drawItems(svg,getObjs().map(o=>({obj:withLoop(o,t),op:1})));}loopRAF=requestAnimationFrame(tick);};loopRAF=requestAnimationFrame(tick);}
 const TYPES={constellation:'Symbols in noise (BPSK)',jsmap:'J/S map',hopping:'Frequency hopping',despread:'Spread spectrum',star:'Star',sector:'Sector or ring',cross:'Cross mark',venn:'Venn diagram',bullets:'Bullet list',code:'Code',polar:'Polar plot',cplane:'Complex plane',network:'Network',table:'Table',point:'Labelled point',triangle:'Triangle',angle:'Angle',plane:'Number plane',counter:'Counter',wave:'Wave',phasor:'Phasor',spectrum:'Signal and spectrum',chart:'Chart',image:'Image',text:'Text',latex:'Equation',matrix:'Matrix',circle:'Circle',ellipse:'Ellipse',rect:'Rectangle',polygon:'Polygon',arc:'Arc',line:'Line',arrow:'Arrow',dot:'Dot',brace:'Brace',axes:'Graph',curve:'Parametric curve',numberline:'Number line',vector:'Vector',field:'Vector field',axes3d:'3D axes'};
 const MENU_PRESETS={shapes3d:'3D scene with several shapes',sphere3:'Sphere',cube3:'Cube',box3:'Cuboid',ellipsoid3:'Ellipsoid',cylinder3:'Cylinder',cone3:'Cone',prism3:'Prism',pyramid3:'Pyramid',torus3:'Torus',tetrahedron3:'Tetrahedron',octahedron3:'Octahedron',dodecahedron3:'Dodecahedron',icosahedron3:'Icosahedron',arrow3:'3D arrow'};
+/* ---------- recorded voice (Pro) ----------
+   A slide can hold one recording per step: slide.voice = {0: {id, dur}, 2: {...}}. The sound itself is kept
+   with the images (IMG / IndexedDB) so decks stay small in memory and travel with the deck when saved or shared. */
+const voiceOf=(s2,k)=>s2&&s2.voice&&s2.voice[k]&&IMG.get(s2.voice[k].id)?s2.voice[k]:null;
+let voiceAudio=null,rec=null;
+function voiceStop(){if(voiceAudio){try{voiceAudio.pause();}catch(_){}voiceAudio=null;}}
+function voicePlay(s2,k){voiceStop();const v=voiceOf(s2,k);if(!v)return null;const a=new Audio(IMG.get(v.id));voiceAudio=a;a.play().catch(()=>{});return a;}
+/* run fn once the voice that is playing has finished (so automatic steps wait for the speaker) */
+function afterVoice(fn){const a=voiceAudio;if(!a||a.paused||a.ended){fn();return;}let done=false;const go=()=>{if(done)return;done=true;fn();};
+  a.addEventListener('ended',go,{once:true});a.addEventListener('pause',go,{once:true});const left=isFinite(a.duration)?(a.duration-a.currentTime):60;setTimeout(go,(left+1.5)*1000);}
+function voiceIds(d){const ids=[];(d.slides||[]).forEach(s2=>{if(s2.voice)for(const v of Object.values(s2.voice))if(v&&v.id&&IMG.get(v.id))ids.push(v.id);});return ids;}
+const mmss=t=>`${Math.floor(t/60)}:${String(Math.floor(t%60)).padStart(2,'0')}`;
+const VOICE_MAX=180;
+async function voiceRecord(){if(rec){voiceFinish();return;}if(!needPro('voice'))return;
+  if(!navigator.mediaDevices||!navigator.mediaDevices.getUserMedia||!window.MediaRecorder){toast('This browser cannot record sound. Try Chrome, Edge, Firefox or Safari.');return;}
+  const k=editStep??0,s2=slide();let stream;
+  try{stream=await navigator.mediaDevices.getUserMedia({audio:{echoCancellation:true,noiseSuppression:true}});}catch(e){toast('Tracé could not use the microphone. Allow it next to the address bar, then try again.');return;}
+  const type=['audio/webm;codecs=opus','audio/ogg;codecs=opus','audio/mp4','audio/webm'].find(t=>MediaRecorder.isTypeSupported&&MediaRecorder.isTypeSupported(t));
+  let mr;try{mr=new MediaRecorder(stream,type?{mimeType:type,audioBitsPerSecond:32000}:{audioBitsPerSecond:32000});}catch(e){mr=new MediaRecorder(stream);}
+  voiceStop();rec={mr,chunks:[],t0:performance.now(),k,s2,stream};
+  mr.ondataavailable=e=>{if(rec&&e.data&&e.data.size)rec.chunks.push(e.data);};
+  mr.start(250);
+  rec.timer=setInterval(()=>{if(!rec)return;const t=(performance.now()-rec.t0)/1000,d=$('#vDur');if(d)d.textContent=mmss(t);if(t>=VOICE_MAX){voiceFinish();toast(`Recordings stop after ${VOICE_MAX/60} minutes. Add another one on the next click.`);}},250);
+  renderStepBar();toast('Recording… speak now. Press Stop when you are done.');}
+function voiceFinish(){if(!rec||rec.stopping)return;const r=rec;r.stopping=true;clearInterval(r.timer);const dur=(performance.now()-r.t0)/1000;
+  r.mr.onstop=()=>{r.stream.getTracks().forEach(t=>t.stop());const blob=new Blob(r.chunks,{type:r.mr.mimeType||'audio/webm'});
+    if(dur<0.5||!blob.size){rec=null;renderStepBar();toast('Too short: nothing was kept.');return;}
+    const fr=new FileReader();fr.onload=()=>{const id='voice_'+Date.now().toString(36)+Math.random().toString(36).slice(2,7);IMG.set(id,fr.result);idb.put(id,fr.result);
+      snap();r.s2.voice=r.s2.voice||{};r.s2.voice[r.k]={id,dur:+dur.toFixed(1)};rec=null;persist();renderStepBar();
+      toast(`Voice added to ${r.k?`Click ${r.k}`:'the start of the slide'}. It plays when you present.`);};fr.readAsDataURL(blob);};
+  try{r.mr.stop();}catch(e){r.mr.onstop();}}
+function voiceUI(s2,k){if(rec&&rec.s2===s2&&rec.k===k)return`<span class="voice"><button class="btn rec on" id="vRec" title="Stop recording"><span class="vdot"></span>Stop</button><span class="vdur" id="vDur">${mmss((performance.now()-rec.t0)/1000)}</span></span>`;
+  const v=voiceOf(s2,k);if(v)return`<span class="voice"><button class="btn" id="vPlay" title="Listen to the voice of this step">▶ Voice <span class="vdur">${mmss(v.dur)}</span></button><button class="btn" id="vRec" title="Record it again">Re-record</button><button class="btn" id="vDel" title="Delete this voice" aria-label="Delete this voice">×</button></span>`;
+  return`<span class="voice"><button class="btn rec" id="vRec" title="Record your voice for this step: it plays when you present"${rec?' disabled':''}><span class="vdot"></span>Record voice<span class="protag">PRO</span></button></span>`;}
+function wireVoice(s2,k){const r=$('#vRec');if(r)r.onclick=voiceRecord;const pl=$('#vPlay');if(pl)pl.onclick=()=>voicePlay(s2,k);
+  const d=$('#vDel');if(d)d.onclick=()=>{snap();delete s2.voice[k];if(!Object.keys(s2.voice).length)delete s2.voice;voiceStop();persist();renderStepBar();toast('Voice deleted.');};}
+
+/* ---------- plans ----------
+   On its own this editor has everything unlocked. The online version (cloud.js) sets PLAN from the
+   account: Free or Pro. Pro adds advanced 3D, the Python video script and recorded voice. */
+const PLAN={pro:true,badge:false,pythonFree:false,upgrade:null};
+const PRO_ADD=new Set(['torus3','tetrahedron3','octahedron3','dodecahedron3','icosahedron3','arrow3','axes3d','shapes3d']);
+const PRO_WHAT={'3d':'Advanced 3D: surfaces z = f(x, y), 3D scenes, polyhedra, torus, 3D arrows and turning 3D views',python:'The Python video script (Manim)',voice:'Recording your voice on slides'};
+function needPro(what){if(PLAN.pro)return true;if(PLAN.upgrade)PLAN.upgrade(what);else toast(`${PRO_WHAT[what]||what} is part of Tracé Pro.`);return false;}
+const canPython=()=>PLAN.pro||PLAN.pythonFree;
+const isDarkHex=h=>{const n=parseInt(String(h||'#000').replace('#','').slice(0,6).padEnd(6,'0'),16)||0;return((n>>16)*299+((n>>8)&255)*587+(n&255)*114)/1000<128;};
+document.body.classList.add('is-pro');
+function planChanged(){document.body.classList.toggle('is-pro',!!PLAN.pro);const b=$('#pbadge');if(b)b.hidden=!PLAN.badge;
+  const t=document.querySelector('.tab[data-tab="code"]');if(t)t.classList.toggle('locked',!canPython());try{renderStepBar();renderProps();}catch(_){}}
+
 const GROUPS=[['Write',['text','latex','bullets','code','matrix','table','counter']],['Draw',['image','circle','ellipse','rect','polygon','star','arc','sector','line','arrow','dot','brace','cross']],['Geometry',['point','triangle','angle','plane','venn']],['Plot',['axes','curve','polar','numberline','vector','field','cplane']],['3D',['sphere3','cube3','box3','ellipsoid3','cylinder3','cone3','prism3','pyramid3','torus3','tetrahedron3','octahedron3','dodecahedron3','icosahedron3','arrow3','axes3d','shapes3d']],['Science',['wave','phasor','spectrum','chart','network','constellation','jsmap','hopping','despread']]];
 const MANIM={image:'ImageMobject',text:'Text',latex:'MathTex',matrix:'Matrix',circle:'Circle',ellipse:'Ellipse',rect:'Rectangle',polygon:'RegularPolygon',arc:'Arc',line:'Line',arrow:'Arrow',dot:'Dot',brace:'Brace',axes:'Axes',curve:'ParametricFunction',numberline:'NumberLine',vector:'Vector',field:'ArrowVectorField',axes3d:'ThreeDAxes + Surface'};
 const ICONS2={constellation:'<circle cx="4" cy="8" r="1" fill="currentColor"/><circle cx="5.5" cy="6.5" r="1" fill="currentColor"/><circle cx="3" cy="10" r="1" fill="currentColor"/><circle cx="12" cy="8" r="1" fill="currentColor"/><circle cx="11" cy="9.6" r="1" fill="currentColor"/><circle cx="13" cy="6.4" r="1" fill="currentColor"/><path d="M8 2v12" stroke="currentColor" stroke-dasharray="2 1.5"/>',
@@ -1431,10 +1481,10 @@ function renderCanvas(){if(anim&&anim.svg===canvas)return;if(loopSvg===canvas)st
     el('rect',{x:cam.x-w/2,y:-cam.y-h/2,width:w,height:h,fill:'none',stroke:'#FFFFFF','stroke-width':1.5,'stroke-dasharray':'6 5','vector-effect':'non-scaling-stroke','pointer-events':'none',opacity:0.8},L.hud);}
   renderStepBar();}
 function renderStepBar(){const bar=$('#stepbar');if(!bar)return;const s2=slide(),K=maxStep(s2),cnt=k=>s2.objects.filter(o=>stepOf(o)===k).length,out=k=>k?s2.objects.filter(o=>exitOf(o)===k).length:0;
-  const chg=k=>s2.objects.filter(o=>(o.keys&&o.keys[k]&&Object.keys(o.keys[k]).length)||(o.paths&&o.paths[k])).length,chip=(k,label)=>{const a=cnt(k),b=out(k),c=k?chg(k):0,cam=k&&s2.cams&&s2.cams[k]&&!camEq(s2.cams[k],camAt(s2,k-1));return`<button class="chip${editStep===k?' on':''}" data-step="${k}" title="Show and edit the slide at this point">${autoOf(s2,k)?'↪ ':''}${label}<small>${a?`+${a}`:''}${b?` −${b}`:''}${c?` ~${c}`:''}${cam?' 🔍':''}${!a&&!b&&!c&&!cam?'empty':''}</small></button>`;};
+  const chg=k=>s2.objects.filter(o=>(o.keys&&o.keys[k]&&Object.keys(o.keys[k]).length)||(o.paths&&o.paths[k])).length,chip=(k,label)=>{const a=cnt(k),b=out(k),c=k?chg(k):0,cam=k&&s2.cams&&s2.cams[k]&&!camEq(s2.cams[k],camAt(s2,k-1));return`<button class="chip${editStep===k?' on':''}" data-step="${k}" title="Show and edit the slide at this point">${autoOf(s2,k)?'↪ ':''}${label}${voiceOf(s2,k)?'<span class="vmark" title="Has a recorded voice">🎙</span>':''}<small>${a?`+${a}`:''}${b?` −${b}`:''}${c?` ~${c}`:''}${cam?' 🔍':''}${!a&&!b&&!c&&!cam?'empty':''}</small></button>`;};
   let h=`<span class="tag">Clicks:</span>${chip(0,'Opens')}`;for(let k=1;k<=K;k++)h+=chip(k,`Click ${k}`);h+=`<button class="chip add" id="addClick" title="Add a click. If an object is selected, it will appear on the new click.">+ Click</button>`;
-  if(editStep!==null){const c=camAt(s2,editStep);h+=`<span class="cam">Lasts <input type="number" id="stepT" min="0.2" max="20" step="0.1" value="${durOf(s2,editStep)}" style="width:58px;background:var(--desk);border:1px solid var(--line);border-radius:3px;padding:3px 5px"> s${editStep?` <label style="display:flex;gap:4px;align-items:center"><input type="checkbox" id="stepAuto"${autoOf(s2,editStep)?' checked':''}>by itself</label>`:''} · View <input type="range" id="camZ" min="1" max="4" step="0.05" value="${c.z}" aria-label="Zoom"> <button class="btn" id="camFit">Frame the selected object</button><button class="btn" id="camReset">Full slide</button><button class="btn" id="playStep">▶ Play</button></span>`;}
-  bar.innerHTML=h;
+  if(editStep!==null){const c=camAt(s2,editStep);h+=`<span class="cam">Lasts <input type="number" id="stepT" min="0.2" max="20" step="0.1" value="${durOf(s2,editStep)}" style="width:58px;background:var(--desk);border:1px solid var(--line);border-radius:3px;padding:3px 5px"> s${editStep?` <label style="display:flex;gap:4px;align-items:center"><input type="checkbox" id="stepAuto"${autoOf(s2,editStep)?' checked':''}>by itself</label>`:''} · View <input type="range" id="camZ" min="1" max="4" step="0.05" value="${c.z}" aria-label="Zoom"> <button class="btn" id="camFit">Frame the selected object</button><button class="btn" id="camReset">Full slide</button><button class="btn" id="playStep">▶ Play</button> ${voiceUI(s2,editStep)}</span>`;}
+  bar.innerHTML=h;if(editStep!==null)wireVoice(s2,editStep);
   bar.querySelectorAll('[data-step]').forEach(b=>b.onclick=()=>{const k=+b.dataset.step;editStep=editStep===k?null:k;renderCanvas();});
   $('#addClick').onclick=()=>{snap();const K2=maxStep(s2)+1;s2.cams=s2.cams||{};s2.cams[K2]={...camAt(s2,K2-1)};editStep=K2;refresh();toast(`Click ${K2} added. Now move, resize, turn or recolour anything: it animates on this click.`);};
   const sT=$('#stepT');if(sT)sT.onchange=()=>{const v=parseFloat(sT.value);if(!(v>0))return;snap();s2.times=s2.times||{};s2.times[editStep]=v;persist();};
@@ -1443,7 +1493,7 @@ function renderStepBar(){const bar=$('#stepbar');if(!bar)return;const s2=slide()
   const fit=$('#camFit');if(fit)fit.onclick=()=>{const o=sel&&obj(sel);if(!o){toast('Select the object to frame first.');return;}const rec=layerOf(canvas).cache.get(o.id+'#0');let w=3,h=2;try{const bb=rec.g.getBBox();w=bb.width*o.scale;h=bb.height*o.scale;}catch(e){}
     snap();const zz=Math.max(1,Math.min(4,0.8*Math.min(FW/Math.max(w,0.1),FH/Math.max(h,0.1))));s2.cams=s2.cams||{};s2.cams[editStep]={x:o.x,y:o.y,z:+zz.toFixed(2)};refresh();};
   const rs=$('#camReset');if(rs)rs.onclick=()=>{snap();s2.cams=s2.cams||{};if(editStep>0&&!camEq(camAt(s2,editStep-1),CAM0))s2.cams[editStep]={...CAM0};else delete s2.cams[editStep];refresh();};
-  const pl=$('#playStep');if(pl)pl.onclick=()=>{const k=editStep,prev=cur?deck.slides[cur-1]:null,from=k?visibleAt(s2,k-1):(prev?finalOf(prev):[]),c0=k?camAt(s2,k-1):(prev?lastCam(prev):CAM0);
+  const pl=$('#playStep');if(pl)pl.onclick=()=>{voicePlay(s2,editStep);const k=editStep,prev=cur?deck.slides[cur-1]:null,from=k?visibleAt(s2,k-1):(prev?finalOf(prev):[]),c0=k?camAt(s2,k-1):(prev?lastCam(prev):CAM0);
     play(canvas,from,visibleAt(s2,k),durOf(s2,k),()=>setTimeout(()=>renderCanvas(),500),{feel:feelOf(s2),stagger:!!s2.stagger,camFrom:c0,camTo:camAt(s2,k),step:k,slideObjs:s2.objects});};}
 const COARSE=matchMedia('(pointer:coarse)').matches;
 function drawHud(L){L.hud.innerHTML='';const o0=sel&&obj(sel);if(!o0)return;const o=liveOf(o0);const rec=L.cache.get(o.id+'#0');if(!rec)return;let bb;try{bb=rec.g.getBBox();}catch(e){return;}if(!bb||!isFinite(bb.width))return;
@@ -1640,6 +1690,7 @@ function renderProps(){const P=$('#props');const o=sel&&obj(sel);
   let snapped=false;
   P.querySelectorAll('[data-k]').forEach(inp=>{inp.addEventListener('focus',()=>snapped=false);
     inp.addEventListener(inp.type==='checkbox'?'change':'input',()=>{const k=inp.dataset.k;let v=inp.type==='checkbox'?inp.checked:inp.value;if(inp.dataset.num)v=parseFloat(v)||0;if(inp.type==='number'||inp.type==='range'){v=parseFloat(v);if(!isFinite(v))return;}
+      if(k==='loop'&&o.type==='axes3d'&&v!=='none'&&!needPro('3d')){inp.value=o.loop||'none';return;}
       if(!snapped){snap();snapped=true;}
       if(k==='mode'&&v==='plain'&&!o.src)o.src='';
       writeOf(o,k)[k]=v;const out=inp.parentElement.querySelector('output');if(out)out.textContent=r3(v);syncAll();renderCanvas();thumbsSoon();persist();
@@ -1716,7 +1767,7 @@ function fitGraph(o){if(o.ckind==='implicit')return fitImplicit2(o);const f=comp
   let lo=ys[Math.floor(ys.length*0.02)],hi=ys[Math.max(0,Math.ceil(ys.length*0.98)-1)];if(hi-lo<1e-9){lo-=1;hi+=1;}const pad=(hi-lo)*0.1;let ymin=lo-pad,ymax=hi+pad;
   if(ymin>0&&ymin<(ymax-ymin)*0.3)ymin=0;if(ymax<0&&-ymax<(ymax-ymin)*0.3)ymax=0;const st=niceStep(ymax-ymin);ymin=Math.floor(ymin/st)*st;ymax=Math.ceil(ymax/st)*st;
   Object.assign(o,{xmin:+best[0].toFixed(3),xmax:+best[1].toFixed(3),ymin:+ymin.toFixed(3),ymax:+ymax.toFixed(3)});return true;}
-function plotEquation(eq){const k=plotKind(eq);if(k.error)return;snap();const n=make(k.type);n.source=eq.id;{const ax=effVm(eq).x||(eqAnalyze(eq).used||new Set()).has('t')&&'t'||'';n._pos=!!ax&&(POS_AXES.test(ax)||positiveSyms(eq,eqSymbols(eq)).has(ax));}if(k.type==='polar')n.y=-0.8;
+function plotEquation(eq){const k=plotKind(eq);if(k.error)return;if(k.type==='axes3d'&&!needPro('3d'))return;snap();const n=make(k.type);n.source=eq.id;{const ax=effVm(eq).x||(eqAnalyze(eq).used||new Set()).has('t')&&'t'||'';n._pos=!!ax&&(POS_AXES.test(ax)||positiveSyms(eq,eqSymbols(eq)).has(ax));}if(k.type==='polar')n.y=-0.8;
   if(k.type==='axes')Object.assign(n,{x:0,y:-1.2,w:8,h:4});else if(k.type==='vector'){n.x=0;n.y=-1;}else if(k.type==='curve')n.y=-1;else if(k.type==='axes3d')n.y=-0.8;
   {/* keep the equation readable: if the new plot would cover it, lift the equation above the plot */const half=n.type==='axes'?n.h/2:2,top=n.y+half;if(Math.abs(eq.y-n.y)<half+0.5&&!(eq.keys&&Object.keys(eq.keys).length)){eq.y=+Math.min(3.3,top+0.75).toFixed(2);}}
   slide().objects.push(n);syncLinks(slide().objects);if(n.type==='axes')fitGraph(n);if(n.type==='axes3d')fit3d(n);if(n.type==='polar'){const f=compileFn(n.rfn,'theta');if(f){let m=0;for(let k=0;k<=720;k++){let r;try{r=Math.abs(f(n.tmin+(n.tmax-n.tmin)*k/720));}catch(e){r=NaN;}if(isFinite(r)&&r<1e6)m=Math.max(m,r);}if(m>0)n.rmax=+niceUp(m*1.05).toPrecision(3);}}sel=n.id;refresh();toast(`Plotted ${k.label}. Edit the equation and it follows.`);}
@@ -1764,7 +1815,7 @@ document.addEventListener('click',e=>{if(e.target.closest('[data-menu="proj"]'))
   const pa=e.target.closest('[data-pa]');if(pa){Promise.resolve(projAction(pa.dataset.pa,pa)).then(r=>{if(r!=='keep')closeMenus();});}},true);
 $('#projName').addEventListener('change',e=>{const m=curMeta();if(!m)return;m.name=e.target.value.trim()||'Untitled project';m.updated=Date.now();saveIndex();updateProjectUI();});
 $('#projName').addEventListener('keydown',e=>{if(e.key==='Enter')e.target.blur();});
-function deckWithImages(d){const ids=new Set();d.slides.forEach(s=>s.objects.forEach(o=>{if(o.type==='image'&&o.imgId&&IMG.get(o.imgId))ids.add(o.imgId);}));return ids.size?{...d,images:Object.fromEntries([...ids].map(id=>[id,IMG.get(id)]))}:d;}
+function deckWithImages(d){const ids=new Set(voiceIds(d));d.slides.forEach(s=>s.objects.forEach(o=>{if(o.type==='image'&&o.imgId&&IMG.get(o.imgId))ids.add(o.imgId);}));return ids.size?{...d,images:Object.fromEntries([...ids].map(id=>[id,IMG.get(id)]))}:d;}
 async function downloadProject(){const m=curMeta(),name=(m?.name||'Tracé project').replace(/[\\/:*?"<>|]+/g,' ').trim()||'Tracé project';
   const data=JSON.stringify({format:'trace',version:1,name:m?.name||name,saved:new Date().toISOString(),deck:deckWithImages(deck)});
   let dl=null;try{dl=window.claude&&window.claude.use?await window.claude.use('downloads'):null;}catch(e){dl=null;}
@@ -2130,7 +2181,7 @@ function add3d(type){const def=SOLO3[type];snap();const host=sel&&obj(sel);
   if(host&&host.type==='axes3d'){host.solids=host.solids||[];host.solids.push({c:[0,0,0],...clone(def),color:SOLO_COLORS[host.solids.length%5],op:0.9});refresh();toast(`${MENU_PRESETS[type]} added to the selected 3D scene.`);return;}
   const o=make('axes3d');Object.assign(o,{surface:false,showAxes:false,numbers:false,labels:false,xmin:-2,xmax:2,ymin:-2,ymax:2,zmin:-2,zmax:2,len:3.2,zlen:3.2,az:-35,tilt:65,solids:[{c:[0,0,0],...clone(def),color:'#58C4DD',op:0.9}]});
   const n=slide().objects.filter(x=>x.type==='axes3d').length;o.x=Math.min(5,n*2.5-2);slide().objects.push(o);sel=o.id;refresh();}
-function addObj(type){if(type==='image')return pickImage(null);if(SOLO3[type])return add3d(type);if(type==='shapes3d'){snap();const o=make('axes3d');Object.assign(o,{surface:false,numbers:false,labels:true,xmin:-3,xmax:3,ymin:-3,ymax:3,zmin:-3,zmax:3,len:4.4,zlen:4.4,az:-35,tilt:65,
+function addObj(type){if(PRO_ADD.has(type)&&!needPro('3d'))return;if(type==='image')return pickImage(null);if(SOLO3[type])return add3d(type);if(type==='shapes3d'){snap();const o=make('axes3d');Object.assign(o,{surface:false,numbers:false,labels:true,xmin:-3,xmax:3,ymin:-3,ymax:3,zmin:-3,zmax:3,len:4.4,zlen:4.4,az:-35,tilt:65,
     solids:[{kind:'sphere',c:[0,0,0],r:1.2,color:'#58C4DD',op:0.85},{kind:'box',c:[2,-1.5,-1.5],size:[1,1,1],color:'#F4D345',op:0.85},{kind:'arrow',a:[0,0,0],b:[2,2,2],color:'#FC6255',label:'\\vec{v}'}]});
     slide().objects.push(o);sel=o.id;refresh();return;}
   snap();const o=make(type);const n=slide().objects.filter(x=>x.type===type).length;o.x=Math.min(5,n*0.4);o.y=-Math.min(3,n*0.3);slide().objects.push(o);sel=o.id;refresh();}
@@ -2143,7 +2194,7 @@ function moveSlide(d){const j=cur+d;if(j<0||j>=deck.slides.length)return;snap();
 function toast(m){if(!$('#present').hidden)return;const t=$('#toast');t.textContent=m;t.classList.add('show');clearTimeout(t._t);t._t=setTimeout(()=>t.classList.remove('show'),2600);}
 
 Object.assign(ICONS,ICONS2);
-$('#tools').innerHTML=GROUPS.map(([g,list],i)=>`<div class="menuwrap"><button class="tool" data-menu="${i}" aria-haspopup="true" aria-expanded="false">${g}<svg viewBox="0 0 16 16"><path d="M4 6l4 4 4-4" stroke="currentColor" stroke-width="1.5" fill="none"/></svg></button><div class="menu" role="menu" hidden>${list.map(k=>`<button role="menuitem" data-t="${k}"><svg viewBox="0 0 16 16">${ICONS[k]}</svg>${TYPES[k]||MENU_PRESETS[k]}</button>`).join('')}</div></div>`).join('');
+$('#tools').innerHTML=GROUPS.map(([g,list],i)=>`<div class="menuwrap"><button class="tool" data-menu="${i}" aria-haspopup="true" aria-expanded="false">${g}<svg viewBox="0 0 16 16"><path d="M4 6l4 4 4-4" stroke="currentColor" stroke-width="1.5" fill="none"/></svg></button><div class="menu" role="menu" hidden>${list.map(k=>`<button role="menuitem" data-t="${k}"><svg viewBox="0 0 16 16">${ICONS[k]}</svg>${TYPES[k]||MENU_PRESETS[k]}${PRO_ADD.has(k)?'<span class="protag">PRO</span>':''}</button>`).join('')}</div></div>`).join('');
 function closeMenus(){document.querySelectorAll('.menu').forEach(m=>m.hidden=true);document.querySelectorAll('[data-menu]').forEach(b=>b.setAttribute('aria-expanded','false'));}
 document.addEventListener('click',e=>{const mb=e.target.closest('[data-menu]');if(mb){const m=mb.nextElementSibling,open=m.hidden;closeMenus();if(open){m.hidden=false;mb.setAttribute('aria-expanded','true');m.querySelector('button').focus();}return;}if(!e.target.closest('.menu'))closeMenus();});
 document.addEventListener('keydown',e=>{if((e.ctrlKey||e.metaKey)&&!e.shiftKey&&['b','i','u'].includes(e.key.toLowerCase())&&sel&&!e.target.closest('textarea,input')){const o=obj(sel);if(o&&['text','bullets','table'].includes(o.type)){e.preventDefault();const k={b:'bold',i:'italic',u:'underline'}[e.key.toLowerCase()];snap();writeOf(o,k)[k]=!liveOf(o)[k];persist();renderCanvas();thumbsSoon();renderProps();return;}}if(e.key==='Escape')closeMenus();});
@@ -2156,7 +2207,7 @@ stageEl.addEventListener('dragleave',()=>stageEl.style.outline='');
 stageEl.addEventListener('drop',e=>{e.preventDefault();stageEl.style.outline='';const f=[...e.dataTransfer.files].find(f=>/^image\//.test(f.type));if(f)addImageFile(f,null);else toast('Drop an image file (PNG, JPEG, GIF, WebP or SVG).');});
 document.addEventListener('paste',e=>{if(/INPUT|TEXTAREA/.test(document.activeElement?.tagName||''))return;const f=[...(e.clipboardData?.files||[])].find(f=>/^image\//.test(f.type));if(f){e.preventDefault();addImageFile(f,null);}});
 $('#preview').onclick=()=>{sel=null;editStep=null;renderProps();LOOP0=performance.now();const s2=slide(),K=maxStep(s2),prev=cur?deck.slides[cur-1]:null;let k=0;
-  const go=(from,c0)=>{const to=visibleAt(s2,k),c1=camAt(s2,k);play(canvas,from,to,durOf(s2,k),()=>{if(k<K){k++;setTimeout(()=>go(to,c1),autoOf(s2,k)?30:450);}else{const objs=to;startLoop(canvas,()=>objs);setTimeout(()=>{stopLoop();renderCanvas();},hasLoop(objs)?4500:700);}},{feel:feelOf(s2),stagger:!!s2.stagger,camFrom:c0,camTo:c1,step:k,slideObjs:s2.objects,loops:true});};
+  const go=(from,c0)=>{const to=visibleAt(s2,k),c1=camAt(s2,k);voicePlay(s2,k);play(canvas,from,to,durOf(s2,k),()=>afterVoice(()=>{if(k<K){k++;setTimeout(()=>go(to,c1),autoOf(s2,k)?30:450);}else{const objs=to;startLoop(canvas,()=>objs);setTimeout(()=>{stopLoop();renderCanvas();},hasLoop(objs)?4500:700);}}),{feel:feelOf(s2),stagger:!!s2.stagger,camFrom:c0,camTo:c1,step:k,slideObjs:s2.objects,loops:true});};
   go(prev?finalOf(prev):[],prev?lastCam(prev):CAM0);};
 
 /* ---------- live controls ---------- */
@@ -2181,9 +2232,9 @@ function renderLiveBar(){const bar=$('#livebar');const cs=liveControls(slide().o
 const pc=$('#pcanvas');let pi=0;
 let presOv={},presShown=null,liveHidden=false;
 let ps=0;
-function presShow(i,k,animate,from,c0){const s2=deck.slides[i],to=visibleAt(s2,k),c1=camAt(s2,k);stopLoop();pi=i;ps=k;presOv={};presShown=to;const K=maxStep(s2);
+function presShow(i,k,animate,from,c0){const s2=deck.slides[i],to=visibleAt(s2,k),c1=camAt(s2,k);stopLoop();pi=i;ps=k;if(animate)voicePlay(s2,k);else voiceStop();presOv={};presShown=to;const K=maxStep(s2);
   $('#pcount').textContent=`${i+1} / ${deck.slides.length}${K?` · click ${k} of ${K}`:''}`;const loop=()=>startLoop(pc,()=>presShown||to);
-  const after=()=>{loop();if(presQueued){presQueued=false;setTimeout(()=>{if(pi===i&&ps===k)presNext();},0);}else if(k<K&&autoOf(s2,k+1))setTimeout(()=>{if(pi===i&&ps===k)presNext();},40);};
+  const after=()=>{loop();if(presQueued){presQueued=false;setTimeout(()=>{if(pi===i&&ps===k)presNext();},0);}else if(k<K&&autoOf(s2,k+1))afterVoice(()=>setTimeout(()=>{if(pi===i&&ps===k)presNext();},40));};
   if(animate)play(pc,from,to,durOf(s2,k),after,{feel:feelOf(s2),stagger:!!s2.stagger,camFrom:c0,camTo:c1,step:k,slideObjs:s2.objects,loops:true});else{finishAnim();drawStatic(pc,to);setCam(layerOf(pc),c1);loop();}renderPresLive();warmNext();}
 function presAt(i,animate){const prev=i?deck.slides[i-1]:null;presShow(i,0,animate,prev?finalOf(prev):[],prev?lastCam(prev):CAM0);}
 function renderPresLive(){const box=$('#plive'),tog=$('#togLive'),cs=liveControls(visibleAt(deck.slides[pi],ps));tog.hidden=!cs.length;
@@ -2200,7 +2251,7 @@ function warmNext(){const s2=deck.slides[pi];if(!s2)return;let A,B;if(ps<maxStep
   const idle=window.requestIdleCallback||(f=>setTimeout(f,120));const run=()=>{if(!jobs.length)return;if(anim){idle(run);return;}sampleShapes(jobs.shift());idle(run);};if(jobs.length)idle(run);}
 function presPrev(){presQueued=false;if(ps>0)presShow(pi,ps-1,false);else if(pi>0)presShow(pi-1,maxStep(deck.slides[pi-1]),false);}
 function openPresent(){presShown=null;pi=-1;presQueued=false;if(innerHeight<520)liveHidden=true;/* a phone on its side has no room for sliders over the slide; one tap shows them */LOOP0=performance.now();$('#present').hidden=false;document.body.classList.add('presenting');try{document.documentElement.requestFullscreen&&document.documentElement.requestFullscreen().catch(()=>{});}catch(e){}presAt(cur,true);}
-function closePresent(){finishAnim();stopLoop();$('#present').hidden=true;document.body.classList.remove('presenting');if(document.fullscreenElement)document.exitFullscreen().catch(()=>{});renderCanvas();}
+function closePresent(){voiceStop();finishAnim();stopLoop();$('#present').hidden=true;document.body.classList.remove('presenting');if(document.fullscreenElement)document.exitFullscreen().catch(()=>{});renderCanvas();}
 $('#presentBtn').onclick=openPresent;$('#exitPres').onclick=e=>{e.stopPropagation();closePresent();};
 let pdrag=null,justOrbited=false;
 pc.addEventListener('pointerdown',e=>{const g=e.target.closest('g[data-type="axes3d"]');if(!g)return;const base=(presShown||deck.slides[pi].objects).find(o=>o.id===g.dataset.id);if(!base)return;
@@ -3323,7 +3374,11 @@ function genCode(){const names=new Map(),count={};const nm=o=>{if(!names.has(o.i
 
     'def make_brace(width, label, direction, color):','    brace = BraceBetweenPoints([-width / 2, 0, 0], [width / 2, 0, 0], direction=direction, color=color)','    group = VGroup(brace)','    if label:','        group.add(brace.get_tex(label).set_color(color))','    return group','',
     ...imageBlock(),
-    'class Presentation(Slide, MovingCameraScene):','    def construct(self):',`        self.camera.background_color = "${deck.bg}"`];
+    'class Presentation(Slide, MovingCameraScene):','    def construct(self):',`        self.camera.background_color = "${deck.bg}"`,
+    ...(PLAN.pro?[]:['        # Made with Tracé (free plan): a small mark in the corner of the video',
+      `        mark = Text("Made with Tracé", font_size=20, color="${isDarkHex(deck.bg)?'#BBBBBB':'#555555'}").set_opacity(0.85)`,
+      '        def _mark(m):','            f = self.camera.frame','            m.set(width=f.width * 0.15)','            m.move_to(f.get_corner(DR) + LEFT * (m.width / 2 + f.width * 0.015) + UP * (m.height / 2 + f.width * 0.015))',
+      '        mark.add_updater(_mark)','        _mark(mark)','        self.add_foreground_mobject(mark)'])];
   const I='        ';
   const ENTER_PY={write:'Write',create:'Create',fadein:'FadeIn',grow:'GrowFromCenter',left:'FadeIn|shift=RIGHT',right:'FadeIn|shift=LEFT',up:'FadeIn|shift=UP',down:'FadeIn|shift=DOWN',zoom:'FadeIn|scale=1.6',spin:'SpinInFromNothing',border:'DrawBorderThenFill'};
   const EXIT_PY={fade:'FadeOut',shrink:'ShrinkToCenter',left:'FadeOut|shift=LEFT',right:'FadeOut|shift=RIGHT',down:'FadeOut|shift=DOWN',uncreate:'Uncreate'};
@@ -3365,10 +3420,10 @@ function genCode(){const names=new Map(),count={};const nm=o=>{if(!names.has(o.i
     if(loopers.length&&!nextAuto)L.push(`${I}# keeps moving until the next click`,`${I}self.next_slide(loop=True)`,`${I}self.play(${loopers.map(o=>loopAnim(o,tS)).join(', ')})`);}});
   L.push(`${I}self.wait()`);return L.join('\n')+'\n';}
 let tab='code';
-function showModal(t){tab=t;$('#modal').hidden=false;document.querySelectorAll('.tab').forEach(b=>b.classList.toggle('on',b.dataset.tab===t));
+function showModal(t){if(t==='code'&&!canPython()){needPro('python');if($('#modal').hidden)return;t='json';}tab=t;$('#modal').hidden=false;document.querySelectorAll('.tab').forEach(b=>b.classList.toggle('on',b.dataset.tab===t));
   if(t==='code'){$('#out').value=genCode();$('#out').readOnly=true;$('#steps').innerHTML='Save this as <code>deck.py</code>. The first lines of the file list the three commands that turn it into a video and a clickable presentation.';$('#jsonActions').hidden=true;}
-  else{const ids=usedImages();const dump=ids.length?{...deck,images:Object.fromEntries(ids.map(id=>[id,IMG.get(id)]))}:deck;$('#out').value=JSON.stringify(dump,null,1);$('#out').readOnly=false;$('#steps').textContent='Copy this to keep your deck as a file, or paste a deck here and load it.';$('#jsonActions').hidden=false;}}
-$('#exportBtn').onclick=()=>showModal('code');
+  else{const dump=deckWithImages(deck);$('#out').value=JSON.stringify(dump,null,1);$('#out').readOnly=false;$('#steps').textContent='Copy this to keep your deck as a file, or paste a deck here and load it.';$('#jsonActions').hidden=false;}}
+$('#exportBtn').onclick=()=>showModal(canPython()?'code':'json');
 document.querySelectorAll('.tab').forEach(b=>b.onclick=()=>showModal(b.dataset.tab));
 $('#closeModal').onclick=()=>$('#modal').hidden=true;
 $('#modal').addEventListener('click',e=>{if(e.target.id==='modal')$('#modal').hidden=true;});
@@ -3529,6 +3584,8 @@ setTimeout(()=>{let seen=false;try{seen=localStorage.getItem('trace-toured')==='
   if(seen||tour||document.body.classList.contains('viewer')||!$('#present').hidden||/[?&](demo|view)=/.test(location.search)||/^\/v\//.test(location.pathname))return;
   tourBuild();tour={name:'welcome',i:0,steps:[{title:'Welcome to Tracé',body:'Want a 2-minute tour? You make your first animated slide yourself, step by step.<div class="tour-more"><button class="btn primary" data-tour="first">Take the tour</button><button class="btn" data-tour="screen">Just show me around</button></div>',place:'corner',dim:false,next:'Not now',plain:true}]};
   try{localStorage.setItem('trace-toured','1');}catch(_){}tourShow(0);tourTimer=setInterval(tourTick,150);},1600);
+
+
 
 /* ---------- keyboard ---------- */
 document.addEventListener('keydown',e=>{
