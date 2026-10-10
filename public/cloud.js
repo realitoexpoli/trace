@@ -206,7 +206,7 @@
       ${reason ? `<p>${esc(reason)}</p>` : '<p>Everything in Free, plus more room online and cleaner share links.</p>'}
       ${TraceUI.planTable(profile && profile.plan)}
       ${ready ? `<div class="plans">${CFG.prices.monthly ? `<button data-price="${esc(CFG.prices.monthly)}"><b>Monthly</b>${esc(CFG.priceLabels.monthly)}</button>` : ''}${CFG.prices.yearly ? `<button data-price="${esc(CFG.prices.yearly)}"><b>Yearly</b>${esc(CFG.priceLabels.yearly)}</button>` : ''}</div>
-      <p>Secure payment by Paddle. Cancel any time from “Manage billing”.</p>` : '<p>Payments are not set up yet on this site.</p>'}`);
+      <p>Secure payment by Paddle. Cancel any time from “Manage billing”.</p>` : '<p><b>Pro is coming soon.</b> Everything in the Free plan is yours to use in the meantime.</p>'}`);
     body().querySelectorAll('[data-price]').forEach(b => b.onclick = () => checkout(b.dataset.price));
   }
 
