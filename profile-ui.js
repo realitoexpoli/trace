@@ -17,6 +17,7 @@
       ['Basic 3D shapes: sphere, cube, cylinder, cone, prism, pyramid', true, true],
       ['Advanced 3D: surfaces z = f(x, y), 3D scenes, polyhedra, torus, 3D arrows, turning views', false, true],
       ['Record your voice on slides and clicks', false, true],
+      ['Make a video (MP4) of every click, with your voice', 'With a “Made with Tracé” badge', 'No badge'],
       ['Python video script (Manim)', CFG.pythonForFree ? 'With a “Made with Tracé” mark' : false, true],
       ['Projects saved to your account', String(FREE_DECKS), 'Unlimited'],
       ['Size of one project (images and voice included)', '2 MB', '20 MB'],
@@ -104,6 +105,11 @@
   .promo-row input:focus{outline:none;border-color:#3B5BFD;box-shadow:0 0 0 4px rgba(59,91,253,.16)}
   .promo-row .btn{border-radius:8px;white-space:nowrap}
   .promo-ok{color:#1d7a43;font-weight:600;font-size:14px;margin:0}
+  @container (max-width:599px){
+    .t-card{grid-template-columns:auto minmax(0,1fr);justify-items:start;text-align:left;align-items:center;padding:12px 14px;gap:0 12px;box-shadow:none}
+    .t-card>.t-avatar{width:44px!important;height:44px!important;font-size:18px!important}
+    .t-card .deck,.t-card .by{display:none}
+  }
   .t-err{color:var(--danger,#a8352b);font-size:14px;margin:0}`;
   document.head.appendChild(css);
 

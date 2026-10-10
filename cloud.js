@@ -53,6 +53,13 @@
   #cloudModal .plans b{display:block;font-size:15px}
   #cloudModal ul{margin:0;padding-left:18px;color:var(--ink);font-size:13.5px;line-height:1.6}
   #cloudModal label.sw2{display:flex;gap:10px;align-items:center;font-size:14px}
+  #cloudModal .share-opts{border:1px solid var(--line);border-radius:4px;padding:8px 12px 10px;margin:0;display:grid;gap:6px}
+  #cloudModal .share-opts legend{font-size:12.5px;color:var(--mute);padding:0 4px}
+  #vhint{position:fixed;left:50%;transform:translateX(-50%);top:calc(14px + env(safe-area-inset-top,0px));background:#3B5BFD;color:#fff;font-size:14px;padding:8px 14px;border-radius:999px;z-index:60;box-shadow:0 8px 24px -8px rgba(0,0,0,.6);display:flex;gap:10px;align-items:center;max-width:92vw}
+  #vhint[hidden]{display:none}
+  #vhint button{background:none;border:0;color:#fff;font:inherit;font-size:16px;line-height:1;cursor:pointer;padding:0 2px;opacity:.85}
+  #vcopy{position:fixed;right:96px;top:calc(12px + env(safe-area-inset-top,0px));background:rgba(255,255,255,.07);color:#cfd4d0;border:none;border-radius:3px;padding:6px 10px;z-index:56;font:inherit;font-size:13px;cursor:pointer}
+  #vcopy:hover{background:rgba(255,255,255,.14)}
   .msg-ok{color:var(--ink)!important}
   .acct-choice{display:grid;gap:8px}
   #cloudModal .btn.wide{display:block;text-align:center;text-decoration:none}
@@ -86,7 +93,7 @@
   .acctmenu .menulink{display:flex;padding:7px 10px;border-radius:3px;color:inherit;text-decoration:none}
   .acctmenu .menulink:hover{background:var(--hover)}
   body.viewer>header,body.viewer>main{display:none}
-  #present .badge{display:inline-flex;align-items:center;gap:6px;position:fixed;left:12px;bottom:calc(12px + env(safe-area-inset-bottom,0px));background:rgba(255,255,255,.08);color:#cfd4d0;font-size:12px;padding:5px 9px;border-radius:3px;text-decoration:none;z-index:57}
+  #present .badge{display:inline-flex;align-items:center;gap:6px;position:fixed;left:50%;transform:translateX(-50%);bottom:calc(8px + env(safe-area-inset-bottom,0px));background:rgba(255,255,255,.08);color:#cfd4d0;font-size:12px;padding:5px 12px;border-radius:999px;text-decoration:none;z-index:57;white-space:nowrap}#present .badge .dom{opacity:.7}
   #present .badge b{color:#fff}
   #vend{position:fixed;inset:0;background:#000;color:#e2e5e0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;z-index:70;text-align:center;padding:20px}
   #vend[hidden]{display:none}
@@ -295,6 +302,8 @@
     }).catch(() => {});
   }
 
+  // what people with a share link may do: move sliders and turn 3D (on unless switched off), make a copy (off unless switched on)
+  function viewerOpts(d) { return { interactive: !(d && d.viewer && d.viewer.interactive === false), copy: !!(d && d.viewer && d.viewer.copy) }; }   // a declaration: the viewer runs before this line
   async function shareDialog() {
     if (!user) return signInDialog('Create a free account or sign in to share a link to this deck.');
     if (!profileDone()) return profileDialog('Finish your profile to share decks: your name appears on decks you share.');
@@ -309,11 +318,14 @@
     }
     const link = slug => `${location.origin}/v/${slug}`;
     const render = () => {
-      const on = !!m.share;
+      const on = !!m.share, vw = viewerOpts(deck);
       openDialog(`<h2 id="cloudTitle">Share “${esc(m.name)}”</h2>
         <label class="sw2"><input type="checkbox" id="shareOn" ${on ? 'checked' : ''}> Anyone with the link can watch this deck</label>
         ${on ? `<div class="row"><input type="text" id="shareLink" readonly value="${esc(link(m.share))}" aria-label="Share link"><button class="btn primary" id="copyLink">Copy</button></div>
-        <p>Viewers see the presentation with its live sliders, on any device. They cannot edit it.${isPro() ? ` Watched ${m.views || 0} time${m.views === 1 ? '' : 's'}.` : ''}</p>` : '<p>Only you can see this deck.</p>'}
+        <fieldset class="share-opts"><legend>People with the link can</legend>
+          <label class="sw2"><input type="checkbox" id="shareInter" ${vw.interactive ? 'checked' : ''}> Move the sliders and turn 3D views themselves</label>
+          <label class="sw2"><input type="checkbox" id="shareCopy" ${vw.copy ? 'checked' : ''}> Make their own copy to change</label></fieldset>
+        <p>They watch the presentation on any device and cannot change yours.${isPro() ? ` Watched ${m.views || 0} time${m.views === 1 ? '' : 's'}.` : ''}</p>` : '<p>Only you can see this deck.</p>'}
         ${on && !isPro() ? '<p>Shared decks show a small “Made with Tracé” badge. <span class="pro-tag">PRO</span> removes it and shows how often each deck is watched. <a href="#" id="shareUp">Compare plans</a></p>' : ''}`);
       $q('#shareOn').onchange = async e => {
         const want = e.target.checked;
@@ -321,6 +333,11 @@
         if (error) { toast('Could not change sharing: ' + error.message); return render(); }
         m.share = want ? data : null; saveIndex(); render();
       };
+      // what viewers may do travels with the deck, so it is saved like any other change
+      const setOpt = (k, v) => { snap(); deck.viewer = Object.assign(viewerOpts(deck), { [k]: v }); persist(); refresh(); toast(k === 'copy' ? (v ? 'Viewers can now make their own copy.' : 'Viewers can no longer make a copy.') : (v ? 'Viewers can now move the sliders.' : 'The link is now watch-only.')); };
+      const si = $q('#shareInter'), sc = $q('#shareCopy');
+      if (si) si.onchange = e => setOpt('interactive', e.target.checked);
+      if (sc) sc.onchange = e => setOpt('copy', e.target.checked);
       const c = $q('#copyLink');
       if (c) c.onclick = async () => { const i = $q('#shareLink'); try { await navigator.clipboard.writeText(i.value); c.textContent = 'Copied'; } catch (_) { i.select(); document.execCommand('copy'); c.textContent = 'Copied'; } };
       const u = $q('#shareUp');
@@ -693,7 +710,7 @@
     document.title = row.name + ' · Tracé';
     const present = $q('#present');
     if (row.owner_name) document.title = row.name + ' by ' + row.owner_name + ' · Tracé';
-    if (row.owner_plan !== 'pro') present.insertAdjacentHTML('beforeend', '<a class="badge" href="/" target="_blank" rel="noopener"><svg viewBox="0 0 64 64" width="14" height="14" aria-hidden="true"><g fill="currentColor"><circle cx="13" cy="23" r="4.5"/><circle cx="22" cy="16" r="4.5"/><circle cx="32" cy="16" r="4.5"/><circle cx="42" cy="16" r="4.5"/><circle cx="52" cy="16" r="4.5"/><circle cx="32" cy="27" r="4.5"/><circle cx="32" cy="38" r="4.5"/></g><g fill="#3B5BFD"><circle cx="42" cy="49" r="6.5"/></g></svg>Made with <b>Tracé</b></a>');
+    if (row.owner_plan !== 'pro') present.insertAdjacentHTML('beforeend', '<a class="badge" href="/" target="_blank" rel="noopener"><svg viewBox="0 0 64 64" width="14" height="14" aria-hidden="true"><g fill="currentColor"><circle cx="13" cy="23" r="4.5"/><circle cx="22" cy="16" r="4.5"/><circle cx="32" cy="16" r="4.5"/><circle cx="42" cy="16" r="4.5"/><circle cx="52" cy="16" r="4.5"/><circle cx="32" cy="27" r="4.5"/><circle cx="32" cy="38" r="4.5"/></g><g fill="#3B5BFD"><circle cx="42" cy="49" r="6.5"/></g></svg>Made with <b>Tracé</b><span class="dom">· traceanim.com</span></a>');
     const end = document.createElement('div');
     end.id = 'vend'; end.hidden = true;
     end.innerHTML = `<h1>${esc(row.name)}</h1>${row.owner_name ? `<p>by ${esc(row.owner_name)}</p>` : ''}<p>You have reached the end.</p><div class="row" style="display:flex;gap:10px"><button class="btn" id="vAgain">Watch again</button><a class="btn primary" href="/">Make your own with Tracé</a></div>`;
@@ -702,6 +719,41 @@
     window.closePresent = function () { voiceStop(); finishAnim(); stopLoop(); end.hidden = false; };
     $q('#exitPres').textContent = 'Close';
     $q('#exitPres').onclick = e => { e.stopPropagation(); window.closePresent(); };
+    const vw = viewerOpts(d);
+    if (!vw.interactive) document.body.classList.add('watch-only');
+    // a one-time nudge the first time a slide has something to play with
+    if (vw.interactive) {
+      const hint = document.createElement('div');
+      hint.id = 'vhint'; hint.hidden = true; hint.setAttribute('role', 'status');
+      hint.innerHTML = '<span id="vhintText"></span><button type="button" aria-label="Close" id="vhintX">×</button>';
+      present.appendChild(hint);
+      let shown = false;
+      const show = text => { if (shown) return; shown = true; $q('#vhintText').textContent = text; hint.hidden = false; setTimeout(() => { hint.hidden = true; }, 7000); };
+      $q('#vhintX').onclick = e => { e.stopPropagation(); hint.hidden = true; };
+      hint.addEventListener('click', e => e.stopPropagation());
+      new MutationObserver(() => {
+        const live = !$q('#plive').hidden, has3d = !!$q('#pcanvas g[data-type="axes3d"]');
+        if (live) show(has3d ? 'Try it: drag the sliders, or drag the 3D view to turn it' : 'Try it: drag the sliders to change the numbers');
+        else if (has3d) show('Try it: drag the 3D view to turn it');
+      }).observe(present, { subtree: true, childList: true, attributes: true, attributeFilter: ['hidden'] });
+    }
+    // "Make my own copy": the deck (and its images and voice) goes into this visitor's own projects
+    const copyDeck = async () => {
+      const full = deckWithImages(deck), imgs = full.images || {};
+      try { for (const [k, v] of Object.entries(imgs)) await idb.put(k, v); } catch (_) {}
+      const plain = { ...full }; delete plain.images; delete plain.viewer;
+      try { localStorage.setItem('trace-import', JSON.stringify({ name: row.name + (row.owner_name ? ' (from ' + row.owner_name + ')' : ''), deck: plain })); }
+      catch (_) { alert('This deck is too large to copy in this browser.'); return; }
+      location.href = '/app#edit';
+    };
+    if (vw.copy) {
+      const cb = document.createElement('button');
+      cb.id = 'vcopy'; cb.type = 'button'; cb.textContent = 'Make my own copy';
+      cb.onclick = e => { e.stopPropagation(); copyDeck(); };
+      present.appendChild(cb);
+      end.querySelector('.row').insertAdjacentHTML('afterbegin', '<button class="btn" id="vCopyEnd">Make my own copy</button>');
+      $q('#vCopyEnd').onclick = copyDeck;
+    }
     const go = () => { cur = 0; openPresent(); };
     if (window.mjReady) go(); else { const prev = window.onMJ; window.onMJ = () => { prev && prev(); go(); }; setTimeout(() => { if ($q('#present').hidden && end.hidden) go(); }, 4000); }
   }
