@@ -139,6 +139,7 @@
   const presentBtn = $q('#presentBtn');
   presentBtn.before(shareBtn);
   presentBtn.after(acct);
+  if (document.body.classList.contains('home-view') && typeof moveAcct === 'function') moveAcct(true);   // the projects page is showing
 
   const ICON_CLOUD = '<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3"><path d="M4.5 12.5h7.2a2.8 2.8 0 0 0 .3-5.6A4 4 0 0 0 4.3 7.6 2.5 2.5 0 0 0 4.5 12.5z"/></svg>';
   function setStatus(kind, text, short) {
@@ -288,6 +289,7 @@
   const _renderProjMenu = window.renderProjMenu;
   window.renderProjMenu = function () {
     _renderProjMenu();
+    if (typeof homeSoon === 'function') homeSoon();
     if (!user) return;
     document.querySelectorAll('#projMenu [data-proj]').forEach(b => {
       const m = meta(b.dataset.proj);

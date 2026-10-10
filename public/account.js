@@ -7,6 +7,8 @@
   const mode = document.body.dataset.mode;               // 'signup' | 'login' | 'account'
   const main = document.getElementById('main');
   const params = new URLSearchParams(location.search);
+  function supportMail() { return ((window.TRACE_CONFIG || {}).supportEmail || '').replace(/[^\w.@+-]/g, ''); }
+  function helpLine() { const a = supportMail(); return a ? ` If it keeps happening, write to <a href="mailto:${a}">${a}</a>.` : ''; }
   const esc = t => String(t ?? '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
   // only go back to a page of this site
   const next = (n => (n && n.startsWith('/') && !n.startsWith('//') && !n.startsWith('/\\')) ? n : '/app')(params.get('next'));
@@ -68,8 +70,8 @@
         const m = String(error.message || '');
         err.innerHTML = /signups not allowed|not found|user not found/i.test(m) ? `There is no account with this email yet. <a href="/signup${location.search}">Create one</a>.`
           : error.status === 429 ? 'Too many emails were sent just now. Please wait a minute and try again.'
-          : /sending|smtp|email/i.test(m) ? `The email could not be sent. Please try again in a few minutes.<small class="muted" style="display:block;margin-top:4px">Details for the site owner: ${esc(m)}${error.status ? ' (' + error.status + ')' : ''}</small>`
-          : 'Something went wrong: ' + esc(m);
+          : /sending|smtp|email/i.test(m) ? `The email could not be sent. Please try again in a few minutes.${helpLine()}<small class="muted" style="display:block;margin-top:4px">Details for the site owner: ${esc(m)}${error.status ? ' (' + error.status + ')' : ''}</small>`
+          : 'Something went wrong: ' + esc(m) + helpLine();
         err.hidden = false; return;
       }
       sentStep(email);
@@ -96,7 +98,7 @@
       ${app ? `<div class="mail-apps"><a class="btn primary big" href="${app[2]}" target="_blank" rel="noopener">${app[1]}</a></div>` : ''}
       <div class="row-btns"><button class="btn" id="resend" disabled>Send it again (30)</button><button class="btn" id="other">Use another email</button></div>
       <p class="t-err" id="resendMsg" hidden></p>
-      <div class="tips"><b>No email after a minute?</b><ul><li>Look in your spam or promotions folder.</li><li>Check the address above for a typo.</li><li>School email can be slow: a personal address often arrives faster.</li></ul></div>`;
+      <div class="tips"><b>No email after a minute?</b><ul><li>Look in your spam or promotions folder.</li><li>Check the address above for a typo.</li><li>School email can be slow: a personal address often arrives faster.</li>${supportMail() ? `<li>Still nothing? Write to <a href="mailto:${supportMail()}">${supportMail()}</a>.</li>` : ''}</ul></div>`;
     let left = 30;
     const r = document.getElementById('resend');
     const tick = setInterval(() => { left--; r.textContent = left > 0 ? `Send it again (${left})` : 'Send it again'; if (left <= 0) { r.disabled = false; clearInterval(tick); } }, 1000);

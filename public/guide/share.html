@@ -33,7 +33,7 @@
 <nav class="toc" aria-label="On this page"><b>On this page</b><ul><li><a href="#projects">Projects</a></li><li><a href="#account">Creating an account</a></li><li><a href="#profile">Your profile</a></li><li><a href="#states">Is my project saved?</a></li><li><a href="#link">Sharing a link</a></li><li><a href="#files">Project files</a></li><li><a href="#video">Making a video</a></li><li><a href="#plans">Free and Pro</a></li><li><a href="#signout">Signing out and deleting your account</a></li></ul></nav>
 <h2 id="projects">Projects</h2>
 <p>Each deck is a project. The arrow next to the project name opens the project menu.</p>
-<figure class="narrow" style="--w:381px"><img src="/guide/img/projects-menu.webp" alt="Project menu listing projects with when they were last changed, and New project, Duplicate, Import, Save project file and Delete" width="381" height="328" loading="lazy"><figcaption>The project menu.</figcaption></figure>
+<figure class="narrow" style="--w:409px"><img src="/guide/img/projects-menu.webp" alt="Project menu listing projects with when they were last changed, and New project, Duplicate, Import, Save project file and Delete" width="409" height="328" loading="lazy"><figcaption>The project menu.</figcaption></figure>
 <ul>
 <li>Click a project to open it. They are sorted by when you last worked on them.</li>
 <li><span class="ui">Delete this project</span> asks you to click twice, so nothing is deleted by accident. If you are signed in, its online copy is deleted too.</li>
@@ -64,14 +64,14 @@
 <h2 id="files">Project files</h2>
 <p><span class="ui">Save project file</span> in the project menu downloads the whole project, images included, as one file. Keep it as a backup or send it to a colleague, who opens it with <span class="ui">Import a project file…</span> or by dragging the file onto the editor.</p>
 <h2 id="video">Making a video <span class="pro-tag">PRO</span></h2>
-<p>With Pro, <span class="ui">Export</span> → <span class="ui">Video script</span> gives a Python file for <a href="https://www.manim.community/">Manim</a>, the free animation engine used for many maths videos. Save it as <code>deck.py</code>. The first lines of the file list the commands:</p>
+<p>With Pro, <span class="ui">⋯</span> → <span class="ui">Export</span> → <span class="ui">Video script</span> gives a Python file for <a href="https://www.manim.community/">Manim</a>, the free animation engine used for many maths videos. Save it as <code>deck.py</code>. The first lines of the file list the commands:</p>
 <ol>
 <li><code>pip install manim manim-slides</code> installs the tools (once).</li>
 <li><code>manim-slides render deck.py Presentation</code> renders the deck in high quality.</li>
 <li><code>manim-slides Presentation</code> plays it as a clickable presentation.</li>
 </ol>
 <p>For a single video file, run <code>manim -qh deck.py Presentation</code> instead. This needs Python on your computer; Manim’s website explains the setup.</p>
-<p>On the free plan, <span class="ui">Export</span> gives the <span class="ui">Deck file</span>, a copy of the project you can keep or load again.</p>
+<p>On the free plan, <span class="ui">⋯</span> → <span class="ui">Export</span> gives the <span class="ui">Deck file</span>, a copy of the project you can keep or load again.</p>
 <h2 id="plans">Free and Pro</h2>
 <p>Everything you need to make and present slides is free. Pro adds advanced 3D, your recorded voice and the Python video script, and is for people who keep many decks online and share them. Features marked <span class="pro-tag">PRO</span> in the editor need Pro.</p>
 <div class="tbl-wrap"><table class="tbl"><thead><tr><th></th><th>Free</th><th>Pro</th></tr></thead><tbody><tr><td>The editor: every animation, and all text, maths, graphs, shapes and science objects</td><td>Yes</td><td>Yes</td></tr><tr><td>Present full screen with live sliders</td><td>Yes</td><td>Yes</td></tr><tr><td>Unlimited projects in your browser</td><td>Yes</td><td>Yes</td></tr><tr><td>Basic 3D shapes: sphere, cube, cylinder, cone, prism, pyramid</td><td>Yes</td><td>Yes</td></tr><tr><td>Advanced 3D: surfaces z = f(x, y), 3D scenes, polyhedra, torus, 3D arrows, turning views</td><td>No</td><td><b>Yes</b></td></tr><tr><td>Record your voice on slides and clicks</td><td>No</td><td><b>Yes</b></td></tr><tr><td>Python video script (Manim)</td><td>No</td><td><b>Yes</b></td></tr><tr><td>Projects saved to your account</td><td>3</td><td><b>Unlimited</b></td></tr><tr><td>Size of one project (images and voice included)</td><td>2 MB</td><td><b>20 MB</b></td></tr><tr><td>“Made with Tracé” badge</td><td>On share links and while presenting</td><td><b>None</b></td></tr><tr><td>See how often each shared deck is watched</td><td>No</td><td><b>Yes</b></td></tr></tbody></table></div>
@@ -94,7 +94,7 @@
 <footer>
   <div class="wrap">
     <span class="sp">© <span id="yr">2026</span> Tracé</span>
-    <a href="/guide/">Guide</a><a href="/terms">Terms</a><a href="/privacy">Privacy</a><a href="/refunds">Refunds</a><a href="mailto:hello@your-domain.example">Contact</a>
+    <a href="/guide/">Guide</a><a href="/terms">Terms</a><a href="/privacy">Privacy</a><a href="/refunds">Refunds</a><a href="mailto:support@traceanim.com">Contact</a>
   </div>
 </footer>
 <script>document.getElementById('yr').textContent = new Date().getFullYear();</script>
