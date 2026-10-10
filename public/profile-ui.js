@@ -96,6 +96,19 @@
   .t-actions{display:flex;gap:10px;flex-wrap:wrap;align-items:center;padding-top:4px}
   .t-actions .btn.primary{background:#3B5BFD;border-color:#3B5BFD;color:#fff;padding:11px 22px;border-radius:8px}
   .t-preview{display:none}
+  .promo-form{display:grid;gap:6px;max-width:440px}
+  .promo-form .lab{font-weight:600;font-size:14px}
+  .promo-row{display:flex;gap:8px}
+  .promo-row input{flex:1;min-width:0;font:inherit;font-size:15px;letter-spacing:.04em;text-transform:uppercase;padding:9px 12px;border:1.5px solid var(--line);border-radius:8px;background:var(--paper);color:var(--ink)}
+  .promo-row input::placeholder{text-transform:none;letter-spacing:0}
+  .promo-row input:focus{outline:none;border-color:#3B5BFD;box-shadow:0 0 0 4px rgba(59,91,253,.16)}
+  .promo-row .btn{border-radius:8px;white-space:nowrap}
+  .promo-ok{color:#1d7a43;font-weight:600;font-size:14px;margin:0}
+  @container (max-width:599px){
+    .t-card{grid-template-columns:auto minmax(0,1fr);justify-items:start;text-align:left;align-items:center;padding:12px 14px;gap:0 12px;box-shadow:none}
+    .t-card>.t-avatar{width:44px!important;height:44px!important;font-size:18px!important}
+    .t-card .deck,.t-card .by{display:none}
+  }
   .t-err{color:var(--danger,#a8352b);font-size:14px;margin:0}`;
   document.head.appendChild(css);
 
@@ -180,5 +193,57 @@
     if (!p.display_name) setTimeout(() => $('#pf_name').focus(), 50);
   }
 
-  window.TraceUI = { avatar, planTable, profileForm, initials, ROLES, isComplete: p => !!(p && p.display_name && p.role) };
+  /* ---------- the plan that counts now, and promo codes (004_promo_codes.sql) ---------- */
+  const PAYING = ['active', 'trialing', 'past_due'];
+  // A gift from a promo code ends at comp_until, unless a subscription is running.
+  function effectivePlan(p) {
+    if (!p) return 'free';
+    if (p.plan === 'pro' && p.comp_until && new Date(p.comp_until) < new Date() && !PAYING.includes(p.subscription_status)) return 'free';
+    return p.plan || 'free';
+  }
+  const isGift = p => !!(p && p.plan === 'pro' && p.comp_until && new Date(p.comp_until) > new Date() && !PAYING.includes(p.subscription_status));
+  const longDate = d => new Date(d).toLocaleDateString(undefined, { day: 'numeric', month: 'long', year: 'numeric' });
+  // Loads the profile; works before 004_promo_codes.sql has been run too.
+  async function fetchProfile(sb, uid, cols) {
+    try { await sb.rpc('refresh_my_plan'); } catch (_) {}
+    let r = await sb.from('profiles').select(cols + ',comp_until,comp_code').eq('id', uid).maybeSingle();
+    if (r.error) r = await sb.from('profiles').select(cols).eq('id', uid).maybeSingle();
+    const p = r.data || null;
+    if (p) p.plan = effectivePlan(p);
+    return p;
+  }
+  const PROMO_ERRORS = {
+    invalid_code: 'This code does not exist or has expired. Check the spelling and try again.',
+    code_used_up: 'This code has already been used by everyone it was for.',
+    already_redeemed: 'Your account has already used a promo code.',
+    already_subscribed: 'You already have Pro.',
+    too_many_attempts: 'Too many tries today. Please try again tomorrow.',
+    not_signed_in: 'Please sign in first.',
+  };
+  /* The "Promo code" box. onDone(untilDate) runs after a code worked. */
+  function promoForm(root, sb, onDone, prefill) {
+    root.innerHTML = `<form class="promo-form" novalidate><label class="lab" for="promoCode">Promo code</label>
+      <div class="promo-row"><input type="text" id="promoCode" autocomplete="off" autocapitalize="characters" spellcheck="false" maxlength="40" placeholder="e.g. FOUNDERS-2026" value="${esc(prefill || '')}">
+      <button class="btn" type="submit" id="promoGo">Redeem</button></div>
+      <p class="t-err" id="promoErr" role="alert" hidden></p></form>`;
+    const f = root.querySelector('form'), inp = root.querySelector('#promoCode'), err = root.querySelector('#promoErr'), btn = root.querySelector('#promoGo');
+    f.addEventListener('submit', async e => {
+      e.preventDefault();
+      const code = inp.value.trim();
+      err.hidden = true;
+      if (!code) { err.textContent = 'Type the code you were given.'; err.hidden = false; inp.focus(); return; }
+      btn.disabled = true; btn.textContent = 'Checking…';
+      let res;
+      try { res = await sb.rpc('redeem_promo', { p_code: code }); } catch (x) { res = { error: x }; }
+      btn.disabled = false; btn.textContent = 'Redeem';
+      const out = res && res.data;
+      if (res.error || !out) { err.textContent = 'Promo codes are not available right now. Please try again later.'; err.hidden = false; return; }
+      if (!out.ok) { err.textContent = PROMO_ERRORS[out.error] || 'This code did not work.'; err.hidden = false; inp.select(); return; }
+      root.innerHTML = `<p class="promo-ok" role="status">✓ Code accepted: Pro is on until ${esc(longDate(out.until))}.</p>`;
+      onDone && onDone(out.until);
+    });
+  }
+
+  window.TraceUI = { avatar, planTable, profileForm, initials, ROLES, isComplete: p => !!(p && p.display_name && p.role),
+                     effectivePlan, isGift, fetchProfile, promoForm, longDate };
 })();
