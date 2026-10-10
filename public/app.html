@@ -149,8 +149,35 @@ hr{border:none;border-top:1px solid var(--line);margin:18px 0}
 #present .ctl,#present .exit{position:fixed;top:calc(12px + env(safe-area-inset-top,0px));background:rgba(255,255,255,.07);color:#cfd4d0;border:none;border-radius:3px;padding:6px 10px}
 #present .ctl{left:12px}#present .exit{right:12px}
 #present .ctl[hidden]{display:none}
+body.watch-only #plive,body.watch-only #togLive{display:none!important}
+#plive .preset{flex-basis:100%;display:flex;justify-content:flex-end;margin-top:-4px}
+#plive .preset button{background:none;border:1px solid rgba(255,255,255,.18);color:#cfd4d0;border-radius:3px;padding:3px 10px;font:inherit;font-size:12.5px;cursor:pointer}
+#plive .preset button:hover{background:rgba(255,255,255,.08)}
+#plive .preset.off{visibility:hidden}
 /* export */
 #modal{position:fixed;inset:0;background:rgba(12,14,13,.5);z-index:40;display:flex;align-items:center;justify-content:center;padding:20px}
+#vidModal{position:fixed;inset:0;background:rgba(12,14,13,.5);z-index:41;display:flex;align-items:center;justify-content:center;padding:12px}
+#vidModal[hidden]{display:none}
+.vid-dialog{width:min(620px,100%)}
+.vid-dialog header h2{font-size:15px;margin:0;padding-left:4px}
+#vidBody p{margin:0;font-size:13.5px;line-height:1.5}
+.vid-lead{color:var(--mute)}
+.vid-opts{display:flex;flex-wrap:wrap;gap:12px 18px;align-items:flex-end}
+.vid-opts label{display:grid;gap:4px;font-size:12.5px;font-weight:600}
+.vid-opts label.chk{display:flex;gap:6px;align-items:center;font-weight:400;font-size:13.5px}
+.vid-opts select{font:inherit;font-size:13.5px;padding:6px 8px;border:1px solid var(--line);border-radius:4px;background:var(--paper);color:var(--ink)}
+.vid-est{color:var(--mute)}
+.vid-badge-note{display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+.vid-badge-note .linkish{background:none;border:0;padding:0;font:inherit;color:var(--pen);text-decoration:underline;cursor:pointer}
+.vid-prog{display:flex;align-items:center;gap:10px;font-size:13px;color:var(--mute)}
+.vid-prog .bar{flex:1;height:8px;border-radius:4px;background:var(--line);overflow:hidden}
+.vid-prog .bar i{display:block;height:100%;width:0;background:#3B5BFD;transition:width .2s}
+.vid-done{display:grid;gap:10px}
+.vid-done video{width:100%;border-radius:6px;background:#000;aspect-ratio:16/9}
+.vid-actions{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.vid-actions .btn.primary{text-decoration:none}
+.vid-meta{font-size:12.5px;color:var(--mute)}
+.vid-note{font-size:12.5px!important;color:var(--mute)}
 #modal[hidden]{display:none}
 .dialog{background:var(--paper);border-radius:4px;width:min(860px,100%);max-height:100%;display:flex;flex-direction:column;border:1px solid var(--line);box-shadow:0 30px 60px -30px rgba(0,0,0,.5)}
 .dialog header{border-radius:4px 4px 0 0}
@@ -285,7 +312,7 @@ details.more[open]>summary{margin-bottom:8px}
   <div class="tools" id="tools" aria-label="Add objects"></div>
   <div class="spacer"></div>
   <div class="menuwrap tourwrap"><button class="tourbtn" id="tourBtn" data-menu="tours" aria-haspopup="true" aria-expanded="false" title="The interactive tutorial: learn every feature by doing it"><svg viewBox="0 0 16 16" aria-hidden="true"><circle cx="8" cy="8" r="6.6" fill="none" stroke="currentColor" stroke-width="1.4"/><path d="M6.5 5.2v5.6L11 8z" fill="currentColor"/></svg>Tour</button><div class="menu helpmenu tourmenu" role="menu" hidden style="left:auto;right:0"></div></div>
-  <div class="menuwrap"><button class="tool iconbtn" data-menu="more" aria-haspopup="true" aria-expanded="false" aria-label="More" title="More: export, help, guide"><svg viewBox="0 0 16 16" aria-hidden="true"><circle cx="3.5" cy="8" r="1.4" fill="currentColor"/><circle cx="8" cy="8" r="1.4" fill="currentColor"/><circle cx="12.5" cy="8" r="1.4" fill="currentColor"/></svg></button><div class="menu helpmenu moremenu" role="menu" hidden style="left:auto;right:0"><button role="menuitem" id="exportBtn"><b>Export</b>: deck file or video script</button><button role="menuitem" data-tutmenu><b>Interactive tutorial</b>: every feature</button><button role="menuitem" data-tour="first"><b>Tour:</b> your first animated slide</button><button role="menuitem" data-tour="screen"><b>Tour:</b> what is on the screen</button><a role="menuitem" id="guideLink" href="/guide/" target="_blank" rel="noopener" hidden>Read the full guide</a><button role="menuitem" data-ex="radar">Add example slides: radar jamming in 3D</button><button role="menuitem" data-gohome>All projects and templates</button></div></div>
+  <div class="menuwrap"><button class="tool iconbtn" data-menu="more" aria-haspopup="true" aria-expanded="false" aria-label="More" title="More: export, help, guide"><svg viewBox="0 0 16 16" aria-hidden="true"><circle cx="3.5" cy="8" r="1.4" fill="currentColor"/><circle cx="8" cy="8" r="1.4" fill="currentColor"/><circle cx="12.5" cy="8" r="1.4" fill="currentColor"/></svg></button><div class="menu helpmenu moremenu" role="menu" hidden style="left:auto;right:0"><button role="menuitem" id="videoBtn"><b>Make a video</b>: MP4 of every click, with your voice</button><button role="menuitem" id="exportBtn"><b>Export</b>: deck file or video script</button><button role="menuitem" data-tutmenu><b>Interactive tutorial</b>: every feature</button><button role="menuitem" data-tour="first"><b>Tour:</b> your first animated slide</button><button role="menuitem" data-tour="screen"><b>Tour:</b> what is on the screen</button><a role="menuitem" id="guideLink" href="/guide/" target="_blank" rel="noopener" hidden>Read the full guide</a><button role="menuitem" data-ex="radar">Add example slides: radar jamming in 3D</button><button role="menuitem" data-gohome>All projects and templates</button></div></div>
   <button class="btn iconbtn" id="undo" title="Undo (Ctrl+Z)" aria-label="Undo"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M5.5 4L2.5 7l3 3M2.8 7H10a3.5 3.5 0 0 1 0 7H7" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></button><button class="btn iconbtn" id="redo" title="Redo (Ctrl+Shift+Z)" aria-label="Redo"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M10.5 4l3 3-3 3M13.2 7H6a3.5 3.5 0 0 0 0 7h3" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
   <button class="btn" id="preview" title="Play the animation into this slide"><svg viewBox="0 0 16 16" width="13" height="13" aria-hidden="true"><path d="M4 2.8v10.4L13 8z" fill="currentColor"/></svg>Preview</button>
   <button class="btn primary" id="presentBtn">Present</button>
@@ -327,6 +354,12 @@ details.more[open]>summary{margin-bottom:8px}
       <textarea id="out" spellcheck="false"></textarea>
       <div id="jsonActions" hidden><button class="btn" id="loadJson">Load this deck</button></div>
     </div>
+  </div>
+</div>
+<div id="vidModal" hidden>
+  <div class="dialog vid-dialog" role="dialog" aria-modal="true" aria-labelledby="vidTitle">
+    <header><h2 id="vidTitle">Make a video</h2><div class="spacer"></div><button class="btn" id="vidClose">Close</button></header>
+    <div class="body" id="vidBody"></div>
   </div>
 </div>
 <div class="toast" id="toast"></div>
@@ -447,7 +480,7 @@ function wireVoice(s2,k){const r=$('#vRec');if(r)r.onclick=voiceRecord;const pl=
    account: Free or Pro. Pro adds advanced 3D, the Python video script and recorded voice. */
 const PLAN={pro:true,badge:false,pythonFree:false,upgrade:null};
 const PRO_ADD=new Set(['torus3','tetrahedron3','octahedron3','dodecahedron3','icosahedron3','arrow3','axes3d','shapes3d']);
-const PRO_WHAT={'3d':'Advanced 3D: surfaces z = f(x, y), 3D scenes, polyhedra, torus, 3D arrows and turning 3D views',python:'The Python video script (Manim)',voice:'Recording your voice on slides'};
+const PRO_WHAT={'3d':'Advanced 3D: surfaces z = f(x, y), 3D scenes, polyhedra, torus, 3D arrows and turning 3D views',python:'The Python video script (Manim)',voice:'Recording your voice on slides',video:'A video without the “Made with Tracé” badge'};
 function needPro(what){if(PLAN.pro)return true;if(PLAN.upgrade)PLAN.upgrade(what);else toast(`${PRO_WHAT[what]||what} is part of Tracé Pro.`);return false;}
 const canPython=()=>PLAN.pro||PLAN.pythonFree;
 const isDarkHex=h=>{const n=parseInt(String(h||'#000').replace('#','').slice(0,6).padEnd(6,'0'),16)||0;return((n>>16)*299+((n>>8)&255)*587+(n&255)*114)/1000<128;};
@@ -2433,9 +2466,10 @@ function presShow(i,k,animate,from,c0){const s2=deck.slides[i],to=visibleAt(s2,k
 function presAt(i,animate){const prev=i?deck.slides[i-1]:null;presShow(i,0,animate,prev?finalOf(prev):[],prev?lastCam(prev):CAM0);}
 function renderPresLive(){const box=$('#plive'),tog=$('#togLive'),cs=liveControls(visibleAt(deck.slides[pi],ps));tog.hidden=!cs.length;
   if(!cs.length||liveHidden){box.hidden=true;box.innerHTML='';tog.textContent=liveHidden?'Show controls (C)':'Hide controls (C)';return;}
-  tog.textContent='Hide controls (C)';box.hidden=false;box.innerHTML=cs.map(c=>liveRow(c,(presOv[c.id]&&presOv[c.id][c.name]!==undefined)?presOv[c.id][c.name]:(sharedParams(presShown||[],presOv)[c.name]??c.value))).join('');wireLiveBar(box);
+  tog.textContent='Hide controls (C)';box.hidden=false;box.innerHTML=cs.map(c=>liveRow(c,(presOv[c.id]&&presOv[c.id][c.name]!==undefined)?presOv[c.id][c.name]:(sharedParams(presShown||[],presOv)[c.name]??c.value))).join('')+`<div class="preset${Object.keys(presOv).length?'':' off'}"><button type="button" id="pReset" title="Put every value back as the slide was made">↺ Reset values</button></div>`;wireLiveBar(box);
+  $('#pReset').onclick=e=>{e.stopPropagation();presOv={};presShown=visibleAt(deck.slides[pi],ps);drawStatic(pc,presShown);renderPresLive();};
   box.querySelectorAll('input').forEach(inp=>inp.addEventListener('input',()=>{if(anim&&anim.svg===pc)finishAnim();const v=+inp.value;presShown=presShown||deck.slides[pi].objects;presOv[inp.dataset.cid]={...(presOv[inp.dataset.cid]||{}),[inp.dataset.cname]:v};
-    presShown=withOverrides(visibleAt(deck.slides[pi],ps),presOv);drawStatic(pc,presShown);}));}
+    presShown=withOverrides(visibleAt(deck.slides[pi],ps),presOv);drawStatic(pc,presShown);const r=box.querySelector('.preset');if(r)r.classList.remove('off');}));}
 function toggleLive(){liveHidden=!liveHidden;renderPresLive();}
 let presQueued=false;
 function presNext(){if(anim&&anim.svg===pc){if(presQueued){presQueued=false;finishAnim();}else presQueued=true;return;}const s2=deck.slides[pi];if(ps<maxStep(s2))presShow(pi,ps+1,true,presShown||visibleAt(s2,ps),camAt(s2,ps));else if(pi<deck.slides.length-1)presShow(pi+1,0,true,presShown||finalOf(s2),camAt(s2,ps));}
@@ -2448,7 +2482,7 @@ function openPresent(){presShown=null;pi=-1;presQueued=false;if(innerHeight<520)
 function closePresent(){voiceStop();finishAnim();stopLoop();$('#present').hidden=true;document.body.classList.remove('presenting');if(document.fullscreenElement)document.exitFullscreen().catch(()=>{});renderCanvas();}
 $('#presentBtn').onclick=openPresent;$('#exitPres').onclick=e=>{e.stopPropagation();closePresent();};
 let pdrag=null,justOrbited=false;
-pc.addEventListener('pointerdown',e=>{const g=e.target.closest('g[data-type="axes3d"]');if(!g)return;const base=(presShown||deck.slides[pi].objects).find(o=>o.id===g.dataset.id);if(!base)return;
+pc.addEventListener('pointerdown',e=>{if(document.body.classList.contains('watch-only'))return;const g=e.target.closest('g[data-type="axes3d"]');if(!g)return;const base=(presShown||deck.slides[pi].objects).find(o=>o.id===g.dataset.id);if(!base)return;
   finishAnim();pdrag={id:base.id,cx:e.clientX,cy:e.clientY,az:base.az,tilt:base.tilt,moved:false};pc.setPointerCapture(e.pointerId);e.preventDefault();});
 pc.addEventListener('pointermove',e=>{if(!pdrag)return;if(Math.hypot(e.clientX-pdrag.cx,e.clientY-pdrag.cy)>3)pdrag.moved=true;if(!pdrag.moved)return;
   const v=orbitVals(pdrag,e);presOv[pdrag.id]={...(presOv[pdrag.id]||{}),...v};presShown=withOverrides(visibleAt(deck.slides[pi],ps),presOv);drawStatic(pc,presShown);
@@ -2463,6 +2497,126 @@ $('#present').addEventListener('click',e=>{if(e.target.closest('#plive,#togLive,
   if(pTouch&&e.clientX<innerWidth*0.25){presPrev();return;}presNext();});
 $('#pPrev').onclick=e=>{e.stopPropagation();presPrev();};$('#pNext').onclick=e=>{e.stopPropagation();presNext();};
 $('#togLive').onclick=e=>{e.stopPropagation();toggleLive();};
+
+/* ---------- video export ----------
+   The deck is played through frame by frame with the same drawing code as Present (so morphs, counters, camera
+   moves and loops look identical), each frame is copied to a canvas, and the browser's own video encoder
+   (WebCodecs) writes an MP4. Recorded voice is mixed in at each click. Nothing is uploaded. */
+const vEsc=t=>String(t??'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+const VID={fps:30,sizes:{720:[1280,720],1080:[1920,1080]},muxer:'https://cdn.jsdelivr.net/npm/mp4-muxer@5.2.2/build/mp4-muxer.js'};
+const vidSupported=()=>typeof VideoEncoder==='function'&&typeof VideoFrame==='function';
+function vidMorphs(from,to){const pmap=new Map(from.map(o=>[o.id,o])),tids=new Set(to.map(o=>o.id)),m=[];
+  for(const n of to){const sid=n.morphFrom;if(!sid||pmap.has(n.id)||!pmap.has(sid)||tids.has(sid))continue;const geo=buildMorph(sampleShapes(pmap.get(sid)),sampleShapes(n));if(geo)m.push({src:sid,tgt:n.id,geo});}return m;}
+/* One segment per click: the animation into it, then a pause (or the voice, if longer). Automatic clicks follow at once. */
+function vidTimeline(pause,voice,voiceLen){const segs=[];let T=0;const n=deck.slides.length;
+  deck.slides.forEach((s2,i)=>{const K=maxStep(s2);
+    for(let k=0;k<=K;k++){const prev=i?deck.slides[i-1]:null;
+      const from=k?visibleAt(s2,k-1):prev?finalOf(prev):[],camFrom=k?camAt(s2,k-1):prev?lastCam(prev):CAM0,to=visibleAt(s2,k);
+      const D=Math.max(.05,durOf(s2,k)),opts={feel:feelOf(s2),stagger:!!s2.stagger,camFrom,camTo:camAt(s2,k),step:k,slideObjs:s2.objects,loops:true};
+      const total=Math.max(D,countSpan(from,to)),v=voice?voiceOf(s2,k):null,vd=v?(voiceLen.get(v.id)??+v.dur??0):0;
+      const auto=k<K&&autoOf(s2,k+1),last=i===n-1&&k===K;
+      const len=Math.max(total,vd)+(auto?0.05:last?Math.max(pause,2):pause);
+      segs.push({t0:T,len,D,total,from,to,opts,ease:opts.feel.f,voice:v,loops:hasLoop(to)||hasLoop(from),slide:i,step:k});T+=len;}});
+  return {segs,dur:T};}
+function vidFrame(seg,t){const el2=t-seg.t0,c0=seg.opts.camFrom,c1=seg.opts.camTo;
+  if(el2<seg.total){if(!seg.opts.morphs)seg.opts.morphs=vidMorphs(seg.from,seg.to);const u=Math.min(1,el2/seg.D),te=seg.ease(u);
+    return{items:withLoops(frameItems(seg.from,seg.to,te,el2,seg.opts),t),cam:{x:c0.x+(c1.x-c0.x)*te,y:c0.y+(c1.y-c0.y)*te,z:c0.z*Math.pow(c1.z/c0.z,smooth(u))},still:false};}
+  return{items:withLoops(seg.to.map(o=>({obj:o,op:1})),t),cam:c1,still:!seg.loops};}
+const loadScript=src=>new Promise((res,rej)=>{const s=document.createElement('script');s.src=src;s.onload=res;s.onerror=()=>rej(new Error('Could not load '+src));document.head.appendChild(s);});
+const blobToDataURL=b=>new Promise((res,rej)=>{const r=new FileReader();r.onload=()=>res(r.result);r.onerror=rej;r.readAsDataURL(b);});
+/* Fonts from Google Fonts are embedded so text keeps its typeface inside the frames. */
+async function vidFontCss(){const fams=[...fontsLoaded];if(deck.slides.some(s2=>s2.objects.some(o=>o.type==='code')))fams.push('JetBrains+Mono');let css='';
+  for(const f of fams){try{let c=await (await fetch(`https://fonts.googleapis.com/css2?family=${f}:ital,wght@0,400;0,700;1,400;1,700&display=swap`)).text();
+    for(const u of [...new Set(c.match(/https:[^)]+\.woff2/g)||[])])c=c.split(u).join(await blobToDataURL(await (await fetch(u)).blob()));css+=c;}catch(_){/* the fallback font is used */}}
+  return css;}
+async function vidVoices(){const ids=voiceIds(deck);const len=new Map(),bufs=new Map();if(!ids.length)return{len,bufs};
+  const ac=new (window.AudioContext||window.webkitAudioContext)();
+  for(const id of ids){try{const ab=await (await fetch(IMG.get(id))).arrayBuffer();const b=await ac.decodeAudioData(ab);bufs.set(id,b);len.set(id,b.duration);}catch(_){}}
+  try{ac.close();}catch(_){}return{len,bufs};}
+async function vidMix(segs,dur,bufs){const SR=48000,oc=new OfflineAudioContext(2,Math.ceil(dur*SR),SR);let any=false;
+  for(const s of segs)if(s.voice&&bufs.get(s.voice.id)){const src=oc.createBufferSource();src.buffer=bufs.get(s.voice.id);src.connect(oc.destination);src.start(s.t0);any=true;}
+  return any?await oc.startRendering():null;}
+async function vidPick(W,H){const tries=[['avc',W>1280?'avc1.640028':'avc1.64001f'],['avc','avc1.42001f'],['vp9','vp09.00.40.08'],['av1','av01.0.08M.08']];
+  for(const[mux,codec]of tries){const cfg={codec,width:W,height:H,bitrate:W>1280?8e6:4e6,framerate:VID.fps,...(mux==='avc'?{avc:{format:'avc'}}:{})};
+    try{const r=await VideoEncoder.isConfigSupported(cfg);if(r&&r.supported)return{mux,cfg};}catch(_){}}return null;}
+async function vidPickAudio(){if(typeof AudioEncoder!=='function')return null;
+  for(const[mux,codec]of [['aac','mp4a.40.2'],['opus','opus']]){const cfg={codec,sampleRate:48000,numberOfChannels:2,bitrate:128000};try{const r=await AudioEncoder.isConfigSupported(cfg);if(r&&r.supported)return{mux,cfg};}catch(_){}}return null;}
+function vidBadge(ctx,W,H){const s=H/720,txt='Made with ',b='Tracé';ctx.save();ctx.font=`${14*s}px Arial, sans-serif`;const w1=ctx.measureText(txt).width;ctx.font=`700 ${14*s}px Arial, sans-serif`;const w2=ctx.measureText(b).width;
+  const pw=w1+w2+20*s,ph=28*s,x=16*s,y=H-ph-16*s;ctx.fillStyle='rgba(0,0,0,.55)';ctx.beginPath();ctx.roundRect?ctx.roundRect(x,y,pw,ph,6*s):ctx.rect(x,y,pw,ph);ctx.fill();
+  ctx.fillStyle='#fff';ctx.textBaseline='middle';ctx.font=`${14*s}px Arial, sans-serif`;ctx.fillText(txt,x+10*s,y+ph/2);ctx.font=`700 ${14*s}px Arial, sans-serif`;ctx.fillText(b,x+10*s+w1,y+ph/2);ctx.restore();}
+/* Makes the video. onProgress(done, total); returns {blob, type, codec, seconds}. Throws 'cancelled' if job.cancel is set. */
+async function makeVideo({quality=1080,pause=2,voice=true,badge=PLAN.badge}={},onProgress=()=>{},job={}){
+  if(!vidSupported())throw new Error('unsupported');
+  const[W,H]=VID.sizes[quality]||VID.sizes[1080];
+  const pick=await vidPick(W,H);if(!pick)throw new Error('unsupported');
+  if(!window.Mp4Muxer)await loadScript(VID.muxer);
+  const[fontCss,vo]=await Promise.all([vidFontCss(),voice?vidVoices():Promise.resolve({len:new Map(),bufs:new Map()})]);
+  const{segs,dur}=vidTimeline(pause,voice,vo.len);
+  const mixed=voice?await vidMix(segs,dur,vo.bufs):null,apick=mixed?await vidPickAudio():null;
+  const muxer=new Mp4Muxer.Muxer({target:new Mp4Muxer.ArrayBufferTarget(),video:{codec:pick.mux,width:W,height:H,frameRate:VID.fps},
+    ...(apick?{audio:{codec:apick.mux,numberOfChannels:2,sampleRate:48000}}:{}),fastStart:'in-memory',firstTimestampBehavior:'offset'});
+  let encErr=null;const venc=new VideoEncoder({output:(c,m)=>muxer.addVideoChunk(c,m),error:e=>{encErr=e;}});venc.configure(pick.cfg);
+  // a hidden copy of the presentation surface, drawn with the editor's own code
+  const svg=document.createElementNS(NS,'svg');svg.setAttribute('viewBox',$('#pcanvas').getAttribute('viewBox'));svg.setAttribute('width',W);svg.setAttribute('height',H);
+  const host=document.createElement('div');host.style.cssText=`position:fixed;left:-${W+4000}px;top:0;width:${W}px;height:${H}px;pointer-events:none;overflow:hidden`;host.setAttribute('aria-hidden','true');host.appendChild(svg);document.body.appendChild(host);
+  const cv=document.createElement('canvas');cv.width=W;cv.height=H;const ctx=cv.getContext('2d');
+  const style=fontCss?`<style>${fontCss.replace(/<\/style/gi,'')}</style>`:'';
+  const total=Math.max(1,Math.round(dur*VID.fps));let si=0,stillKey=null;
+  try{for(let f=0;f<total;f++){if(job.cancel)throw new Error('cancelled');if(encErr)throw encErr;
+      const t=f/VID.fps;while(si<segs.length-1&&t>=segs[si].t0+segs[si].len)si++;const seg=segs[si],fr=vidFrame(seg,t),key=fr.still?si:null;
+      if(key===null||key!==stillKey){drawItems(svg,fr.items);setCam(layerOf(svg),fr.cam);
+        let s=new XMLSerializer().serializeToString(svg);if(style)s=s.replace(/^(<svg[^>]*>)/,'$1'+style);
+        const url=URL.createObjectURL(new Blob([s],{type:'image/svg+xml'})),img=new Image();img.src=url;try{await img.decode();ctx.clearRect(0,0,W,H);ctx.drawImage(img,0,0,W,H);}finally{URL.revokeObjectURL(url);}
+        if(badge)vidBadge(ctx,W,H);stillKey=key;}
+      const vf=new VideoFrame(cv,{timestamp:Math.round(f*1e6/VID.fps),duration:Math.round(1e6/VID.fps)});venc.encode(vf,{keyFrame:f%(VID.fps*2)===0});vf.close();
+      while(venc.encodeQueueSize>8)await new Promise(r=>setTimeout(r,4));
+      if(f%5===0){onProgress(f,total);await new Promise(r=>setTimeout(r,0));}}
+    await venc.flush();
+    if(apick){const aenc=new AudioEncoder({output:(c,m)=>muxer.addAudioChunk(c,m),error:e=>{encErr=e;}});aenc.configure(apick.cfg);
+      const N=mixed.length,L0=mixed.getChannelData(0),R0=mixed.getChannelData(1),CH=4800;
+      for(let i=0;i<N;i+=CH){const n=Math.min(CH,N-i),buf=new Float32Array(n*2);buf.set(L0.subarray(i,i+n),0);buf.set(R0.subarray(i,i+n),n);
+        const ad=new AudioData({format:'f32-planar',sampleRate:48000,numberOfFrames:n,numberOfChannels:2,timestamp:Math.round(i/48000*1e6),data:buf});aenc.encode(ad);ad.close();}
+      await aenc.flush();}
+    if(encErr)throw encErr;
+    muxer.finalize();onProgress(total,total);
+    return{blob:new Blob([muxer.target.buffer],{type:'video/mp4'}),codec:pick.mux,audio:apick?apick.mux:null,seconds:dur,frames:total,width:W,height:H};}
+  finally{try{venc.close();}catch(_){}host.remove();}}
+window.makeVideo=makeVideo;window.vidTimeline=vidTimeline;
+/* the "Make a video" window */
+function openVideoDialog(){closeMenus();const m=$('#vidModal'),b=$('#vidBody');m.hidden=false;
+  const hasVoice=voiceIds(deck).length>0,{dur}=vidTimeline(2,true,new Map());
+  if(!vidSupported()){b.innerHTML=`<p>Making a video needs a recent browser: <b>Chrome</b>, <b>Edge</b>, <b>Firefox 130+</b> or <b>Safari 17+</b>. Open Tracé in one of them and try again.</p>`;return;}
+  b.innerHTML=`<p class="vid-lead">Turns this project into a video file: every click plays in order, with a pause after each one${hasVoice?' and your recorded voice':''}. It is made on this computer; nothing is uploaded.</p>
+    <div class="vid-opts"><label>Quality<select id="vidQ"><option value="1080">Full HD 1080p</option><option value="720">HD 720p (faster)</option></select></label>
+    <label>Pause after each click<select id="vidP"><option value="1">1 second</option><option value="2" selected>2 seconds</option><option value="3">3 seconds</option><option value="5">5 seconds</option></select></label>
+    ${hasVoice?'<label class="chk"><input type="checkbox" id="vidV" checked> Include recorded voice</label>':''}</div>
+    <p class="vid-est" id="vidEst"></p>
+    ${PLAN.badge?`<p class="vid-badge-note">Free videos carry a small “Made with Tracé” badge in the corner. <button class="linkish" id="vidPro">Pro removes it</button> <span class="protag">PRO</span></p>`:''}
+    <div class="vid-prog" id="vidProg" hidden><div class="bar"><i id="vidBar"></i></div><span id="vidPct">Starting…</span></div>
+    <div class="vid-done" id="vidDone" hidden></div>
+    <div class="vid-actions"><button class="btn primary" id="vidGo">Make the video</button><button class="btn" id="vidCancel" hidden>Cancel</button></div>`;
+  const est=()=>{const p=+$('#vidP').value,{dur:d}=vidTimeline(p,!!($('#vidV')&&$('#vidV').checked),new Map());$('#vidEst').textContent=`Video length: about ${mmss(d)} (${deck.slides.length} slide${deck.slides.length>1?'s':''}).`;};
+  est();$('#vidP').onchange=est;if($('#vidV'))$('#vidV').onchange=est;
+  const pro=$('#vidPro');if(pro)pro.onclick=()=>{closeVideoDialog();PLAN.upgrade&&PLAN.upgrade('video');};
+  let job=null;
+  $('#vidGo').onclick=async()=>{job={};const go=$('#vidGo');go.disabled=true;$('#vidCancel').hidden=false;$('#vidProg').hidden=false;$('#vidDone').hidden=true;
+    b.querySelectorAll('select,input').forEach(x=>x.disabled=true);
+    const t0=performance.now();
+    try{const r=await makeVideo({quality:+$('#vidQ').value,pause:+$('#vidP').value,voice:!!($('#vidV')&&$('#vidV').checked)},(d,n)=>{const p=d/n;$('#vidBar').style.width=(p*100).toFixed(1)+'%';
+        const el2=(performance.now()-t0)/1000,left=p>0.03?el2/p-el2:null;$('#vidPct').textContent=`${Math.round(p*100)}%${left!==null?` · about ${mmss(Math.max(1,left))} left`:''}`;},job);
+      const url=URL.createObjectURL(r.blob),name=((curMeta()&&curMeta().name)||'Tracé video').replace(/[\\/:*?"<>|]+/g,' ').trim()+'.mp4';
+      $('#vidProg').hidden=true;const d=$('#vidDone');d.hidden=false;
+      d.innerHTML=`<video controls src="${url}" playsinline></video><div class="vid-actions"><a class="btn primary" id="vidSave" href="${url}" download="${vEsc(name)}">Download the video</a><span class="vid-meta">${mmss(r.seconds)} · ${r.width}×${r.height} · ${(r.blob.size/1048576).toFixed(1)} MB</span></div>
+        ${r.codec!=='avc'||r.audio==='opus'?'<p class="vid-note">This browser could not use the most common video format (H.264 with AAC sound), so the file plays in Chrome, Edge, Firefox and VLC but may not play in PowerPoint or QuickTime. Chrome or Edge on Windows or Mac make the most compatible files.</p>':''}`;
+      window.__lastVideo=r;}
+    catch(e){$('#vidProg').hidden=true;const d=$('#vidDone');d.hidden=false;d.innerHTML=`<p class="vid-note">${e&&e.message==='cancelled'?'Cancelled.':e&&e.message==='unsupported'?'This browser cannot make videos. Try Chrome or Edge.':'The video could not be made: '+vEsc(String(e&&e.message||e))}</p>`;}
+    finally{go.disabled=false;go.textContent='Make it again';$('#vidCancel').hidden=true;b.querySelectorAll('select,input').forEach(x=>x.disabled=false);job=null;}};
+  $('#vidCancel').onclick=()=>{if(job)job.cancel=true;};
+  m._job=()=>job;}
+function closeVideoDialog(){const m=$('#vidModal');const j=m._job&&m._job();if(j)j.cancel=true;m.hidden=true;const v=m.querySelector('video');if(v)v.pause();}
+$('#videoBtn').onclick=openVideoDialog;$('#vidClose').onclick=closeVideoDialog;
+$('#vidModal').addEventListener('click',e=>{if(e.target.id==='vidModal')closeVideoDialog();});
+document.addEventListener('keydown',e=>{if(e.key==='Escape'&&!$('#vidModal').hidden){e.stopPropagation();closeVideoDialog();}},true);
 
 /* ---------- export ---------- */
 const AX3=['xmin','xmax','ymin','ymax','zmin','zmax','len','zlen','az','tilt','x','y','scale','rot'];
@@ -3889,7 +4043,7 @@ Object.assign(TOURS,{
     {target:()=>$('.proj'),title:'Your projects',body:'Every change is saved at once in this browser. The arrow next to the name lists your projects: new, duplicate, import, and <b>Save project file</b> to keep a copy or send it to a colleague.',next:'Next'},
     {target:()=>$('#cloudStat')||$('.proj'),title:'In your account',body:'Signed in, your projects are also saved to your account and open on every device. The cloud mark says <b>Saved</b> when the latest change is online.',next:'Next'},
     {target:()=>$('#shareBtn')||$('#presentBtn'),title:'Share a link',body:'<b>Share</b> gives a link anyone can watch, with the live sliders, without an account.',next:'Next'},
-    {target:()=>$('[data-menu="more"]'),title:'Export',body:'<b>⋯ → Export</b> gives the deck file, and with Pro a <b>Python video script</b> for Manim to render a video.',next:'Next'},
+    {target:()=>$('[data-menu="more"]'),title:'Export',body:'<b>⋯ → Make a video</b> turns the whole deck into an MP4, with your voice. <b>⋯ → Export</b> gives the deck file, and with Pro a <b>Python video script</b> for Manim.',next:'Next'},
     {target:()=>$('#homeBtn'),title:'All your projects',body:'The logo opens the <b>projects page</b>: every project with a preview, and templates to start a new one.',next:'Next'},
   ],
 });
@@ -4062,7 +4216,10 @@ $('#home').addEventListener('click',async e=>{const tp=e.target.closest('[data-t
   if(!e.target.closest('.pc-menu'))document.querySelectorAll('.pc-menu').forEach(x=>x.hidden=true);});
 document.addEventListener('click',e=>{if(e.target.closest('[data-gohome]')){closeMenus();showHome();}});
 addEventListener('hashchange',()=>{if(location.hash==='#edit'&&homeShown)showEditor(true);else if(location.hash==='#projects'&&!homeShown)showHome(true);});
-(()=>{const q=new URLSearchParams(location.search);if(/^\/v\//.test(location.pathname)||q.get('demo'))return;if(location.hash==='#edit')showEditor(true);else showHome(true);})();
+(()=>{const q=new URLSearchParams(location.search);if(/^\/v\//.test(location.pathname)||q.get('demo'))return;
+  let imp=null;try{imp=JSON.parse(localStorage.getItem('trace-import')||'null');localStorage.removeItem('trace-import');}catch(_){}
+  if(imp&&imp.deck&&Array.isArray(imp.deck.slides)){createProject(String(imp.name||'Shared deck').slice(0,80),imp.deck);showEditor(true);setTimeout(()=>toast(`“${imp.name}” is now one of your projects. Change anything you like.`),400);return;}
+  if(location.hash==='#edit')showEditor(true);else showHome(true);})();
 idb.all().then(list=>{if(!list.length)return;list.forEach(([k,v])=>IMG.set(k,v));renderEpoch++;renderCanvas();renderThumbs();renderProps();});
 if(window.mjReady)window.onMJ();
 </script>

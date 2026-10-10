@@ -17,6 +17,7 @@
       ['Basic 3D shapes: sphere, cube, cylinder, cone, prism, pyramid', true, true],
       ['Advanced 3D: surfaces z = f(x, y), 3D scenes, polyhedra, torus, 3D arrows, turning views', false, true],
       ['Record your voice on slides and clicks', false, true],
+      ['Make a video (MP4) of every click, with your voice', 'With a “Made with Tracé” badge', 'No badge'],
       ['Python video script (Manim)', CFG.pythonForFree ? 'With a “Made with Tracé” mark' : false, true],
       ['Projects saved to your account', String(FREE_DECKS), 'Unlimited'],
       ['Size of one project (images and voice included)', '2 MB', '20 MB'],

@@ -53,6 +53,13 @@
   #cloudModal .plans b{display:block;font-size:15px}
   #cloudModal ul{margin:0;padding-left:18px;color:var(--ink);font-size:13.5px;line-height:1.6}
   #cloudModal label.sw2{display:flex;gap:10px;align-items:center;font-size:14px}
+  #cloudModal .share-opts{border:1px solid var(--line);border-radius:4px;padding:8px 12px 10px;margin:0;display:grid;gap:6px}
+  #cloudModal .share-opts legend{font-size:12.5px;color:var(--mute);padding:0 4px}
+  #vhint{position:fixed;left:50%;transform:translateX(-50%);top:calc(14px + env(safe-area-inset-top,0px));background:#3B5BFD;color:#fff;font-size:14px;padding:8px 14px;border-radius:999px;z-index:60;box-shadow:0 8px 24px -8px rgba(0,0,0,.6);display:flex;gap:10px;align-items:center;max-width:92vw}
+  #vhint[hidden]{display:none}
+  #vhint button{background:none;border:0;color:#fff;font:inherit;font-size:16px;line-height:1;cursor:pointer;padding:0 2px;opacity:.85}
+  #vcopy{position:fixed;right:96px;top:calc(12px + env(safe-area-inset-top,0px));background:rgba(255,255,255,.07);color:#cfd4d0;border:none;border-radius:3px;padding:6px 10px;z-index:56;font:inherit;font-size:13px;cursor:pointer}
+  #vcopy:hover{background:rgba(255,255,255,.14)}
   .msg-ok{color:var(--ink)!important}
   .acct-choice{display:grid;gap:8px}
   #cloudModal .btn.wide{display:block;text-align:center;text-decoration:none}
@@ -81,6 +88,8 @@
   .upg-compare{border-top:1px solid var(--line);padding-top:10px}
   .upg-compare summary{cursor:pointer;font-size:13.5px;font-weight:600;color:var(--mute)}
   .upg-compare .t-plans{margin-top:10px;font-size:13px}
+  .upg-promo+.upg-compare{border-top:0;padding-top:0}
+  .upg-promo .promo-form{margin-top:10px;max-width:none}
   .acctmenu .menulink{display:flex;padding:7px 10px;border-radius:3px;color:inherit;text-decoration:none}
   .acctmenu .menulink:hover{background:var(--hover)}
   body.viewer>header,body.viewer>main{display:none}
@@ -229,6 +238,9 @@
   const money = (n, cur) => { try { return new Intl.NumberFormat(undefined, { style: 'currency', currency: cur || PRICING.currency, maximumFractionDigits: n % 1 ? 2 : 0 }).format(n); } catch (_) { return '$' + n; } };
   const LOCK_I = '<svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><rect x="3" y="7" width="10" height="7" rx="1.5"/><path d="M5.5 7V5a2.5 2.5 0 015 0v2"/></svg>';
   let localPrices = null;   // { monthly: {total, perMonth}, yearly: {...} } from Paddle.PricePreview
+  let promoWanted = '';     // /app?promo=CODE fills in the promo box
+  let promoAsked = false;
+  const giftReason = () => TraceUI.isGift(profile) ? `Your free Pro from a promo code runs until ${TraceUI.longDate(profile.comp_until)}. To keep Pro after that, subscribe here (billing starts today).` : undefined;
   function upgradeDialog(reason) {
     const ready = CFG.paddleClientToken && CFG.prices && (CFG.prices.monthly || CFG.prices.yearly);
     if (!ready) return openDialog(`<div class="upg"><div class="upg-top"><span class="pro-tag">PRO</span><h2 id="cloudTitle">Tracé Pro</h2>
@@ -246,8 +258,16 @@
       <ul class="upg-list">${window.TRACE_PLANS.proOnly.map(t => `<li>${esc(t)}</li>`).join('')}</ul>
       <button class="btn primary wide upg-go" id="upgGo" type="button">Continue to secure checkout</button>
       <p class="upg-trust">${LOCK_I}<span>Secure checkout by Paddle · Cancel any time · 14-day refund</span></p>
+      ${TraceUI.isGift(profile) ? '' : `<details class="upg-compare upg-promo"${promoWanted ? ' open' : ''}><summary>Have a promo code?</summary><div id="upgPromo"></div></details>`}
       <details class="upg-compare"><summary>Compare Free and Pro</summary>${TraceUI.planTable(profile && profile.plan)}</details>
     </div>`);
+    const hadPromo = !!promoWanted;
+    if (user && $q('#upgPromo')) TraceUI.promoForm($q('#upgPromo'), sb, async until => {
+      await loadProfile();
+      setTimeout(() => { closeDialog(); proIsOn(`Code accepted: Pro is on until ${TraceUI.longDate(until)}. Enjoy!`); }, 1400);
+    }, promoWanted || '');
+    promoWanted = '';
+    if (hadPromo && $q('#promoGo')) setTimeout(() => $q('#promoGo').focus(), 50);
     const paint = () => {
       const L = localPrices && localPrices[period];
       const yearly = period === 'yearly';
@@ -282,6 +302,8 @@
     }).catch(() => {});
   }
 
+  // what people with a share link may do: move sliders and turn 3D (on unless switched off), make a copy (off unless switched on)
+  function viewerOpts(d) { return { interactive: !(d && d.viewer && d.viewer.interactive === false), copy: !!(d && d.viewer && d.viewer.copy) }; }   // a declaration: the viewer runs before this line
   async function shareDialog() {
     if (!user) return signInDialog('Create a free account or sign in to share a link to this deck.');
     if (!profileDone()) return profileDialog('Finish your profile to share decks: your name appears on decks you share.');
@@ -296,11 +318,14 @@
     }
     const link = slug => `${location.origin}/v/${slug}`;
     const render = () => {
-      const on = !!m.share;
+      const on = !!m.share, vw = viewerOpts(deck);
       openDialog(`<h2 id="cloudTitle">Share “${esc(m.name)}”</h2>
         <label class="sw2"><input type="checkbox" id="shareOn" ${on ? 'checked' : ''}> Anyone with the link can watch this deck</label>
         ${on ? `<div class="row"><input type="text" id="shareLink" readonly value="${esc(link(m.share))}" aria-label="Share link"><button class="btn primary" id="copyLink">Copy</button></div>
-        <p>Viewers see the presentation with its live sliders, on any device. They cannot edit it.${isPro() ? ` Watched ${m.views || 0} time${m.views === 1 ? '' : 's'}.` : ''}</p>` : '<p>Only you can see this deck.</p>'}
+        <fieldset class="share-opts"><legend>People with the link can</legend>
+          <label class="sw2"><input type="checkbox" id="shareInter" ${vw.interactive ? 'checked' : ''}> Move the sliders and turn 3D views themselves</label>
+          <label class="sw2"><input type="checkbox" id="shareCopy" ${vw.copy ? 'checked' : ''}> Make their own copy to change</label></fieldset>
+        <p>They watch the presentation on any device and cannot change yours.${isPro() ? ` Watched ${m.views || 0} time${m.views === 1 ? '' : 's'}.` : ''}</p>` : '<p>Only you can see this deck.</p>'}
         ${on && !isPro() ? '<p>Shared decks show a small “Made with Tracé” badge. <span class="pro-tag">PRO</span> removes it and shows how often each deck is watched. <a href="#" id="shareUp">Compare plans</a></p>' : ''}`);
       $q('#shareOn').onchange = async e => {
         const want = e.target.checked;
@@ -308,6 +333,11 @@
         if (error) { toast('Could not change sharing: ' + error.message); return render(); }
         m.share = want ? data : null; saveIndex(); render();
       };
+      // what viewers may do travels with the deck, so it is saved like any other change
+      const setOpt = (k, v) => { snap(); deck.viewer = Object.assign(viewerOpts(deck), { [k]: v }); persist(); refresh(); toast(k === 'copy' ? (v ? 'Viewers can now make their own copy.' : 'Viewers can no longer make a copy.') : (v ? 'Viewers can now move the sliders.' : 'The link is now watch-only.')); };
+      const si = $q('#shareInter'), sc = $q('#shareCopy');
+      if (si) si.onchange = e => setOpt('interactive', e.target.checked);
+      if (sc) sc.onchange = e => setOpt('copy', e.target.checked);
       const c = $q('#copyLink');
       if (c) c.onclick = async () => { const i = $q('#shareLink'); try { await navigator.clipboard.writeText(i.value); c.textContent = 'Copied'; } catch (_) { i.select(); document.execCommand('copy'); c.textContent = 'Copied'; } };
       const u = $q('#shareUp');
@@ -336,9 +366,9 @@
     menu.innerHTML = `<div class="who">${profile && profile.display_name ? `<b style="color:var(--ink)">${esc(profile.display_name)}</b><br>` : ''}${esc(user.email)}</div>
       ${profileDone() ? '' : '<button role="menuitem" class="up" data-acct="profile">Finish your profile to save online</button>'}
       <div class="plan">${isPro() ? 'Pro plan' : 'Free plan'}<small>${isPro()
-        ? (profile.subscription_status === 'past_due' ? 'Payment problem: please update your card' : profile.plan_renews_at ? 'Renews ' + new Date(profile.plan_renews_at).toLocaleDateString() : '')
+        ? (TraceUI.isGift(profile) ? 'Free with a code until ' + new Date(profile.comp_until).toLocaleDateString() : profile.subscription_status === 'past_due' ? 'Payment problem: please update your card' : profile.plan_renews_at ? 'Renews ' + new Date(profile.plan_renews_at).toLocaleDateString() : '')
         : `${used} of ${CFG.freeDecks || 3} projects online · <span class="pro-tag">PRO</span> unlimited`}</small></div>
-      ${isPro() ? '<button role="menuitem" data-acct="billing">Manage billing</button>' : '<button role="menuitem" class="up" data-acct="upgrade">Upgrade to Pro</button>'}
+      ${isPro() && profile.paddle_customer_id ? '<button role="menuitem" data-acct="billing">Manage billing</button>' : isPro() ? '' : '<button role="menuitem" class="up" data-acct="upgrade">Upgrade to Pro</button>'}
       <a role="menuitem" href="/account" class="menulink">Profile, plan and billing</a>
       <button role="menuitem" data-acct="sync">Sync now</button>
       <hr><button role="menuitem" data-acct="signout">Sign out</button>`;
@@ -348,7 +378,7 @@
     if (!a) return;
     closeMenus();
     const k = a.dataset.acct;
-    if (k === 'upgrade') upgradeDialog();
+    if (k === 'upgrade') upgradeDialog(giftReason());
     else if (k === 'billing') openBilling();
     else if (k === 'profile') profileDialog();
     else if (k === 'sync') { if (!profileDone()) return profileDialog(); await syncAll(); toast('Your decks are up to date.'); }
@@ -520,14 +550,18 @@
 
   /* ---------- sign in / out ---------- */
   async function loadProfile() {
-    const { data } = await sb.from('profiles').select('plan,subscription_status,plan_renews_at,paddle_customer_id,display_name,role,subject,organization,avatar_color').eq('id', user.id).maybeSingle();
-    profile = data || { plan: 'free' };
+    profile = await TraceUI.fetchProfile(sb, user.id, 'plan,subscription_status,plan_renews_at,paddle_customer_id,display_name,role,subject,organization,avatar_color') || { plan: 'free' };
   }
   async function onSession(s) {
     const was = user && user.id;
     session = s; user = s ? s.user : null;
     signedOutElsewhere();
-    if (!user) { profile = null; renderAcct(); showStatus(); return; }
+    if (!user) {
+      profile = null; renderAcct(); showStatus();
+      let pc = ''; try { pc = localStorage.getItem('trace-promo') || ''; } catch (_) {}
+      if (pc && !promoAsked) { promoAsked = true; signInDialog(`Create a free account or sign in, and your promo code ${pc} turns on Pro. No card needed.`); }
+      return;
+    }
     if (was === user.id) return;
     await loadProfile();
     renderAcct();
@@ -537,7 +571,7 @@
     // after a fresh upgrade, decks that were "device only" can now go to the cloud
     if (isPro()) { let any = false; for (const p of projects) if (p.localOnly || p.tooBig || p.needsPro) { p.localOnly = p.tooBig = p.needsPro = false; pending.add(p.id); any = true; } if (any) await flush(); }
     if (!was && before && projects.some(p => p.cloudId)) toast('Signed in. Your decks are saved to your account.');
-    try { if (localStorage.getItem('trace-want-upgrade') === '1') { localStorage.removeItem('trace-want-upgrade'); if (!isPro()) upgradeDialog(); } } catch (_) {}
+    try { if (localStorage.getItem('trace-want-upgrade') === '1') { localStorage.removeItem('trace-want-upgrade'); promoWanted = localStorage.getItem('trace-promo') || ''; localStorage.removeItem('trace-promo'); if (!isPro() || TraceUI.isGift(profile)) upgradeDialog(promoWanted && !TraceUI.isGift(profile) ? 'You have a promo code: press Redeem to turn on Pro, no card needed.' : giftReason()); } } catch (_) {}
   }
   /* Signed out from the account page: remove that account's saved projects from this browser too. */
   function signedOutElsewhere() {
@@ -596,17 +630,18 @@
                                     successUrl: location.origin + location.pathname + '?upgraded=1' } });
     } catch (_) { toast('The payment window could not open. Check your connection or ad blocker.'); }
   }
+  async function proIsOn(msg) {
+    syncPlan();
+    for (const p of projects) if (p.localOnly || p.tooBig || p.needsPro) { p.localOnly = p.tooBig = p.needsPro = false; pending.add(p.id); }
+    await flush(); renderAcct(); showStatus();
+    toast(msg);
+  }
   async function waitForPro() {
     toast('Payment received. Turning on Pro…');
     for (let i = 0; i < 30; i++) {
       await new Promise(r => setTimeout(r, 2000));
       await loadProfile();
-      if (isPro()) {
-        for (const p of projects) if (p.localOnly || p.tooBig || p.needsPro) { p.localOnly = p.tooBig = p.needsPro = false; pending.add(p.id); }
-        await flush(); renderAcct(); showStatus();
-        toast('Welcome to Tracé Pro. All your decks are now saved online.');
-        return;
-      }
+      if (isPro()) return proIsOn('Welcome to Tracé Pro. All your decks are now saved online.');
     }
     toast('Pro will switch on in a moment. Reload the page if it does not.');
   }
@@ -624,13 +659,18 @@
   sb.auth.onAuthStateChange((ev, s) => { setTimeout(() => onSession(s), 0); });   // outside the auth lock, as Supabase recommends
   sb.auth.getSession().then(async ({ data }) => {
     await onSession(data.session);
-    if (!user && wantsUpgrade()) signInDialog('Create a free account or sign in first, then choose monthly or yearly.', '?upgrade=1');
+    if (!user && wantsUpgrade() && !promoAsked) signInDialog('Create a free account or sign in first, then choose monthly or yearly.', '?upgrade=1');
     else if (!user && params.get('signin')) location.replace('/login');   // old "Sign in" links
     if (params.get('signin')) history.replaceState(null, '', location.pathname);
   });
   if (params.get('upgraded')) { history.replaceState(null, '', location.pathname); waitForPro(); }
   // "Get Pro" on the home page: /app?upgrade=1 (remembered across the email sign-in)
   if (params.get('upgrade')) { history.replaceState(null, '', location.pathname); try { localStorage.setItem('trace-want-upgrade', '1'); } catch (_) {} }
+  if (params.get('promo')) {   // a link like /app?promo=FOUNDERS-2026 opens the Pro window with the code filled in
+    const c = params.get('promo').replace(/[^A-Za-z0-9-]/g, '').slice(0, 40);
+    history.replaceState(null, '', location.pathname + location.hash);
+    try { localStorage.setItem('trace-want-upgrade', '1'); localStorage.setItem('trace-promo', c); } catch (_) {}
+  }
   function wantsUpgrade() { try { return localStorage.getItem('trace-want-upgrade') === '1'; } catch (_) { return false; } }
 
   let lastFocus = Date.now();
@@ -679,6 +719,41 @@
     window.closePresent = function () { voiceStop(); finishAnim(); stopLoop(); end.hidden = false; };
     $q('#exitPres').textContent = 'Close';
     $q('#exitPres').onclick = e => { e.stopPropagation(); window.closePresent(); };
+    const vw = viewerOpts(d);
+    if (!vw.interactive) document.body.classList.add('watch-only');
+    // a one-time nudge the first time a slide has something to play with
+    if (vw.interactive) {
+      const hint = document.createElement('div');
+      hint.id = 'vhint'; hint.hidden = true; hint.setAttribute('role', 'status');
+      hint.innerHTML = '<span id="vhintText"></span><button type="button" aria-label="Close" id="vhintX">×</button>';
+      present.appendChild(hint);
+      let shown = false;
+      const show = text => { if (shown) return; shown = true; $q('#vhintText').textContent = text; hint.hidden = false; setTimeout(() => { hint.hidden = true; }, 7000); };
+      $q('#vhintX').onclick = e => { e.stopPropagation(); hint.hidden = true; };
+      hint.addEventListener('click', e => e.stopPropagation());
+      new MutationObserver(() => {
+        const live = !$q('#plive').hidden, has3d = !!$q('#pcanvas g[data-type="axes3d"]');
+        if (live) show(has3d ? 'Try it: drag the sliders, or drag the 3D view to turn it' : 'Try it: drag the sliders to change the numbers');
+        else if (has3d) show('Try it: drag the 3D view to turn it');
+      }).observe(present, { subtree: true, childList: true, attributes: true, attributeFilter: ['hidden'] });
+    }
+    // "Make my own copy": the deck (and its images and voice) goes into this visitor's own projects
+    const copyDeck = async () => {
+      const full = deckWithImages(deck), imgs = full.images || {};
+      try { for (const [k, v] of Object.entries(imgs)) await idb.put(k, v); } catch (_) {}
+      const plain = { ...full }; delete plain.images; delete plain.viewer;
+      try { localStorage.setItem('trace-import', JSON.stringify({ name: row.name + (row.owner_name ? ' (from ' + row.owner_name + ')' : ''), deck: plain })); }
+      catch (_) { alert('This deck is too large to copy in this browser.'); return; }
+      location.href = '/app#edit';
+    };
+    if (vw.copy) {
+      const cb = document.createElement('button');
+      cb.id = 'vcopy'; cb.type = 'button'; cb.textContent = 'Make my own copy';
+      cb.onclick = e => { e.stopPropagation(); copyDeck(); };
+      present.appendChild(cb);
+      end.querySelector('.row').insertAdjacentHTML('afterbegin', '<button class="btn" id="vCopyEnd">Make my own copy</button>');
+      $q('#vCopyEnd').onclick = copyDeck;
+    }
     const go = () => { cur = 0; openPresent(); };
     if (window.mjReady) go(); else { const prev = window.onMJ; window.onMJ = () => { prev && prev(); go(); }; setTimeout(() => { if ($q('#present').hidden && end.hidden) go(); }, 4000); }
   }

@@ -305,6 +305,8 @@
     const pro = profile.plan === 'pro', FREE = CFG.freeDecks || 3, n = count ?? 0;
     const role = (TraceUI.ROLES.find(r => r[0] === profile.role) || [, ''])[1];
     const pastDue = profile.subscription_status === 'past_due';
+    const gift = TraceUI.isGift(profile);
+    const promoParam = (params.get('promo') || '').replace(/[^A-Za-z0-9-]/g, '').slice(0, 40);
     const renew = profile.plan_renews_at ? new Date(profile.plan_renews_at).toLocaleDateString(undefined, { day: 'numeric', month: 'long', year: 'numeric' }) : '';
     const ids = (user.identities || []).map(i => i.provider).filter((p, i, a) => a.indexOf(p) === i);
     const ways = [...(ids.includes('email') ? ['Email and password'] : []), 'Email link', ...ids.filter(p => p !== 'email').map(p => PROVIDER_NAMES[p] || p)];
@@ -320,15 +322,18 @@
         <div class="bill-card${pro ? ' is-pro' : ''}">
           <div class="bill-main">
             <p class="bill-plan">${pro ? '<span class="pro-tag">PRO</span> Tracé Pro' : 'Free plan'}</p>
-            ${pro ? `<p class="muted">${pastDue ? 'Payment needs attention' : renew ? (profile.subscription_status === 'canceled' ? 'Ends on ' : 'Renews on ') + esc(renew) : 'Active'} · ${n} project${n === 1 ? '' : 's'} saved online</p>`
+            ${gift ? `<p class="muted">Free with code <b>${esc(profile.comp_code || '')}</b> until ${esc(TraceUI.longDate(profile.comp_until))} · ${n} project${n === 1 ? '' : 's'} saved online</p>`
+              : pro ? `<p class="muted">${pastDue ? 'Payment needs attention' : renew ? (profile.subscription_status === 'canceled' ? 'Ends on ' : 'Renews on ') + esc(renew) : 'Active'} · ${n} project${n === 1 ? '' : 's'} saved online</p>`
               : `<p class="muted">${n > FREE ? `${n} projects saved online. The free plan keeps ${FREE}: you can keep and edit them all, but not add new ones online.` : `${n} of ${FREE} projects saved online. The free plan keeps ${FREE} projects online.`}</p>
                  <div class="meter" role="progressbar" aria-label="Projects saved online" aria-valuemin="0" aria-valuemax="${FREE}" aria-valuenow="${Math.min(n, FREE)}"><i style="width:${Math.min(100, Math.round(n / FREE * 100))}%"></i></div>`}
           </div>
-          <div class="bill-actions">${pro ? '<button class="btn primary" id="billing">Manage billing</button>' : '<a class="btn primary" href="/app?upgrade=1" id="upgradeLink">Upgrade to Pro</a>'}</div>
+          <div class="bill-actions">${gift ? '<a class="btn primary" href="/app?upgrade=1" id="upgradeLink">Keep Pro after that</a>' : pro && profile.paddle_customer_id ? '<button class="btn primary" id="billing">Manage billing</button>' : pro ? '' : '<a class="btn primary" href="/app?upgrade=1" id="upgradeLink">Upgrade to Pro</a>'}</div>
         </div>
-        ${pro ? `<p class="fine bill-help">In <b>Manage billing</b> you can update your card, download invoices, switch between monthly and yearly, or cancel. Payments are handled securely by Paddle.</p>`
+        ${gift ? `<p class="fine bill-help">When the free period ends, your account goes back to the Free plan by itself: nothing is charged and no deck is deleted.</p>`
+          : pro ? `<p class="fine bill-help">In <b>Manage billing</b> you can update your card, download invoices, switch between monthly and yearly, or cancel. Payments are handled securely by Paddle.</p>`
           : `<div class="pro-peek"><p class="pro-peek-h">With Pro you also get</p><ul class="ticks">${window.TRACE_PLANS.proOnly.map(t => `<li>${esc(t)}</li>`).join('')}</ul>
              <p class="fine">${esc((CFG.priceLabels && CFG.priceLabels.monthly) || '')}${CFG.priceLabels && CFG.priceLabels.yearly ? ' · or ' + esc(CFG.priceLabels.yearly) : ''}. Cancel any time.</p></div>`}
+        ${pro ? '' : `<details class="plans-peek" id="promo"${promoParam ? ' open' : ''}><summary>Have a promo code?</summary><div id="promoBox" style="margin-top:12px"></div></details>`}
         <details class="plans-peek"><summary>Compare Free and Pro</summary>${TraceUI.planTable(profile.plan)}</details>
       </section>
 
@@ -358,6 +363,12 @@
       onSubmit: async v => { await saveProfile(v); say('Profile saved.', 'ok'); renderHeaderUser(); refreshHead(); window.scrollTo({ top: 0, behavior: 'smooth' }); },
     });
     wirePw(main);
+    if ($('promoBox')) TraceUI.promoForm($('promoBox'), sb, async until => {
+      const fresh = await TraceUI.fetchProfile(sb, user.id, 'display_name,role,subject,organization,avatar_color,plan,subscription_status,plan_renews_at,paddle_customer_id');
+      if (fresh) profile = fresh;
+      if (promoParam) history.replaceState(null, '', location.pathname);
+      setTimeout(async () => { await accountView(); renderHeaderUser(); say(`Code accepted: Pro is on until ${esc(TraceUI.longDate(until))}. Enjoy!`, 'ok'); }, 1200);
+    }, promoParam);
     $('pwForm').addEventListener('submit', async e => {
       e.preventDefault();
       const pw = $('acctPw').value, err = $('pwErr'), btn = $('pwSave');
@@ -425,8 +436,7 @@
     user = session ? session.user : null;
     let p = null;   // keep the current profile until the new one has loaded (USER_UPDATED fires mid-page)
     if (user) {
-      const { data } = await sb.from('profiles').select('display_name,role,subject,organization,avatar_color,plan,subscription_status,plan_renews_at').eq('id', user.id).maybeSingle();
-      p = data || { plan: 'free' };
+      p = await TraceUI.fetchProfile(sb, user.id, 'display_name,role,subject,organization,avatar_color,plan,subscription_status,plan_renews_at,paddle_customer_id') || { plan: 'free' };
     }
     profile = p;
     renderHeaderUser();
@@ -434,7 +444,7 @@
     const state = !user ? 'out' : wantsReset && !resetDone ? 'reset' : !TraceUI.isComplete(profile) ? 'profile' : 'in';
     if (state === shown) return;
     shown = state;
-    if (state === 'out') { if (leaving) return; if (mode === 'account') { location.replace('/login?next=/account'); return; } emailStep('', linkError || (wantsReset ? 'That reset link has expired or was already used. Ask for a new one with “Forgot password?”.' : '')); }
+    if (state === 'out') { if (leaving) return; if (mode === 'account') { location.replace('/login?next=' + encodeURIComponent('/account' + location.search)); return; } emailStep('', linkError || (wantsReset ? 'That reset link has expired or was already used. Ask for a new one with “Forgot password?”.' : '')); }
     else if (state === 'reset') newPasswordStep();
     else if (state === 'profile') profileStep();
     else if (mode === 'account') accountView();

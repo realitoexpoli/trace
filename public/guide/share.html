@@ -60,6 +60,11 @@
 <p class="tip"><b>Two devices at once?</b> If you change the same deck on two devices, the most recent change wins. Close the deck on one device before working on the other.</p>
 <h2 id="link">Sharing a link</h2>
 <p>Press <span class="ui">Share</span> and tick <span class="ui">Anyone with the link can watch this deck</span>. Copy the link and send it.</p>
+<p>Under <span class="ui">People with the link can</span> you choose what viewers may do:</p>
+<ul>
+<li><span class="ui">Move the sliders and turn 3D views themselves</span> (on unless you switch it off). Viewers get the live sliders, a hint the first time, and <span class="ui">↺ Reset values</span> to start again. Switch it off for a watch-only link.</li>
+<li><span class="ui">Make their own copy to change</span> (off unless you switch it on). Viewers get a <span class="ui">Make my own copy</span> button that puts the deck into their own Tracé projects, free, with or without an account. Your deck never changes.</li>
+</ul>
 <figure class="narrow" style="--w:462px"><img src="/guide/img/share.webp" alt="Share window with the link turned on, the link, and a Copy button" width="462" height="319" loading="lazy"></figure>
 <ul>
 <li>Viewers see the presentation with its live sliders, on any device, without an account. They cannot edit it, and it is not copied into their own projects.</li>
@@ -69,8 +74,16 @@
 </ul>
 <h2 id="files">Project files</h2>
 <p><span class="ui">Save project file</span> in the project menu downloads the whole project, images included, as one file. Keep it as a backup or send it to a colleague, who opens it with <span class="ui">Import a project file…</span> or by dragging the file onto the editor.</p>
-<h2 id="video">Making a video <span class="pro-tag">PRO</span></h2>
-<p>With Pro, <span class="ui">⋯</span> → <span class="ui">Export</span> → <span class="ui">Video script</span> gives a Python file for <a href="https://www.manim.community/">Manim</a>, the free animation engine used for many maths videos. Save it as <code>deck.py</code>. The first lines of the file list the commands:</p>
+<h2 id="video">Making a video</h2>
+<p><span class="ui">⋯</span> → <span class="ui">Make a video</span> turns the whole project into an MP4 file: every slide and every click plays in order, with the same animations as when you present.</p>
+<ol>
+<li>Choose the quality (<span class="ui">Full HD 1080p</span> or the faster <span class="ui">HD 720p</span>) and how long to pause after each click. Clicks set to play automatically follow at once, and a click with recorded voice lasts as long as the voice.</li>
+<li>Press <span class="ui">Make the video</span>. The bar shows how far it has got; a 3-minute deck takes about 2 minutes on a laptop. Keep the tab open until it finishes.</li>
+<li>Watch it in the window, then press <span class="ui">Download the video</span>.</li>
+</ol>
+<p>The video is made on your computer and nothing is uploaded. On the free plan it carries a small “Made with Tracé” badge in the corner; <span class="pro-tag">PRO</span> removes it. Chrome or Edge on Windows and Mac make the most compatible files (they play in PowerPoint and QuickTime too).</p>
+<h3 id="manim">The Manim script <span class="pro-tag">PRO</span></h3>
+<p>For a hand-tuned 3Blue1Brown-style video, <span class="ui">⋯</span> → <span class="ui">Export</span> → <span class="ui">Video script</span> gives a Python file for <a href="https://www.manim.community/">Manim</a>, the free animation engine used for many maths videos. Save it as <code>deck.py</code>. The first lines of the file list the commands:</p>
 <ol>
 <li><code>pip install manim manim-slides</code> installs the tools (once).</li>
 <li><code>manim-slides render deck.py Presentation</code> renders the deck in high quality.</li>
@@ -79,8 +92,8 @@
 <p>For a single video file, run <code>manim -qh deck.py Presentation</code> instead. This needs Python on your computer; Manim’s website explains the setup.</p>
 <p>On the free plan, <span class="ui">⋯</span> → <span class="ui">Export</span> gives the <span class="ui">Deck file</span>, a copy of the project you can keep or load again.</p>
 <h2 id="plans">Free and Pro</h2>
-<p>Everything you need to make and present slides is free. Pro adds advanced 3D, your recorded voice and the Python video script, and is for people who keep many decks online and share them. Features marked <span class="pro-tag">PRO</span> in the editor need Pro.</p>
-<div class="tbl-wrap"><table class="tbl"><thead><tr><th></th><th>Free</th><th>Pro</th></tr></thead><tbody><tr><td>The editor: every animation, and all text, maths, graphs, shapes and science objects</td><td>Yes</td><td>Yes</td></tr><tr><td>Present full screen with live sliders</td><td>Yes</td><td>Yes</td></tr><tr><td>Unlimited projects in your browser</td><td>Yes</td><td>Yes</td></tr><tr><td>Basic 3D shapes: sphere, cube, cylinder, cone, prism, pyramid</td><td>Yes</td><td>Yes</td></tr><tr><td>Advanced 3D: surfaces z = f(x, y), 3D scenes, polyhedra, torus, 3D arrows, turning views</td><td>No</td><td><b>Yes</b></td></tr><tr><td>Record your voice on slides and clicks</td><td>No</td><td><b>Yes</b></td></tr><tr><td>Python video script (Manim)</td><td>No</td><td><b>Yes</b></td></tr><tr><td>Projects saved to your account</td><td>3</td><td><b>Unlimited</b></td></tr><tr><td>Size of one project (images and voice included)</td><td>2 MB</td><td><b>20 MB</b></td></tr><tr><td>“Made with Tracé” badge</td><td>On share links and while presenting</td><td><b>None</b></td></tr><tr><td>See how often each shared deck is watched</td><td>No</td><td><b>Yes</b></td></tr></tbody></table></div>
+<p>Everything you need to make and present slides is free. Pro adds advanced 3D, your recorded voice, videos without the badge and the Python video script, and is for people who keep many decks online and share them. Features marked <span class="pro-tag">PRO</span> in the editor need Pro.</p>
+<div class="tbl-wrap"><table class="tbl"><thead><tr><th></th><th>Free</th><th>Pro</th></tr></thead><tbody><tr><td>The editor: every animation, and all text, maths, graphs, shapes and science objects</td><td>Yes</td><td>Yes</td></tr><tr><td>Present full screen with live sliders</td><td>Yes</td><td>Yes</td></tr><tr><td>Unlimited projects in your browser</td><td>Yes</td><td>Yes</td></tr><tr><td>Basic 3D shapes: sphere, cube, cylinder, cone, prism, pyramid</td><td>Yes</td><td>Yes</td></tr><tr><td>Advanced 3D: surfaces z = f(x, y), 3D scenes, polyhedra, torus, 3D arrows, turning views</td><td>No</td><td><b>Yes</b></td></tr><tr><td>Record your voice on slides and clicks</td><td>No</td><td><b>Yes</b></td></tr><tr><td>Make a video (MP4) of every click, with your voice</td><td>With the badge</td><td><b>No badge</b></td></tr><tr><td>Python video script (Manim)</td><td>No</td><td><b>Yes</b></td></tr><tr><td>Projects saved to your account</td><td>3</td><td><b>Unlimited</b></td></tr><tr><td>Size of one project (images and voice included)</td><td>2 MB</td><td><b>20 MB</b></td></tr><tr><td>“Made with Tracé” badge</td><td>On share links and while presenting</td><td><b>None</b></td></tr><tr><td>See how often each shared deck is watched</td><td>No</td><td><b>Yes</b></td></tr></tbody></table></div>
 <p>Pro costs $8 a month, or $72 a year. Sales tax or VAT is added where it applies.</p>
 <figure class="narrow" style="--w:574px"><img src="/guide/img/account-menu.webp" alt="Account menu showing the name and email, Free plan with 2 of 3 projects online, Upgrade to Pro, Profile, plan and billing, Sync now and Sign out" width="574" height="336" loading="lazy"><figcaption>The account menu shows your plan and how much of it you use.</figcaption></figure>
 <ul>
