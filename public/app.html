@@ -4,6 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Tracé · editor</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64.0 64.0" role="img" aria-label="Trac%C3%A9"%3E%3Ctitle%3ETrac%C3%A9%3C/title%3E%3Cg fill="%230E1116"%3E%3Ccircle cx="13" cy="23" r="5.2"/%3E%3Ccircle cx="22" cy="16" r="5.2"/%3E%3Ccircle cx="32" cy="16" r="5.2"/%3E%3Ccircle cx="42" cy="16" r="5.2"/%3E%3Ccircle cx="52" cy="16" r="5.2"/%3E%3Ccircle cx="32" cy="27" r="5.2"/%3E%3Ccircle cx="32" cy="38" r="5.2"/%3E%3C/g%3E%3Ccircle cx="42" cy="49" r="7.2" fill="%233B5BFD"/%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400&display=swap" rel="stylesheet">
@@ -28,8 +29,8 @@ button,input,select,textarea{font:inherit;color:inherit}
 button{cursor:pointer}
 :focus-visible{outline:2px solid var(--pen);outline-offset:2px}
 header{display:flex;align-items:center;gap:4px;padding:8px 14px;border-bottom:1px solid var(--line);background:var(--paper);flex-wrap:wrap}
-.brand{display:flex;align-items:baseline;gap:10px;margin-right:18px}
-.brand b{font:700 22px/1 'Segoe UI',system-ui,-apple-system,Roboto,Arial,sans-serif;letter-spacing:-.2px}
+.brand{display:flex;align-items:center;gap:10px;margin-right:18px;color:var(--ink)}
+.brand .logo-svg{display:block;height:26px;width:auto;flex:none}
 .brand span{color:var(--mute);font-size:13px}
 .tools{display:flex;gap:2px;flex-wrap:wrap}
 .tool{background:transparent;border:none;border-radius:4px;padding:6px 10px;display:flex;align-items:center;gap:5px;font-weight:700}
@@ -104,7 +105,7 @@ hr{border:none;border-top:1px solid var(--line);margin:18px 0}
 /* present */
 #present{position:fixed;inset:0;background:#000;z-index:50;display:flex;align-items:center;justify-content:center;touch-action:none}
 #plive{touch-action:pan-y}
-#present[hidden]{display:none}.protag{display:inline-block;margin-left:auto;padding:1px 5px;border-radius:3px;background:#e8b923;color:#1c221f;font-size:9.5px;font-weight:700;letter-spacing:.04em;line-height:1.5}.menu .protag,.btn .protag{margin-left:7px}.is-pro .protag{display:none}.tab.locked::after{content:"PRO";margin-left:6px;padding:0 4px;border-radius:3px;background:#e8b923;color:#1c221f;font-size:9px;font-weight:700}.pbadge{position:fixed;left:14px;bottom:calc(12px + env(safe-area-inset-bottom,0px));z-index:3;color:#cfd4d0;background:rgba(255,255,255,.08);border-radius:3px;padding:4px 9px;font-size:12px;text-decoration:none}.pbadge b{color:#fff}.pbadge[hidden]{display:none}.voice{display:inline-flex;align-items:center;gap:4px}.voice .rec{color:#a8352b}.voice .rec.on{background:#a8352b;color:#fff;border-color:#a8352b}.voice .vdur{font-variant-numeric:tabular-nums;color:var(--mute);font-size:12px}.voice .vdot{display:inline-block;width:8px;height:8px;border-radius:50%;background:currentColor;margin-right:5px;vertical-align:0}.chip .vmark{margin-left:4px;font-size:11px}
+#present[hidden]{display:none}.protag{display:inline-block;margin-left:auto;padding:1px 5px;border-radius:3px;background:#e8b923;color:#1c221f;font-size:9.5px;font-weight:700;letter-spacing:.04em;line-height:1.5}.menu .protag,.btn .protag{margin-left:7px}.is-pro .protag{display:none}.tab.locked::after{content:"PRO";margin-left:6px;padding:0 4px;border-radius:3px;background:#e8b923;color:#1c221f;font-size:9px;font-weight:700}.pbadge{display:inline-flex;align-items:center;gap:6px;position:fixed;left:14px;bottom:calc(12px + env(safe-area-inset-bottom,0px));z-index:3;color:#cfd4d0;background:rgba(255,255,255,.08);border-radius:3px;padding:4px 9px;font-size:12px;text-decoration:none}.pbadge b{color:#fff}.pbadge[hidden]{display:none}.voice{display:inline-flex;align-items:center;gap:4px}.voice .rec{color:#a8352b}.voice .rec.on{background:#a8352b;color:#fff;border-color:#a8352b}.voice .vdur{font-variant-numeric:tabular-nums;color:var(--mute);font-size:12px}.voice .vdot{display:inline-block;width:8px;height:8px;border-radius:50%;background:currentColor;margin-right:5px;vertical-align:0}.chip .vmark{margin-left:4px;font-size:11px}
 #present>svg{width:min(100vw,calc(100vh * 16 / 9));height:auto;aspect-ratio:16/9}
 #present .count{position:fixed;right:16px;bottom:calc(12px + env(safe-area-inset-bottom,0px));color:#7d858f;font-size:12px}
 .stepbar{width:min(100%,calc((100vh - 210px) * 16 / 9));display:flex;align-items:center;gap:6px;flex-wrap:wrap;min-height:30px}
@@ -120,11 +121,27 @@ hr{border:none;border-top:1px solid var(--line);margin:18px 0}
 .anim h3{font-size:12.5px;font-weight:700;margin:0 0 8px;color:var(--ink)}
 .livebar{width:min(100%,calc((100vh - 210px) * 16 / 9));display:flex;flex-wrap:wrap;gap:10px 22px;background:var(--paper);border:1px solid var(--line);border-radius:3px;padding:10px 14px}
 .livebar[hidden],#plive[hidden]{display:none}
-.lv{display:grid;grid-template-columns:auto minmax(120px,1fr) 3.5em;align-items:center;gap:10px;flex:1 1 240px;font-size:13px}
-.lv span{color:var(--mute);white-space:nowrap}.lv output{font-variant-numeric:tabular-nums;text-align:right}
-.lv input{width:100%;accent-color:var(--pen)}
+.lv{--lv:var(--pen);--lvtrack:rgba(127,127,127,.28);display:grid;grid-template-columns:auto 30px minmax(120px,1fr) 30px 4.2em;align-items:center;gap:6px;flex:1 1 300px;font-size:13px;position:relative}
+.lv .lvname{color:var(--mute);white-space:nowrap;cursor:default;user-select:none;padding-right:4px}
+.lv output{font-variant-numeric:tabular-nums;text-align:right;cursor:text;border-radius:3px;padding:3px 4px;border:1px dashed transparent}
+.lv output:hover,.lv output:focus-visible{border-color:currentColor;outline:none}
+.lv .lvedit{width:4.2em;font:inherit;font-variant-numeric:tabular-nums;text-align:right;padding:2px 4px;border:1px solid var(--lv);border-radius:3px;background:transparent;color:inherit}
+.lv .lvb{width:30px;height:30px;border-radius:50%;border:1px solid var(--lvtrack);background:transparent;color:inherit;font-size:17px;line-height:1;padding:0;cursor:pointer;touch-action:manipulation;user-select:none}
+.lv .lvb:hover{border-color:var(--lv);color:var(--lv)}
+.lv input[type=range]{-webkit-appearance:none;appearance:none;width:100%;height:32px;background:transparent;margin:0;cursor:pointer;touch-action:none}
+.lv input[type=range]:focus{outline:none}
+.lv input[type=range]::-webkit-slider-runnable-track{height:6px;border-radius:3px;background:linear-gradient(to right,var(--lv) var(--p,0%),var(--lvtrack) var(--p,0%))}
+.lv input[type=range]::-moz-range-track{height:6px;border-radius:3px;background:var(--lvtrack)}
+.lv input[type=range]::-moz-range-progress{height:6px;border-radius:3px;background:var(--lv)}
+.lv input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:20px;height:20px;margin-top:-7px;border-radius:50%;background:var(--lv);border:3px solid #fff;box-shadow:0 1px 4px rgba(0,0,0,.35);transition:transform .12s}
+.lv input[type=range]::-moz-range-thumb{width:14px;height:14px;border-radius:50%;background:var(--lv);border:3px solid #fff;box-shadow:0 1px 4px rgba(0,0,0,.35)}
+.lv input[type=range]:focus-visible::-webkit-slider-thumb{box-shadow:0 0 0 4px color-mix(in srgb,var(--lv) 35%,transparent)}
+.lv.drag input[type=range]::-webkit-slider-thumb{transform:scale(1.2)}
+.lv[data-fine]:not([data-fine=""])::after{content:"slower";position:absolute;left:50%;top:-14px;transform:translateX(-50%);font-size:10.5px;letter-spacing:.04em;color:var(--lv);pointer-events:none}
+.lv[data-fine="finest"]::after{content:"slowest"}
+@media (pointer:coarse){.lv input[type=range]{height:44px}.lv input[type=range]::-webkit-slider-thumb{width:28px;height:28px;margin-top:-11px}.lv .lvb{width:40px;height:40px}.lv{grid-template-columns:auto 40px minmax(110px,1fr) 40px 4.2em}}
 #plive{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(36px + env(safe-area-inset-bottom,0px));width:min(860px,92vw);display:flex;flex-wrap:wrap;gap:10px 24px;background:rgba(20,22,21,.93);color:#e2e5e0;border:1px solid rgba(255,255,255,.08);border-radius:4px;padding:12px 16px;z-index:55}
-#plive .lv span{color:#a9b1aa}#plive .lv input{accent-color:#f0c83a}
+#plive .lv{--lv:#f0c83a;--lvtrack:rgba(255,255,255,.22)}#plive .lv .lvname{color:#a9b1aa}#plive .lv input[type=range]::-webkit-slider-thumb{border-color:#1a1c1b}#plive .lv input[type=range]::-moz-range-thumb{border-color:#1a1c1b}
 #pcanvas g[data-type="axes3d"]{cursor:grab}
 #present .ctl,#present .exit{position:fixed;top:calc(12px + env(safe-area-inset-top,0px));background:rgba(255,255,255,.07);color:#cfd4d0;border:none;border-radius:3px;padding:6px 10px}
 #present .ctl{left:12px}#present .exit{right:12px}
@@ -157,7 +174,7 @@ hr{border:none;border-top:1px solid var(--line);margin:18px 0}
 @media (max-width:900px){
   body{overflow-x:hidden;overflow-y:auto;height:auto;min-height:100%}
   header{padding:6px 8px;gap:4px}
-  .brand{margin-right:0}.brand b{font-size:19px}
+  .brand{margin-right:0}.brand .logo-svg{height:22px}
   .proj{flex:1 1 140px;min-width:0}#projName{width:100%;min-width:0}
   header>.sep,header>.spacer{display:none}
   /* the add-object menus become one row you can swipe through */
@@ -253,7 +270,7 @@ details.more[open]>summary{margin-bottom:8px}
 </head>
 <body>
 <header>
-  <a class="brand" href="/" title="Tracé home" style="color:inherit;text-decoration:none"><b>Tracé</b><span>animated maths slides</span></a>
+  <a class="brand" href="/" title="Tracé home" style="text-decoration:none"><svg class="logo-svg" viewBox="0 0 216.9 64" height="26" role="img" aria-label="Tracé"><g fill="currentColor"><circle cx="13" cy="23" r="4.5"/><circle cx="22" cy="16" r="4.5"/><circle cx="32" cy="16" r="4.5"/><circle cx="42" cy="16" r="4.5"/><circle cx="52" cy="16" r="4.5"/><circle cx="32" cy="27" r="4.5"/><circle cx="32" cy="38" r="4.5"/></g><g fill="#3B5BFD"><circle cx="42" cy="49" r="6.5"/></g><g transform="translate(73.40 55.14) scale(0.06162)" fill="currentColor"><path d="M260 0Q211 0 180.5 -30.5Q150 -61 150 -112V-392H26V-496H150V-650H276V-496H412V-392H276V-134Q276 -104 304 -104H400V0Z M476.0 0V-496H600.0V-440H618.0Q629.0 -470 654.5 -484.0Q680.0 -498 714.0 -498H774.0V-386H712.0Q664.0 -386 633.0 -360.5Q602.0 -335 602.0 -282V0Z M964.0 14Q911.0 14 869.0 -4.5Q827.0 -23 802.5 -58.5Q778.0 -94 778.0 -145Q778.0 -196 802.5 -230.5Q827.0 -265 870.5 -282.5Q914.0 -300 970.0 -300H1106.0V-328Q1106.0 -363 1084.0 -385.5Q1062.0 -408 1014.0 -408Q967.0 -408 944.0 -386.5Q921.0 -365 914.0 -331L798.0 -370Q810.0 -408 836.5 -439.5Q863.0 -471 907.5 -490.5Q952.0 -510 1016.0 -510Q1114.0 -510 1171.0 -461.0Q1228.0 -412 1228.0 -319V-134Q1228.0 -104 1256.0 -104H1296.0V0H1212.0Q1175.0 0 1151.0 -18.0Q1127.0 -36 1127.0 -66V-67H1108.0Q1104.0 -55 1090.0 -35.5Q1076.0 -16 1046.0 -1.0Q1016.0 14 964.0 14ZM986.0 -88Q1039.0 -88 1072.5 -117.5Q1106.0 -147 1106.0 -196V-206H979.0Q944.0 -206 924.0 -191.0Q904.0 -176 904.0 -149Q904.0 -122 925.0 -105.0Q946.0 -88 986.0 -88Z M1561.0 14Q1489.0 14 1430.5 -16.0Q1372.0 -46 1338.0 -103.0Q1304.0 -160 1304.0 -241V-255Q1304.0 -336 1338.0 -393.0Q1372.0 -450 1430.5 -480.0Q1489.0 -510 1561.0 -510Q1632.0 -510 1683.0 -485.0Q1734.0 -460 1765.5 -416.5Q1797.0 -373 1807.0 -318L1685.0 -292Q1681.0 -322 1667.0 -346.0Q1653.0 -370 1627.5 -384.0Q1602.0 -398 1564.0 -398Q1526.0 -398 1495.5 -381.5Q1465.0 -365 1447.5 -332.5Q1430.0 -300 1430.0 -253V-243Q1430.0 -196 1447.5 -163.5Q1465.0 -131 1495.5 -114.5Q1526.0 -98 1564.0 -98Q1621.0 -98 1650.5 -127.5Q1680.0 -157 1688.0 -205L1810.0 -176Q1797.0 -123 1765.5 -79.5Q1734.0 -36 1683.0 -11.0Q1632.0 14 1561.0 14Z M2090.0 14Q2016.0 14 1959.5 -17.5Q1903.0 -49 1871.5 -106.5Q1840.0 -164 1840.0 -242V-254Q1840.0 -332 1871.0 -389.5Q1902.0 -447 1958.0 -478.5Q2014.0 -510 2088.0 -510Q2161.0 -510 2215.0 -477.5Q2269.0 -445 2299.0 -387.5Q2329.0 -330 2329.0 -254V-211H1968.0Q1970.0 -160 2006.0 -128.0Q2042.0 -96 2094.0 -96Q2147.0 -96 2172.0 -119.0Q2197.0 -142 2210.0 -170L2313.0 -116Q2299.0 -90 2272.5 -59.5Q2246.0 -29 2202.0 -7.5Q2158.0 14 2090.0 14ZM1969.0 -305H2201.0Q2197.0 -348 2166.5 -374.0Q2136.0 -400 2087.0 -400Q2036.0 -400 2006.0 -374.0Q1976.0 -348 1969.0 -305ZM2012.0 -552 2086.0 -700H2228.0L2122.0 -552Z"/></g></svg><span>animated maths slides</span></a>
   <div class="proj menuwrap"><input id="projName" aria-label="Project name" spellcheck="false" maxlength="80"><button class="tool" data-menu="proj" aria-haspopup="true" aria-expanded="false" aria-label="Projects" title="Projects"><svg viewBox="0 0 16 16"><path d="M4 6l4 4 4-4" stroke="currentColor" stroke-width="1.5" fill="none"/></svg></button><div class="menu projmenu" role="menu" hidden id="projMenu"></div></div>
   <span class="sep" aria-hidden="true"></span>
   <div class="tools" id="tools" aria-label="Add objects"></div>
@@ -284,7 +301,7 @@ details.more[open]>summary{margin-bottom:8px}
   <aside class="props" id="props"></aside>
 </main>
 
-<div id="present" hidden><svg id="pcanvas" viewBox="-7.1111 -4 14.2222 8" aria-label="Presentation"></svg><button class="exit" id="exitPres">Exit (Esc)</button><button class="ctl" id="togLive" hidden>Hide controls (C)</button><div id="plive" hidden aria-label="Live controls"></div><div class="count" id="pcount"></div><button class="navbtn" id="pPrev" aria-label="Previous">‹</button><button class="navbtn" id="pNext" aria-label="Next">›</button><p class="rotate">Turn your phone sideways for a bigger slide</p><a id="pbadge" class="pbadge" href="/" target="_blank" rel="noopener" hidden>Made with <b>Tracé</b></a></div>
+<div id="present" hidden><svg id="pcanvas" viewBox="-7.1111 -4 14.2222 8" aria-label="Presentation"></svg><button class="exit" id="exitPres">Exit (Esc)</button><button class="ctl" id="togLive" hidden>Hide controls (C)</button><div id="plive" hidden aria-label="Live controls"></div><div class="count" id="pcount"></div><button class="navbtn" id="pPrev" aria-label="Previous">‹</button><button class="navbtn" id="pNext" aria-label="Next">›</button><p class="rotate">Turn your phone sideways for a bigger slide</p><a id="pbadge" class="pbadge" href="/" target="_blank" rel="noopener" hidden><svg viewBox="0 0 64 64" width="14" height="14" aria-hidden="true"><g fill="currentColor"><circle cx="13" cy="23" r="4.5"/><circle cx="22" cy="16" r="4.5"/><circle cx="32" cy="16" r="4.5"/><circle cx="42" cy="16" r="4.5"/><circle cx="52" cy="16" r="4.5"/><circle cx="32" cy="27" r="4.5"/><circle cx="32" cy="38" r="4.5"/></g><g fill="#3B5BFD"><circle cx="42" cy="49" r="6.5"/></g></svg>Made with <b>Tracé</b></a></div>
 
 <div id="modal" hidden>
   <div class="dialog" role="dialog" aria-label="Export">
@@ -2220,13 +2237,47 @@ function liveControls(objs){const out=[],seen=new Set();
   return out;}
 function sharedParams(objs,ov){const sh={};for(const o of objs)if(o.type==='latex'&&ov[o.id])Object.assign(sh,ov[o.id]);return sh;}
 function withOverrides(objs,ov){const c=clone(objs),sh=sharedParams(c,ov);for(const o of c){if(o.type==='latex'){const syms=eqSymbols(o),pick={};for(const[k,v]of Object.entries(sh))if(syms.includes(k))pick[k]=v;if(Object.keys(pick).length)o.params={...(o.params||{}),...pick};continue;}const v=ov[o.id];if(v)Object.assign(o,v);}syncEq(c);syncLinks(c);syncSeries(c);syncCounters(c);return c;}
-function liveRow(c,val){const step=(c.max-c.min)/400;return`<label class="lv"><span>${c.label.replace(/</g,'&lt;')}</span><input type="range" min="${c.min}" max="${c.max}" step="${+step.toPrecision(3)}" value="${val}" data-cid="${c.id}" data-cname="${c.name}"><output>${fmtNum(+val)}</output></label>`;}
+/* Live sliders: round steps, − / + buttons, a value you can type, double-click the name to reset,
+   and fine control: while dragging, move the pointer up or down away from the slider to move it slower. */
+function niceStep(span){const raw=span/200,p=Math.pow(10,Math.floor(Math.log10(raw))),m=raw/p;return +(p*(m>=5?5:m>=2?2:1)).toPrecision(2);}
+const stepDec=st=>Math.max(0,Math.min(4,-Math.floor(Math.log10(st)+1e-9)));
+function liveRow(c,val){const st=niceStep(c.max-c.min),lab=c.label.replace(/</g,'&lt;'),v=+(+val).toFixed(stepDec(st)),v0=+(+c.value).toFixed(stepDec(st));
+  return`<div class="lv" data-v0="${v0}" style="--p:${lvPct(v,c.min,c.max)}%"><span class="lvname" title="Double-click to go back to ${fmtLv(v0,st)}">${lab}</span><button type="button" class="lvb" data-d="-1" aria-label="Less ${lab}" tabindex="-1">−</button><input type="range" min="${c.min}" max="${c.max}" step="${st}" value="${v}" data-cid="${c.id}" data-cname="${c.name}" aria-label="${lab}"><button type="button" class="lvb" data-d="1" aria-label="More ${lab}" tabindex="-1">+</button><output tabindex="0" title="Click to type a value">${fmtLv(v,st)}</output></div>`;}
+const lvPct=(v,lo,hi)=>+(100*Math.max(0,Math.min(1,(v-lo)/((hi-lo)||1)))).toFixed(2);
+function fmtLv(v,st){return(+v).toFixed(stepDec(st)).replace(/^-(0\.?0*)$/,'$1');}
+const lvOut=inp=>inp.closest('.lv').querySelector('output');
+function setLv(inp,v,{fire=true}={}){const st=+inp.step,lo=+inp.min,hi=+inp.max;v=Math.max(lo,Math.min(hi,Math.round((v-lo)/st)*st+lo));v=+v.toFixed(stepDec(st));
+  if(+inp.value===v&&!fire)return;inp.value=v;lvOut(inp).textContent=fmtLv(v,st);inp.closest('.lv').style.setProperty('--p',lvPct(v,lo,hi)+'%');if(fire)inp.dispatchEvent(new Event('input',{bubbles:true}));}
+function wireLiveBar(box){box.querySelectorAll('.lv').forEach(row=>{const inp=row.querySelector('input'),out=row.querySelector('output'),st=+inp.step;
+  inp.addEventListener('input',()=>{out.textContent=fmtLv(+inp.value,st);row.style.setProperty('--p',lvPct(+inp.value,+inp.min,+inp.max)+'%');});
+  // − / +: one step per tap, keep pressing to repeat
+  row.querySelectorAll('.lvb').forEach(b=>{let t=0,n=0;const go=()=>{setLv(inp,+inp.value+(+b.dataset.d)*st*(n>12?5:1));n++;t=setTimeout(go,n===1?380:70);};
+    b.addEventListener('pointerdown',e=>{e.preventDefault();e.stopPropagation();n=0;go();});const stop=()=>{clearTimeout(t);};b.addEventListener('pointerup',stop);b.addEventListener('pointerleave',stop);b.addEventListener('pointercancel',stop);
+    b.addEventListener('click',e=>e.stopPropagation());});
+  row.querySelector('.lvname').addEventListener('dblclick',e=>{e.stopPropagation();setLv(inp,+row.dataset.v0);});
+  // type a value
+  const edit=()=>{if(row.querySelector('.lvedit'))return;const f=document.createElement('input');f.type='number';f.className='lvedit';f.step=st;f.value=inp.value;f.setAttribute('aria-label','Value');out.hidden=true;out.after(f);f.focus();f.select();
+    let fin=false;const done=ok=>{if(fin)return;fin=true;if(ok&&f.value.trim()!==''&&isFinite(+f.value))setLv(inp,+f.value);f.remove();out.hidden=false;};
+    f.addEventListener('keydown',e=>{e.stopPropagation();if(e.key==='Enter'){e.preventDefault();done(true);}else if(e.key==='Escape'){e.preventDefault();done(false);}});f.addEventListener('blur',()=>done(true));f.addEventListener('click',e=>e.stopPropagation());};
+  out.addEventListener('click',e=>{e.stopPropagation();edit();});out.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();e.stopPropagation();edit();}});
+  // keyboard: arrows one step, Shift + arrows ten steps
+  inp.addEventListener('keydown',e=>{const d={ArrowRight:1,ArrowUp:1,ArrowLeft:-1,ArrowDown:-1}[e.key];if(!d)return;e.preventDefault();e.stopPropagation();setLv(inp,+inp.value+d*st*(e.shiftKey?10:1));});
+  // dragging: grab anywhere on the track; the further the pointer moves away from the slider, the finer the control
+  inp.addEventListener('pointerdown',e=>{if(e.button)return;e.preventDefault();e.stopPropagation();inp.focus({preventScroll:true});const r=inp.getBoundingClientRect(),lo=+inp.min,hi=+inp.max,th=COARSE?14:10;
+    const at=x=>lo+(hi-lo)*Math.max(0,Math.min(1,(x-r.left-th)/Math.max(1,r.width-2*th)));const thumbX=r.left+th+(r.width-2*th)*(+inp.value-lo)/(hi-lo||1);
+    if(Math.abs(e.clientX-thumbX)>(COARSE?22:12))setLv(inp,at(e.clientX));
+    let x0=e.clientX,v0=+inp.value,mode=1,raf=0,pend=null;row.classList.add('drag');inp.setPointerCapture(e.pointerId);
+    const move=ev=>{const dy=Math.abs(ev.clientY-(r.top+r.height/2)),m=dy<40?1:dy<110?0.25:0.08;if(m!==mode){x0=ev.clientX;v0=+inp.value;mode=m;row.dataset.fine=m<1?(m<0.1?'finest':'fine'):'';}
+      pend=v0+(ev.clientX-x0)/Math.max(1,r.width-2*th)*(hi-lo)*m;if(!raf)raf=requestAnimationFrame(()=>{raf=0;if(pend!==null)setLv(inp,pend);pend=null;});};
+    const up=()=>{inp.removeEventListener('pointermove',move);inp.removeEventListener('pointerup',up);inp.removeEventListener('pointercancel',up);row.classList.remove('drag');row.dataset.fine='';if(raf){cancelAnimationFrame(raf);raf=0;if(pend!==null)setLv(inp,pend);}inp.dispatchEvent(new Event('change',{bubbles:true}));};
+    inp.addEventListener('pointermove',move);inp.addEventListener('pointerup',up);inp.addEventListener('pointercancel',up);});
+  inp.addEventListener('click',e=>e.stopPropagation());});}
 function renderLiveBar(){const bar=$('#livebar');const cs=liveControls(slide().objects);if(!cs.length){bar.hidden=true;bar.innerHTML='';return;}
-  bar.hidden=false;bar.innerHTML=cs.map(c=>liveRow(c,c.value)).join('');let snapped=false;
+  bar.hidden=false;bar.innerHTML=cs.map(c=>liveRow(c,c.value)).join('');wireLiveBar(bar);let snapped=false;
   bar.querySelectorAll('input').forEach(inp=>{inp.addEventListener('pointerdown',()=>snapped=false);inp.addEventListener('keydown',()=>snapped=false);
     inp.addEventListener('input',()=>{if(!snapped){snap();snapped=true;}const o=obj(inp.dataset.cid),v=+inp.value;if(!o)return;
       if(o.type!=='latex')o[inp.dataset.cname]=v;else for(const e of slide().objects)if(e.type==='latex'&&(e===o||eqSymbols(e).includes(inp.dataset.cname)))e.params={...(e.params||{}),[inp.dataset.cname]:v};
-      inp.nextElementSibling.textContent=fmtNum(v);syncAll();renderCanvas();thumbsSoon();persist();if(sel===o.id){const f=document.querySelector(`[data-param="${inp.dataset.cname}"]`)||document.querySelector('[data-k="markX"]');if(f)f.value=v;}});});}
+      syncAll();renderCanvas();thumbsSoon();persist();if(sel===o.id){const f=document.querySelector(`[data-param="${inp.dataset.cname}"]`)||document.querySelector('[data-k="markX"]');if(f)f.value=v;}});});}
 
 /* ---------- present ---------- */
 const pc=$('#pcanvas');let pi=0;
@@ -2239,9 +2290,9 @@ function presShow(i,k,animate,from,c0){const s2=deck.slides[i],to=visibleAt(s2,k
 function presAt(i,animate){const prev=i?deck.slides[i-1]:null;presShow(i,0,animate,prev?finalOf(prev):[],prev?lastCam(prev):CAM0);}
 function renderPresLive(){const box=$('#plive'),tog=$('#togLive'),cs=liveControls(visibleAt(deck.slides[pi],ps));tog.hidden=!cs.length;
   if(!cs.length||liveHidden){box.hidden=true;box.innerHTML='';tog.textContent=liveHidden?'Show controls (C)':'Hide controls (C)';return;}
-  tog.textContent='Hide controls (C)';box.hidden=false;box.innerHTML=cs.map(c=>liveRow(c,c.value)).join('');
+  tog.textContent='Hide controls (C)';box.hidden=false;box.innerHTML=cs.map(c=>liveRow(c,(presOv[c.id]&&presOv[c.id][c.name]!==undefined)?presOv[c.id][c.name]:(sharedParams(presShown||[],presOv)[c.name]??c.value))).join('');wireLiveBar(box);
   box.querySelectorAll('input').forEach(inp=>inp.addEventListener('input',()=>{if(anim&&anim.svg===pc)finishAnim();const v=+inp.value;presShown=presShown||deck.slides[pi].objects;presOv[inp.dataset.cid]={...(presOv[inp.dataset.cid]||{}),[inp.dataset.cname]:v};
-    inp.nextElementSibling.textContent=fmtNum(v);presShown=withOverrides(visibleAt(deck.slides[pi],ps),presOv);drawStatic(pc,presShown);}));}
+    presShown=withOverrides(visibleAt(deck.slides[pi],ps),presOv);drawStatic(pc,presShown);}));}
 function toggleLive(){liveHidden=!liveHidden;renderPresLive();}
 let presQueued=false;
 function presNext(){if(anim&&anim.svg===pc){if(presQueued){presQueued=false;finishAnim();}else presQueued=true;return;}const s2=deck.slides[pi];if(ps<maxStep(s2))presShow(pi,ps+1,true,presShown||visibleAt(s2,ps),camAt(s2,ps));else if(pi<deck.slides.length-1)presShow(pi+1,0,true,presShown||finalOf(s2),camAt(s2,ps));}
@@ -2258,7 +2309,7 @@ pc.addEventListener('pointerdown',e=>{const g=e.target.closest('g[data-type="axe
   finishAnim();pdrag={id:base.id,cx:e.clientX,cy:e.clientY,az:base.az,tilt:base.tilt,moved:false};pc.setPointerCapture(e.pointerId);e.preventDefault();});
 pc.addEventListener('pointermove',e=>{if(!pdrag)return;if(Math.hypot(e.clientX-pdrag.cx,e.clientY-pdrag.cy)>3)pdrag.moved=true;if(!pdrag.moved)return;
   const v=orbitVals(pdrag,e);presOv[pdrag.id]={...(presOv[pdrag.id]||{}),...v};presShown=withOverrides(visibleAt(deck.slides[pi],ps),presOv);drawStatic(pc,presShown);
-  for(const k of['az','tilt']){const s2=document.querySelector(`#plive input[data-cid="${pdrag.id}"][data-cname="${k}"]`);if(s2){s2.value=v[k];s2.nextElementSibling.textContent=fmtNum(v[k]);}}});
+  for(const k of['az','tilt']){const s2=document.querySelector(`#plive input[data-cid="${pdrag.id}"][data-cname="${k}"]`);if(s2)setLv(s2,v[k],{fire:false});}});
 const endP=()=>{if(pdrag&&pdrag.moved)justOrbited=true;pdrag=null;};pc.addEventListener('pointerup',endP);pc.addEventListener('pointercancel',endP);
 /* Touch: swipe left/right to move, tap the left quarter to go back. A mouse click anywhere still advances. */
 let pTouch=null,pSwiped=false;
@@ -3589,7 +3640,7 @@ setTimeout(()=>{let seen=false;try{seen=localStorage.getItem('trace-toured')==='
 
 /* ---------- keyboard ---------- */
 document.addEventListener('keydown',e=>{
-  if(!$('#present').hidden){if(e.target&&e.target.type==='range'&&e.key!=='Escape')return;if(e.key==='c'||e.key==='C'){toggleLive();return;}if(['ArrowRight',' ','PageDown','Enter'].includes(e.key)){e.preventDefault();presNext();}else if(['ArrowLeft','PageUp'].includes(e.key)){e.preventDefault();presPrev();}else if(e.key==='Escape')closePresent();return;}
+  if(!$('#present').hidden){if(e.target&&e.target.closest&&e.target.closest('#plive')&&e.key!=='Escape')return;if(e.key==='c'||e.key==='C'){toggleLive();return;}if(['ArrowRight',' ','PageDown','Enter'].includes(e.key)){e.preventDefault();presNext();}else if(['ArrowLeft','PageUp'].includes(e.key)){e.preventDefault();presPrev();}else if(e.key==='Escape')closePresent();return;}
   if(!$('#modal').hidden){if(e.key==='Escape')$('#modal').hidden=true;return;}
   const typing=/INPUT|TEXTAREA|SELECT/.test(document.activeElement?.tagName||'');
   if((e.ctrlKey||e.metaKey)&&e.key.toLowerCase()==='z'&&!typing){e.preventDefault();e.shiftKey?redo():undo();return;}

@@ -22,7 +22,8 @@ img{max-width:100%;height:auto;display:block}
 /* top bar */
 .top{position:sticky;top:0;z-index:10;background:color-mix(in srgb,var(--paper) 92%,transparent);border-bottom:1px solid var(--line);backdrop-filter:saturate(1.2)}
 .top .wrap{display:flex;align-items:center;gap:6px;height:58px}
-.logo{font-weight:700;font-size:21px;color:var(--ink);text-decoration:none;margin-right:auto;letter-spacing:-.2px}
+.logo{font-weight:700;font-size:21px;color:var(--ink);text-decoration:none;margin-right:auto;letter-spacing:-.2px;display:flex;align-items:center}
+.logo img{display:block;height:28px;width:auto}
 .top nav a{color:var(--ink);text-decoration:none;padding:6px 10px;border-radius:4px;font-size:15px}
 .top nav a:hover{background:var(--hover)}
 .top .btn{padding:7px 14px;font-size:15px}
