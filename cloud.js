@@ -59,6 +59,30 @@
   #cloudModal .fine{font-size:12.5px}
   #cloudModal .dialog{max-height:calc(100vh - 32px);overflow:auto}
   #cloudModal:has(#cloudPf) .dialog,#cloudModal:has(.t-plans) .dialog{width:min(620px,100%)}
+  #cloudModal:has(.upg) .dialog{width:min(480px,100%)}
+  .upg{display:grid;gap:14px}
+  .upg-top{display:grid;gap:6px;justify-items:start}
+  .upg-top h2{font-size:22px!important;letter-spacing:-.3px}
+  #cloudModal .upg-why{font-size:14px}
+  .upg-period{display:grid;grid-auto-flow:column;grid-auto-columns:1fr;background:var(--desk);border:1px solid var(--line);border-radius:8px;padding:3px}
+  .upg-period button{border:0;background:none;color:var(--mute);font:inherit;font-weight:600;font-size:14px;padding:8px 10px;border-radius:6px;cursor:pointer}
+  .upg-period button[aria-checked="true"]{background:var(--paper);color:var(--ink);box-shadow:0 1px 3px rgba(0,0,0,.14)}
+  .upg-period .save{font-size:11.5px;font-weight:700;color:#1d7a43;background:rgba(42,138,74,.13);border-radius:999px;padding:1px 7px;margin-left:4px}
+  .upg-price{display:flex;align-items:baseline;flex-wrap:wrap;gap:2px 4px}
+  .upg-price b{font-size:38px;letter-spacing:-1px;line-height:1.1}
+  .upg-price span{color:var(--mute);font-size:15px}
+  .upg-price small{flex-basis:100%;color:var(--mute);font-size:13px}
+  #cloudModal ul.upg-list{list-style:none;padding:0;margin:0;display:grid;gap:7px;font-size:14px;line-height:1.45}
+  .upg-list li{display:flex;gap:10px;align-items:flex-start}
+  .upg-list li::before{content:'';flex:none;width:10px;height:5px;border-left:2px solid #3B5BFD;border-bottom:2px solid #3B5BFD;transform:rotate(-45deg);margin-top:6px}
+  #cloudModal .upg-go{background:#3B5BFD;border-color:#3B5BFD;color:#fff;font-size:15px;font-weight:700;padding:12px;border-radius:8px}
+  #cloudModal .upg-go:hover{filter:brightness(1.08)}
+  #cloudModal .upg-trust{display:flex;gap:7px;align-items:center;justify-content:center;font-size:12.5px;text-align:center}
+  .upg-compare{border-top:1px solid var(--line);padding-top:10px}
+  .upg-compare summary{cursor:pointer;font-size:13.5px;font-weight:600;color:var(--mute)}
+  .upg-compare .t-plans{margin-top:10px;font-size:13px}
+  .upg-promo+.upg-compare{border-top:0;padding-top:0}
+  .upg-promo .promo-form{margin-top:10px;max-width:none}
   .acctmenu .menulink{display:flex;padding:7px 10px;border-radius:3px;color:inherit;text-decoration:none}
   .acctmenu .menulink:hover{background:var(--hover)}
   body.viewer>header,body.viewer>main{display:none}
@@ -139,6 +163,7 @@
   const presentBtn = $q('#presentBtn');
   presentBtn.before(shareBtn);
   presentBtn.after(acct);
+  if (document.body.classList.contains('home-view') && typeof moveAcct === 'function') moveAcct(true);   // the projects page is showing
 
   const ICON_CLOUD = '<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3"><path d="M4.5 12.5h7.2a2.8 2.8 0 0 0 .3-5.6A4 4 0 0 0 4.3 7.6 2.5 2.5 0 0 0 4.5 12.5z"/></svg>';
   function setStatus(kind, text, short) {
@@ -153,6 +178,7 @@
     if (!profileDone()) return setStatus('warn', 'Finish your profile to save projects online', 'Finish profile');
     if (!m) return;
     if (m.tooBig) return setStatus('warn', 'Too big for the cloud on your plan', 'Too big');
+    if (m.practice) return setStatus('local', 'The tutorial’s practice project is kept on this device only', 'Practice');
     if (m.needsPro) return setStatus('warn', 'This project has recorded voice, a Pro feature: saved on this device only', 'Needs Pro');
     if (m.localOnly) return setStatus('warn', `On this device only: the free plan keeps ${CFG.freeDecks || 3} decks online`, 'Device only');
     if (pending.has(m.id) || busy) return setStatus('saving', 'Saving to your account…', 'Saving…');
@@ -200,14 +226,73 @@
   }
   const profileDone = () => TraceUI.isComplete(profile);
 
+  /* The Pro offer: a billing period switch, the price (local currency from Paddle when it loads), what Pro adds. */
+  const PRICING = Object.assign({ currency: 'USD', monthly: 8, yearly: 72 }, CFG.pricing || {});
+  const money = (n, cur) => { try { return new Intl.NumberFormat(undefined, { style: 'currency', currency: cur || PRICING.currency, maximumFractionDigits: n % 1 ? 2 : 0 }).format(n); } catch (_) { return '$' + n; } };
+  const LOCK_I = '<svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><rect x="3" y="7" width="10" height="7" rx="1.5"/><path d="M5.5 7V5a2.5 2.5 0 015 0v2"/></svg>';
+  let localPrices = null;   // { monthly: {total, perMonth}, yearly: {...} } from Paddle.PricePreview
+  let promoWanted = '';     // /app?promo=CODE fills in the promo box
+  let promoAsked = false;
+  const giftReason = () => TraceUI.isGift(profile) ? `Your free Pro from a promo code runs until ${TraceUI.longDate(profile.comp_until)}. To keep Pro after that, subscribe here (billing starts today).` : undefined;
   function upgradeDialog(reason) {
-    const ready = CFG.paddleClientToken && (CFG.prices.monthly || CFG.prices.yearly);
-    openDialog(`<h2 id="cloudTitle">Tracé Pro</h2>
-      ${reason ? `<p>${esc(reason)}</p>` : '<p>Everything in Free, plus more room online and cleaner share links.</p>'}
-      ${TraceUI.planTable(profile && profile.plan)}
-      ${ready ? `<div class="plans">${CFG.prices.monthly ? `<button data-price="${esc(CFG.prices.monthly)}"><b>Monthly</b>${esc(CFG.priceLabels.monthly)}</button>` : ''}${CFG.prices.yearly ? `<button data-price="${esc(CFG.prices.yearly)}"><b>Yearly</b>${esc(CFG.priceLabels.yearly)}</button>` : ''}</div>
-      <p>Secure payment by Paddle. Cancel any time from “Manage billing”.</p>` : '<p>Payments are not set up yet on this site.</p>'}`);
-    body().querySelectorAll('[data-price]').forEach(b => b.onclick = () => checkout(b.dataset.price));
+    const ready = CFG.paddleClientToken && CFG.prices && (CFG.prices.monthly || CFG.prices.yearly);
+    if (!ready) return openDialog(`<div class="upg"><div class="upg-top"><span class="pro-tag">PRO</span><h2 id="cloudTitle">Tracé Pro</h2>
+      ${reason ? `<p class="upg-why">${esc(reason)}</p>` : ''}</div>
+      <p><b>Pro is coming soon.</b> Everything in the Free plan is yours to use in the meantime.</p>
+      <details class="upg-compare"><summary>What Pro will add</summary>${TraceUI.planTable(profile && profile.plan)}</details></div>`);
+    const periods = ['yearly', 'monthly'].filter(p => CFG.prices[p]);
+    const save = PRICING.monthly && PRICING.yearly ? Math.round((1 - PRICING.yearly / (PRICING.monthly * 12)) * 100) : 0;
+    let period = periods[0];
+    openDialog(`<div class="upg">
+      <div class="upg-top"><span class="pro-tag">PRO</span><h2 id="cloudTitle">Upgrade to Tracé Pro</h2>
+        <p class="upg-why">${esc(reason || 'Everything in Free, plus advanced 3D, your own voice, the video script, and all your decks online.')}</p></div>
+      ${periods.length > 1 ? `<div class="upg-period" role="radiogroup" aria-label="Billing period">${periods.map(p => `<button type="button" role="radio" data-period="${p}" aria-checked="${p === period}">${p === 'yearly' ? 'Yearly' : 'Monthly'}${p === 'yearly' && save > 0 ? ` <span class="save">Save ${save}%</span>` : ''}</button>`).join('')}</div>` : ''}
+      <div class="upg-price" aria-live="polite"><b id="upgAmount"></b><span id="upgPer"></span><small id="upgNote"></small></div>
+      <ul class="upg-list">${window.TRACE_PLANS.proOnly.map(t => `<li>${esc(t)}</li>`).join('')}</ul>
+      <button class="btn primary wide upg-go" id="upgGo" type="button">Continue to secure checkout</button>
+      <p class="upg-trust">${LOCK_I}<span>Secure checkout by Paddle · Cancel any time · 14-day refund</span></p>
+      ${TraceUI.isGift(profile) ? '' : `<details class="upg-compare upg-promo"${promoWanted ? ' open' : ''}><summary>Have a promo code?</summary><div id="upgPromo"></div></details>`}
+      <details class="upg-compare"><summary>Compare Free and Pro</summary>${TraceUI.planTable(profile && profile.plan)}</details>
+    </div>`);
+    const hadPromo = !!promoWanted;
+    if (user && $q('#upgPromo')) TraceUI.promoForm($q('#upgPromo'), sb, async until => {
+      await loadProfile();
+      setTimeout(() => { closeDialog(); proIsOn(`Code accepted: Pro is on until ${TraceUI.longDate(until)}. Enjoy!`); }, 1400);
+    }, promoWanted || '');
+    promoWanted = '';
+    if (hadPromo && $q('#promoGo')) setTimeout(() => $q('#promoGo').focus(), 50);
+    const paint = () => {
+      const L = localPrices && localPrices[period];
+      const yearly = period === 'yearly';
+      const per = L ? L.perMonth : money(yearly ? Math.round(PRICING.yearly / 12 * 100) / 100 : PRICING.monthly);
+      const total = L ? L.total : money(yearly ? PRICING.yearly : PRICING.monthly);
+      $q('#upgAmount').textContent = per;
+      $q('#upgPer').textContent = ' / month';
+      $q('#upgNote').textContent = yearly ? `${total} billed once a year` : 'Billed monthly';
+      const go = $q('#upgGo'); go.dataset.price = CFG.prices[period];
+      body().querySelectorAll('[data-period]').forEach(b => b.setAttribute('aria-checked', String(b.dataset.period === period)));
+    };
+    body().querySelectorAll('[data-period]').forEach(b => b.onclick = () => { period = b.dataset.period; paint(); });
+    body().querySelector('.upg-period')?.addEventListener('keydown', e => {
+      if (!/Arrow(Left|Right|Up|Down)/.test(e.key)) return;
+      e.preventDefault(); period = periods[(periods.indexOf(period) + 1) % periods.length]; paint();
+      body().querySelector(`[data-period="${period}"]`).focus();
+    });
+    $q('#upgGo').onclick = () => checkout($q('#upgGo').dataset.price);
+    paint();
+    // the real price in the visitor's currency, taxes as Paddle will charge them
+    if (!localPrices) loadPaddle().then(P => P.PricePreview && P.PricePreview({ items: periods.map(p => ({ priceId: CFG.prices[p], quantity: 1 })) })).then(r => {
+      const items = r && r.data && r.data.details && r.data.details.lineItems;
+      if (!items || !items.length) return;
+      localPrices = {};
+      for (const it of items) {
+        const p = periods.find(x => CFG.prices[x] === (it.price && it.price.id)); if (!p) continue;
+        const cents = Number(it.totals && it.totals.total), cur = r.data.currencyCode;
+        const perMonth = p === 'yearly' && cents ? money(Math.round(cents / 12) / 100, cur) : it.formattedTotals.total;
+        localPrices[p] = { total: it.formattedTotals.total, perMonth };
+      }
+      if (!modal.hidden && $q('#upgGo')) paint();
+    }).catch(() => {});
   }
 
   async function shareDialog() {
@@ -264,9 +349,9 @@
     menu.innerHTML = `<div class="who">${profile && profile.display_name ? `<b style="color:var(--ink)">${esc(profile.display_name)}</b><br>` : ''}${esc(user.email)}</div>
       ${profileDone() ? '' : '<button role="menuitem" class="up" data-acct="profile">Finish your profile to save online</button>'}
       <div class="plan">${isPro() ? 'Pro plan' : 'Free plan'}<small>${isPro()
-        ? (profile.subscription_status === 'past_due' ? 'Payment problem: please update your card' : profile.plan_renews_at ? 'Renews ' + new Date(profile.plan_renews_at).toLocaleDateString() : '')
+        ? (TraceUI.isGift(profile) ? 'Free with a code until ' + new Date(profile.comp_until).toLocaleDateString() : profile.subscription_status === 'past_due' ? 'Payment problem: please update your card' : profile.plan_renews_at ? 'Renews ' + new Date(profile.plan_renews_at).toLocaleDateString() : '')
         : `${used} of ${CFG.freeDecks || 3} projects online · <span class="pro-tag">PRO</span> unlimited`}</small></div>
-      ${isPro() ? '<button role="menuitem" data-acct="billing">Manage billing</button>' : '<button role="menuitem" class="up" data-acct="upgrade">Upgrade to Pro</button>'}
+      ${isPro() && profile.paddle_customer_id ? '<button role="menuitem" data-acct="billing">Manage billing</button>' : isPro() ? '' : '<button role="menuitem" class="up" data-acct="upgrade">Upgrade to Pro</button>'}
       <a role="menuitem" href="/account" class="menulink">Profile, plan and billing</a>
       <button role="menuitem" data-acct="sync">Sync now</button>
       <hr><button role="menuitem" data-acct="signout">Sign out</button>`;
@@ -276,7 +361,7 @@
     if (!a) return;
     closeMenus();
     const k = a.dataset.acct;
-    if (k === 'upgrade') upgradeDialog();
+    if (k === 'upgrade') upgradeDialog(giftReason());
     else if (k === 'billing') openBilling();
     else if (k === 'profile') profileDialog();
     else if (k === 'sync') { if (!profileDone()) return profileDialog(); await syncAll(); toast('Your decks are up to date.'); }
@@ -287,6 +372,7 @@
   const _renderProjMenu = window.renderProjMenu;
   window.renderProjMenu = function () {
     _renderProjMenu();
+    if (typeof homeSoon === 'function') homeSoon();
     if (!user) return;
     document.querySelectorAll('#projMenu [data-proj]').forEach(b => {
       const m = meta(b.dataset.proj);
@@ -315,7 +401,7 @@
       for (const id of [...pending]) {
         pending.delete(id);
         const m = meta(id);
-        if (m && !m.remote && !m.localOnly && !m.tooBig) await push(m);
+        if (m && !m.remote && !m.localOnly && !m.tooBig && !m.practice) await push(m);
       }
     } finally { busy = false; showStatus(); }
   }
@@ -359,7 +445,7 @@
 
   /* every edit already calls persist(): copy it to the cloud a moment later */
   const _persist = window.persist;
-  window.persist = function () { _persist(); { const m0 = curMeta(); if (m0) { m0.rev = (m0.rev || 0) + 1; saveIndex(); } } if (user && curProj) { const m = curMeta(); if (m && !m.localOnly && !m.tooBig) queue(curProj); else showStatus(); } };
+  window.persist = function () { _persist(); { const m0 = curMeta(); if (m0) { m0.rev = (m0.rev || 0) + 1; saveIndex(); } } if (user && curProj) { const m = curMeta(); if (m && !m.localOnly && !m.tooBig && !m.practice) queue(curProj); else showStatus(); } };
   $q('#projName').addEventListener('change', () => { const m = curMeta(); if (m) { m.rev = (m.rev || 0) + 1; saveIndex(); } queue(curProj, 300); });
 
   /* opening a deck that was saved from another device downloads it first */
@@ -434,7 +520,7 @@
       if (p.cloudId && !seen.has(p.cloudId) && p.owner === user.id) { delete p.cloudId; delete p.cloudAt; p.localOnly = true; }   // deleted on another device
     }
     // decks on this device that are not online yet: most recently edited first, so they win the free slots
-    projects.filter(p => !p.cloudId && !p.localOnly && !p.tooBig && (!p.owner || p.owner === user.id))
+    projects.filter(p => !p.cloudId && !p.localOnly && !p.tooBig && !p.practice && (!p.owner || p.owner === user.id))
       .sort((a, b) => b.updated - a.updated).forEach(p => pending.add(p.id));
     saveIndex();
     const m = curMeta();
@@ -447,14 +533,18 @@
 
   /* ---------- sign in / out ---------- */
   async function loadProfile() {
-    const { data } = await sb.from('profiles').select('plan,subscription_status,plan_renews_at,paddle_customer_id,display_name,role,subject,organization,avatar_color').eq('id', user.id).maybeSingle();
-    profile = data || { plan: 'free' };
+    profile = await TraceUI.fetchProfile(sb, user.id, 'plan,subscription_status,plan_renews_at,paddle_customer_id,display_name,role,subject,organization,avatar_color') || { plan: 'free' };
   }
   async function onSession(s) {
     const was = user && user.id;
     session = s; user = s ? s.user : null;
     signedOutElsewhere();
-    if (!user) { profile = null; renderAcct(); showStatus(); return; }
+    if (!user) {
+      profile = null; renderAcct(); showStatus();
+      let pc = ''; try { pc = localStorage.getItem('trace-promo') || ''; } catch (_) {}
+      if (pc && !promoAsked) { promoAsked = true; signInDialog(`Create a free account or sign in, and your promo code ${pc} turns on Pro. No card needed.`); }
+      return;
+    }
     if (was === user.id) return;
     await loadProfile();
     renderAcct();
@@ -464,7 +554,7 @@
     // after a fresh upgrade, decks that were "device only" can now go to the cloud
     if (isPro()) { let any = false; for (const p of projects) if (p.localOnly || p.tooBig || p.needsPro) { p.localOnly = p.tooBig = p.needsPro = false; pending.add(p.id); any = true; } if (any) await flush(); }
     if (!was && before && projects.some(p => p.cloudId)) toast('Signed in. Your decks are saved to your account.');
-    try { if (localStorage.getItem('trace-want-upgrade') === '1') { localStorage.removeItem('trace-want-upgrade'); if (!isPro()) upgradeDialog(); } } catch (_) {}
+    try { if (localStorage.getItem('trace-want-upgrade') === '1') { localStorage.removeItem('trace-want-upgrade'); promoWanted = localStorage.getItem('trace-promo') || ''; localStorage.removeItem('trace-promo'); if (!isPro() || TraceUI.isGift(profile)) upgradeDialog(promoWanted && !TraceUI.isGift(profile) ? 'You have a promo code: press Redeem to turn on Pro, no card needed.' : giftReason()); } } catch (_) {}
   }
   /* Signed out from the account page: remove that account's saved projects from this browser too. */
   function signedOutElsewhere() {
@@ -519,20 +609,22 @@
     try {
       const P = await loadPaddle();
       P.Checkout.open({ items: [{ priceId, quantity: 1 }], customer: { email: user.email }, customData: { user_id: user.id },
-                        settings: { displayMode: 'overlay', successUrl: location.origin + location.pathname + '?upgraded=1' } });
+                        settings: { displayMode: 'overlay', variant: 'one-page', theme: 'light', allowLogout: false, showAddDiscounts: true,
+                                    successUrl: location.origin + location.pathname + '?upgraded=1' } });
     } catch (_) { toast('The payment window could not open. Check your connection or ad blocker.'); }
+  }
+  async function proIsOn(msg) {
+    syncPlan();
+    for (const p of projects) if (p.localOnly || p.tooBig || p.needsPro) { p.localOnly = p.tooBig = p.needsPro = false; pending.add(p.id); }
+    await flush(); renderAcct(); showStatus();
+    toast(msg);
   }
   async function waitForPro() {
     toast('Payment received. Turning on Pro…');
     for (let i = 0; i < 30; i++) {
       await new Promise(r => setTimeout(r, 2000));
       await loadProfile();
-      if (isPro()) {
-        for (const p of projects) if (p.localOnly || p.tooBig || p.needsPro) { p.localOnly = p.tooBig = p.needsPro = false; pending.add(p.id); }
-        await flush(); renderAcct(); showStatus();
-        toast('Welcome to Tracé Pro. All your decks are now saved online.');
-        return;
-      }
+      if (isPro()) return proIsOn('Welcome to Tracé Pro. All your decks are now saved online.');
     }
     toast('Pro will switch on in a moment. Reload the page if it does not.');
   }
@@ -550,13 +642,18 @@
   sb.auth.onAuthStateChange((ev, s) => { setTimeout(() => onSession(s), 0); });   // outside the auth lock, as Supabase recommends
   sb.auth.getSession().then(async ({ data }) => {
     await onSession(data.session);
-    if (!user && wantsUpgrade()) signInDialog('Create a free account or sign in first, then choose monthly or yearly.', '?upgrade=1');
+    if (!user && wantsUpgrade() && !promoAsked) signInDialog('Create a free account or sign in first, then choose monthly or yearly.', '?upgrade=1');
     else if (!user && params.get('signin')) location.replace('/login');   // old "Sign in" links
     if (params.get('signin')) history.replaceState(null, '', location.pathname);
   });
   if (params.get('upgraded')) { history.replaceState(null, '', location.pathname); waitForPro(); }
   // "Get Pro" on the home page: /app?upgrade=1 (remembered across the email sign-in)
   if (params.get('upgrade')) { history.replaceState(null, '', location.pathname); try { localStorage.setItem('trace-want-upgrade', '1'); } catch (_) {} }
+  if (params.get('promo')) {   // a link like /app?promo=FOUNDERS-2026 opens the Pro window with the code filled in
+    const c = params.get('promo').replace(/[^A-Za-z0-9-]/g, '').slice(0, 40);
+    history.replaceState(null, '', location.pathname + location.hash);
+    try { localStorage.setItem('trace-want-upgrade', '1'); localStorage.setItem('trace-promo', c); } catch (_) {}
+  }
   function wantsUpgrade() { try { return localStorage.getItem('trace-want-upgrade') === '1'; } catch (_) { return false; } }
 
   let lastFocus = Date.now();

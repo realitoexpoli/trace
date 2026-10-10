@@ -2,15 +2,18 @@
 <html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Privacy policy · Tracé</title>
 <link rel="icon" href="/favicon.svg" type="image/svg+xml">
-<link rel="apple-touch-icon" href="/apple-touch-icon.png"><link rel="stylesheet" href="/site.css"></head>
+<link rel="apple-touch-icon" href="/apple-touch-icon.png"><link rel="manifest" href="/site.webmanifest"><meta name="theme-color" content="#3B5BFD"><link rel="stylesheet" href="/site.css"></head>
 <body><header class="top"><div class="wrap"><a class="logo" href="/" aria-label="Tracé home"><img src="/img/logo-tile.svg" alt="Tracé" width="96" height="34"></a><nav><a href="/#pricing">Pricing</a></nav><a class="btn primary" href="/app">Open the editor</a></div></header>
 <main class="wrap doc">
 <p class="banner"><b>Template.</b> Replace every <span class="todo">highlighted</span> part with your own details and have it checked for your country before launch. This page is a starting point, not legal advice. Delete this box when done.</p>
-<h1>Privacy policy</h1><p class="muted">Last updated: <span class="todo">DATE</span></p>
+<h1>Privacy policy</h1><p class="muted">Last updated: 10 October 2026</p>
 <p>This policy explains what Tracé collects and why. The controller of your data is <span class="todo">YOUR NAME OR COMPANY, ADDRESS, EMAIL</span>.</p>
 <h2>Without an account</h2><p>Your decks stay in your own browser. We do not receive them.</p>
 <h2>With an account</h2><ul>
 <li><b>Email address</b>: to sign you in and to contact you about your account.</li>
+<li><b>Password</b>, if you set one: stored only as a secure hash by our sign-in provider. Nobody, including us, can read it.</li>
+<li><b>If you sign in with Google or GitHub</b>: your name, email address and account id from that service, used only to sign you in and to start your profile.</li>
+<li><b>Your profile</b>: your name, role, and optionally your subject and school, shown on decks you share.</li>
 <li><b>Your decks</b>: stored so they open on your devices, and shown to people you share a link with.</li>
 <li><b>Number of views</b> of shared decks, without any information about the viewers.</li>
 <li><b>Plan and subscription status</b>, received from Paddle.</li></ul>
@@ -19,10 +22,13 @@
 <li>Supabase: database and sign-in (<span class="todo">choose the region of your Supabase project, e.g. EU (Frankfurt)</span>).</li>
 <li>Cloudflare: hosting of the website.</li>
 <li>Paddle: payments and invoices.</li>
-<li>jsDelivr: delivers the open-source code libraries the editor uses.</li></ul>
+<li>jsDelivr: delivers the open-source code libraries the editor uses.</li>
+<li>Google and GitHub: only if you choose to sign in with them.</li>
+<li>Resend: sends sign-in and account emails.</li></ul>
 <h2>No ads, no tracking</h2><p>Tracé shows no ads and uses no advertising or analytics trackers. The site stores sign-in information and your local decks in your browser; these are necessary for the service to work.</p>
 <h2>How long we keep it</h2><p>We keep your account and decks until you delete them or ask us to delete your account. Paddle keeps payment records as required by tax law.</p>
-<h2>Your rights</h2><p>You can ask for a copy of your data, its correction or deletion, and you can object to its use, by writing to <span class="todo">hello@your-domain.example</span>. You can also complain to your data protection authority.</p>
+<h2>Your rights</h2><p>You can ask for a copy of your data, its correction or deletion, and you can object to its use, by writing to <a href="mailto:support@traceanim.com">support@traceanim.com</a>. You can also complain to your data protection authority.</p>
 </main>
-<footer><div class="wrap"><span class="sp">© Tracé</span><a href="/terms">Terms</a><a href="/privacy">Privacy</a><a href="/refunds">Refunds</a></div></footer>
+<footer><div class="wrap"><span class="sp">© <span id="yr">2026</span> Tracé</span><a href="/guide/">Guide</a><a href="/terms">Terms</a><a href="/privacy">Privacy</a><a href="/refunds">Refunds</a><a href="mailto:support@traceanim.com">Contact</a></div></footer>
+<script>document.getElementById('yr').textContent = new Date().getFullYear();</script>
 </body></html>

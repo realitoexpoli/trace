@@ -6,7 +6,7 @@
 <title>Objects and equations · Tracé guide</title>
 <meta name="description" content="Text, maths, graphs, 3D, science: how to use Tracé, the editor for animated maths and physics slides.">
 <link rel="icon" href="/favicon.svg" type="image/svg+xml">
-<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png"><link rel="manifest" href="/site.webmanifest"><meta name="theme-color" content="#3B5BFD">
 <link rel="stylesheet" href="/site.css">
 </head>
 <body>
@@ -30,7 +30,7 @@
 
 <h1>Objects and equations</h1>
 <p class="lead">Every object on a slide has settings on the right. Most of them can also change on a click, which is how you animate them.</p>
-<nav class="toc" aria-label="On this page"><b>On this page</b><ul><li><a href="#add">Adding objects</a></li><li><a href="#edit">Moving and resizing</a></li><li><a href="#text">Text</a></li><li><a href="#equations">Equations</a></li><li><a href="#graphs">Graphs</a></li><li><a href="#3d">3D</a></li><li><a href="#counter">Counters</a></li><li><a href="#more">Other objects</a></li></ul></nav>
+<nav class="toc" aria-label="On this page"><b>On this page</b><ul><li><a href="#add">Adding objects</a></li><li><a href="#edit">Moving and resizing</a></li><li><a href="#text">Text</a></li><li><a href="#equations">Equations</a></li><li><a href="#graphs">Graphs</a></li><li><a href="#drawings">Drawings and the library</a></li><li><a href="#3d">3D</a></li><li><a href="#counter">Counters</a></li><li><a href="#more">Other objects</a></li></ul></nav>
 <h2 id="add">Adding objects</h2>
 <p>Open a menu at the top and pick an object. It appears in the middle of the slide, selected, with its settings on the right.</p>
 <div class="tbl-wrap"><table class="tbl"><thead><tr><th>Menu</th><th>What is in it</th></tr></thead><tbody><tr><td><span class="ui">Write</span></td><td>Text, Equation, Bullet list, Code, Matrix, Table, Counter</td></tr><tr><td><span class="ui">Draw</span></td><td>Image, Circle, Ellipse, Rectangle, Polygon, Star, Arc, Sector or ring, Line, Arrow, Dot, Brace, Cross mark</td></tr><tr><td><span class="ui">Geometry</span></td><td>Labelled point, Triangle, Angle, Number plane, Venn diagram</td></tr><tr><td><span class="ui">Plot</span></td><td>Graph, Parametric curve, Polar plot, Number line, Vector, Vector field, Complex plane</td></tr><tr><td><span class="ui">3D</span></td><td>Sphere, Cube, Cuboid, Ellipsoid, Cylinder, Cone, Prism, Pyramid, Torus, the regular polyhedra, 3D arrow, 3D axes, a 3D scene with several shapes</td></tr><tr><td><span class="ui">Science</span></td><td>Wave, Phasor, Signal and spectrum, Chart, Network, plus four signal-jamming simulations (symbols in noise, J/S map, frequency hopping, spread spectrum)</td></tr></tbody></table></div>
@@ -77,6 +77,18 @@
 </ul>
 <figure class="narrow" style="--w:296px"><img src="/guide/img/graph-panel.webp" alt="Graph settings for a marked point: secant, tangent, trace, point position and a slider while presenting" width="296" height="381" loading="lazy"><figcaption>Point, tangent and slider options of a graph.</figcaption></figure>
 
+<h2 id="drawings">Drawings and the library</h2>
+<p>For anything that is not in the menus (a rocket, a magnet, a flask), open <span class="ui">Library</span> at the top. It holds ready-made drawings for maths and science slides, grouped into Space, Motion, Physics, Chemistry, Nature and Everyday. Type in the search box (for example <i>rocket</i>, <i>magnet</i> or <i>newton</i>) and press <kbd>Enter</kbd> to add the first match.</p>
+<figure class="narrow" style="--w:561px"><img src="/guide/img/library-menu.webp" alt="The Library menu: a search box and drawings of a rocket, satellite, planet, Earth, sun, moon, car, airplane, sailboat and more, with Import an SVG file and Paste SVG code buttons" width="561" height="531" loading="lazy"><figcaption>The Library menu.</figcaption></figure>
+<p>A drawing behaves like any other object: it can <b>draw itself</b> when it appears, move, grow and turn on a click, follow a path, or <b>morph</b> into another object.</p>
+<ul>
+<li><b>Colours:</b> <span class="ui">Its own colours</span> keeps the drawing as it is; <span class="ui">One colour</span> paints it in a single colour you choose, which can also change on a click.</li>
+<li><b>Swap it:</b> <span class="ui">Change drawing…</span> replaces the picture and keeps its position, size and animation.</li>
+</ul>
+<h3>Your own drawings</h3>
+<p>Any drawing saved as an <b>SVG</b> file works: from Inkscape, Illustrator, Figma, Canva or an icon website. In <span class="ui">Library</span>, choose <span class="ui">Import an SVG file…</span>, or drag the file onto the slide, or copy SVG code and paste it (<kbd>Ctrl</kbd>+<kbd>V</kbd>). Tracé keeps the shapes and colours; text inside the file and photos are left out (turn text into outlines in your drawing app first). Imported drawings are saved with the project, so they are there when you share it.</p>
+<p class="tip">Only use drawings you made or are allowed to use. Many icon sites say which licence each icon has.</p>
+
 <h2 id="3d">3D</h2>
 <p>The <span class="ui">3D</span> menu adds solids (sphere, cube, cone, torus, polyhedra…) or a set of 3D axes. On the free plan you get the basic shapes: sphere, cube, cuboid, ellipsoid, cylinder, cone, prism and pyramid. Items marked <span class="pro-tag">PRO</span> (torus, the regular polyhedra, 3D arrows, 3D axes and surfaces, 3D scenes, and views that keep turning) need Pro.</p>
 <p> 3D axes can show a surface from an equation, a parametric surface, an implicit surface such as <code>x^2 + y^2 + z^2 = 4</code>, or a 3D curve.</p>
@@ -104,7 +116,7 @@
 <footer>
   <div class="wrap">
     <span class="sp">© <span id="yr">2026</span> Tracé</span>
-    <a href="/guide/">Guide</a><a href="/terms">Terms</a><a href="/privacy">Privacy</a><a href="/refunds">Refunds</a><a href="mailto:hello@your-domain.example">Contact</a>
+    <a href="/guide/">Guide</a><a href="/terms">Terms</a><a href="/privacy">Privacy</a><a href="/refunds">Refunds</a><a href="mailto:support@traceanim.com">Contact</a>
   </div>
 </footer>
 <script>document.getElementById('yr').textContent = new Date().getFullYear();</script>

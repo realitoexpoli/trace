@@ -1,0 +1,5 @@
+User-agent: *
+Allow: /
+Disallow: /account
+Disallow: /v/
+Sitemap: https://www.traceanim.com/sitemap.xml
