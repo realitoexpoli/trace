@@ -9,7 +9,7 @@ Tracé is a browser editor for animated maths and physics slides. This package t
 - **Payments** through Paddle, which also collects VAT and sales tax worldwide
 - A **home page** with pricing, a **user guide** at `/guide`, and **terms / privacy / refund** templates
 
-Everything was tested on a full local copy of the stack (500 automated checks, see [Tests](#tests)).
+Everything was tested on a full local copy of the stack (511 automated checks, see [Tests](#tests)).
 
 ---
 
@@ -234,7 +234,7 @@ python3 tests/editor/drawing_test.py file:///path/to/trace.html  # library, SVG 
 python3 tests/editor/video_test.py file:///path/to/trace.html path/to/mp4-muxer.js   # Make a video: frames, voice, badge, 720p/1080p, cancel; checked with ffprobe (19 checks)
 python3 tests/editor/tutorial_test.py file:///path/to/trace.html # every chapter of the interactive tutorial, start to finish, on a laptop and a phone (45 checks)
 python3 tests/editor/home_test.py file:///path/to/trace.html     # the projects page: templates, cards, search, rename, duplicate, delete, Back/Forward (27 checks)
-python3 tests/editor/background_test.py file:///path/to/trace.html # background designer: presets, gradient, pattern, Cancel, Undo, colour advice, the Plot button (14 checks)
+python3 tests/editor/background_test.py file:///path/to/trace.html # background designer (presets, gradient, pattern, picture, slide size), any colour, hiding and resizing panels, the vertical example (25 checks)
 ```
 
 The end-to-end test covers: signing up on the sign-up page, the profile step and the profile reminder in the editor, the account page (editing the profile, signing out, deleting the account), the home page and legal pages, the demo tour, sign-in by email link, saving edits online, the free limit, sharing and the viewer, a second device, upgrading through a signed webhook, the billing portal, cancelling, deleting, signing out, and that the public key can neither read other decks nor grant Pro.
