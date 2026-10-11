@@ -9,7 +9,7 @@ Tracé is a browser editor for animated maths and physics slides. This package t
 - **Payments** through Paddle, which also collects VAT and sales tax worldwide
 - A **home page** with pricing, a **user guide** at `/guide`, and **terms / privacy / refund** templates
 
-Everything was tested on a full local copy of the stack (484 automated checks, see [Tests](#tests)).
+Everything was tested on a full local copy of the stack (500 automated checks, see [Tests](#tests)).
 
 ---
 
@@ -116,7 +116,7 @@ You need: a GitHub account, and accounts at Supabase, Cloudflare, Paddle and Res
 ### 1. Supabase (database and sign-in)
 
 1. Create a project at [supabase.com](https://supabase.com). Choose a region close to your users (for Europe: Frankfurt). Save the database password somewhere safe.
-2. **SQL Editor → New query**: paste the whole of `supabase/migrations/001_init.sql`, then **Run**. Then do the same with `002_profiles.sql`, `003_pro_features.sql` and `004_promo_codes.sql`. All are safe to run again (in that order). For promo codes, also turn on **Database → Extensions → pg_cron** before running `004` (it ends finished free periods every hour; without it they still end, as soon as the person signs in).
+2. **SQL Editor → New query**: paste the whole of `supabase/migrations/001_init.sql`, then **Run**. Then do the same with `002_profiles.sql`, `003_pro_features.sql`, `004_promo_codes.sql` and `005_share_fix.sql`. All are safe to run again (in that order). For promo codes, also turn on **Database → Extensions → pg_cron** before running `004` (it ends finished free periods every hour; without it they still end, as soon as the person signs in).
 3. **Project Settings → API**: copy
    - the **Project URL** → `supabaseUrl` in `public/config.js`
    - the **anon / publishable** key → `supabaseAnonKey` in `public/config.js`
@@ -227,13 +227,14 @@ Two editor tests need no server, only the editor file (or the running site):
 
 ```
 python3 tests/editor/tours_test.py file:///path/to/trace.html    # the first chapters done with real clicks, typing and dragging (59 checks)
-python3 tests/editor/select_test.py file:///path/to/trace.html   # picking thin lines, overlapping objects, Alt+click, Tab, the object list (17 checks)
+python3 tests/editor/select_test.py file:///path/to/trace.html   # picking thin lines, overlapping objects, Alt+click, Tab, the object list, the settings sections (19 checks)
 python3 tests/editor/pro_test.py file:///path/to/trace.html      # white work area, PRO gates, Present badge, recording voice (26 checks)
 python3 tests/editor/slider_test.py file:///path/to/trace.html   # live sliders: grabbing, fine control, − / +, typing a value, reset, keys (20 checks)
 python3 tests/editor/drawing_test.py file:///path/to/trace.html  # library, SVG import (and that nothing in it runs), recolouring, paths that turn and leave a trail (30 checks)
 python3 tests/editor/video_test.py file:///path/to/trace.html path/to/mp4-muxer.js   # Make a video: frames, voice, badge, 720p/1080p, cancel; checked with ffprobe (19 checks)
 python3 tests/editor/tutorial_test.py file:///path/to/trace.html # every chapter of the interactive tutorial, start to finish, on a laptop and a phone (45 checks)
 python3 tests/editor/home_test.py file:///path/to/trace.html     # the projects page: templates, cards, search, rename, duplicate, delete, Back/Forward (27 checks)
+python3 tests/editor/background_test.py file:///path/to/trace.html # background designer: presets, gradient, pattern, Cancel, Undo, colour advice, the Plot button (14 checks)
 ```
 
 The end-to-end test covers: signing up on the sign-up page, the profile step and the profile reminder in the editor, the account page (editing the profile, signing out, deleting the account), the home page and legal pages, the demo tour, sign-in by email link, saving edits online, the free limit, sharing and the viewer, a second device, upgrading through a signed webhook, the billing portal, cancelling, deleting, signing out, and that the public key can neither read other decks nor grant Pro.
