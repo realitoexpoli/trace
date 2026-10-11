@@ -370,6 +370,106 @@ details.more[open]>summary{margin-bottom:4px;border-bottom:1px solid var(--line)
 .psec h3,.anim h3{font-size:13.5px}
 @media (max-width:1200px){.strip-actions{grid-template-columns:1fr}}
 @media (max-width:900px){.strip-actions{grid-template-columns:1fr 1fr auto}.sa-move{grid-column:auto}.sa-move span{display:none}.tcap{display:none}}
+
+/* ---------- settings panel: sections in a rail, like Photoshop ---------- */
+main{grid-template-columns:200px minmax(0,1fr) 340px}
+aside.props{padding:0!important;display:flex;overflow:hidden}
+.pp-col{flex:1;min-width:0;display:flex;flex-direction:column;min-height:0}
+.pp-main{flex:1;min-height:0;overflow:auto;padding:14px 14px 18px}
+.pp-head h2{margin:0}
+.pp-head .sub{margin:2px 0 10px}
+.pane-h{font-size:11.5px!important;letter-spacing:.06em;text-transform:uppercase;color:var(--mute)!important;margin:4px 0 10px!important;font-weight:700}
+.pane>.psec>h3:first-child{display:none}.pane[data-pane=anim]>.pane-h{display:none}
+.pp-rail{flex:none;width:70px;display:flex;flex-direction:column;gap:4px;padding:10px 6px;border-left:1px solid var(--line);background:var(--desk)}
+.pp-rail button{display:flex;flex-direction:column;align-items:center;gap:3px;padding:8px 1px 7px;min-width:0;border:1px solid transparent;border-radius:10px;background:none;color:var(--mute);font:600 10.5px/1.1 inherit;cursor:pointer;position:relative}
+.pp-rail button svg{width:21px;height:21px}.pp-rail button span{max-width:100%;font-size:10.5px;text-align:center;overflow-wrap:normal;hyphens:manual}
+.pp-rail button:hover{background:var(--hover);color:var(--ink)}
+.pp-rail button.on{background:var(--paper);color:#3B5BFD;border-color:var(--line);box-shadow:0 1px 2px rgba(0,0,0,.08)}
+.pp-rail button.on::before{content:'';position:absolute;left:-7px;top:10px;bottom:10px;width:3px;border-radius:3px;background:#3B5BFD}
+.pp-rail button .dot{position:absolute;top:5px;right:9px;width:7px;height:7px;border-radius:50%;background:#3B5BFD}
+.pp-foot{flex:none;display:flex;gap:6px;padding:10px 12px;border-top:1px solid var(--line);background:var(--paper)}
+.pp-foot .btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;padding:7px 9px;border-radius:8px;font-weight:600;font-size:12.5px}
+.pp-foot .btn svg{width:16px;height:16px;flex:none}
+.pp-foot .grow{flex:1}
+.pp-foot .ic{width:36px;padding:7px 0}
+.pp-foot .ic span{display:none}
+
+/* ---------- buttons by priority ---------- */
+.btn.cta{background:#3B5BFD;border-color:#3B5BFD;color:#fff;font-weight:700}
+.btn.cta:hover{background:#2F4FE0;border-color:#2F4FE0;filter:none}
+.btn.cta:disabled{opacity:.5}
+.btn.big{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;padding:10px 12px;border-radius:10px;font-size:14px}
+.btn.big svg{width:18px;height:18px;flex:none}
+.btn.del,.pp-foot .del{color:#C2410C;border-color:color-mix(in srgb,#C2410C 35%,var(--line))}
+.btn.del:hover{background:color-mix(in srgb,#C2410C 10%,var(--paper))}
+.btn.soft{background:color-mix(in srgb,#3B5BFD 9%,var(--paper));border-color:color-mix(in srgb,#3B5BFD 30%,var(--line));color:var(--ink);font-weight:600}
+.plotcta{margin:12px 0 4px;padding:12px;border-radius:12px;background:color-mix(in srgb,#3B5BFD 8%,var(--paper));border:1px solid color-mix(in srgb,#3B5BFD 28%,var(--line))}
+.plotcta p{margin:0 0 8px;font-size:12.5px;color:var(--mute)}
+.plotcta.pulse .btn{animation:ctaPulse 1.6s ease-out 2}
+@keyframes ctaPulse{0%{box-shadow:0 0 0 0 rgba(59,91,253,.55)}100%{box-shadow:0 0 0 12px rgba(59,91,253,0)}}
+@media (prefers-reduced-motion:reduce){.plotcta.pulse .btn{animation:none}}
+
+/* ---------- slide settings: background card ---------- */
+.bgcard{display:grid;gap:10px}
+.bgcard .bgprev{display:block;width:100%;aspect-ratio:16/9;border-radius:10px;border:1px solid var(--line);overflow:hidden;cursor:pointer;padding:0;background:none}
+.bgcard .bgprev svg{display:block;width:100%;height:100%}
+.objlist button{border-radius:8px}
+
+/* ---------- slide list ---------- */
+.strip-head{display:flex;align-items:center;gap:8px;padding:12px 12px 4px;font-size:11.5px;letter-spacing:.06em;text-transform:uppercase;color:var(--mute);font-weight:700}
+.strip-head b{margin-left:auto;font-size:11px;letter-spacing:0;color:var(--mute);background:var(--desk);border:1px solid var(--line);border-radius:999px;padding:0 8px;font-weight:600}
+.thumbs>div{position:relative}
+.tacts{position:absolute;right:6px;top:6px;display:flex;gap:4px;opacity:0;transition:opacity .12s;z-index:2}
+.thumbs>div:hover .tacts,.thumbs>div:focus-within .tacts{opacity:1}
+.tacts button{width:26px;height:26px;display:flex;align-items:center;justify-content:center;border-radius:7px;border:none;background:rgba(20,22,26,.78);color:#fff;cursor:pointer;padding:0}
+.tacts button:hover{background:#3B5BFD}
+.tacts button.tdel:hover{background:#C2410C}
+.tacts svg{width:14px;height:14px}
+.strip-actions{grid-template-columns:minmax(0,1fr) minmax(0,1fr)!important;align-items:center}
+.strip-actions .sa-new{grid-column:1/-1}
+.strip-actions .sa-move{grid-column:1/-1!important;display:flex!important}
+.strip-actions .sa-move span{display:inline!important}
+.strip-actions .sa-move .btn{width:36px;padding:6px 0}
+.strip-actions .sa-del{color:#C2410C;border-color:color-mix(in srgb,#C2410C 35%,var(--line))}
+.strip-actions .sa-del:disabled{opacity:.4}
+
+@media (max-width:1200px){main{grid-template-columns:160px minmax(0,1fr) 300px}.pp-rail{width:56px}.pp-rail button span{font-size:9px}.pp-foot .del .lbl{display:none}.pp-foot .del{width:36px;padding:7px 0}.strip-actions{grid-template-columns:minmax(0,1fr)!important}.pp-main{padding:12px 12px 16px}}
+@media (max-width:900px){
+  main{grid-template-columns:minmax(0,1fr)}
+  aside.props{flex-direction:column-reverse;overflow:visible}
+  .pp-main{overflow:visible}
+  .pp-rail{width:auto;flex-direction:row;border-left:none;border-bottom:1px solid var(--line);overflow-x:auto;padding:6px}
+  .pp-rail button{flex:1 0 64px}
+  .pp-rail button.on::before{left:12px;right:12px;top:auto;bottom:-7px;width:auto;height:3px}
+  .strip-head{display:none}
+  .tacts{display:none}
+}
+
+/* ---------- background designer ---------- */
+#bgModal{position:fixed;inset:0;background:rgba(12,14,13,.5);z-index:41;display:flex;align-items:center;justify-content:center;padding:12px}
+#bgModal[hidden]{display:none}
+.bg-dialog{width:min(900px,100%)}
+.bgd{display:grid;grid-template-columns:minmax(0,1.15fr) minmax(0,1fr);gap:20px;align-items:start}
+.bgd-prev{position:sticky;top:0;display:grid;gap:10px}
+.bgd-prev svg{display:block;width:100%;aspect-ratio:16/9;border-radius:10px;border:1px solid var(--line)}
+.bgd-tip{font-size:12.5px;color:var(--mute);margin:0;display:flex;gap:8px;align-items:flex-start;flex-wrap:wrap}
+.bgd-tip.warn{color:var(--ink);background:color-mix(in srgb,#F4D345 22%,var(--paper));border-radius:10px;padding:8px 10px}
+.bgd-ctl{display:grid;gap:14px}
+.bgd h4{margin:0 0 6px;font-size:11.5px;letter-spacing:.06em;text-transform:uppercase;color:var(--mute)}
+.bgd-presets{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px}
+.bgd-presets button{padding:0;border:2px solid transparent;border-radius:10px;background:none;cursor:pointer;display:grid;gap:3px;font:600 11px/1.2 inherit;color:var(--mute);text-align:center}
+.bgd-presets button svg{display:block;width:100%;aspect-ratio:16/9;border-radius:7px;border:1px solid var(--line)}
+.bgd-presets button.on{border-color:#3B5BFD;color:var(--ink)}
+.seg{display:inline-flex;border:1px solid var(--line);border-radius:10px;padding:3px;background:var(--desk);flex-wrap:wrap}
+.seg button{border:none;background:none;font:inherit;font-size:12.5px;padding:5px 11px;border-radius:7px;color:var(--mute);cursor:pointer}
+.seg button[aria-pressed="true"]{background:var(--paper);color:var(--ink);font-weight:700;box-shadow:0 1px 2px rgba(0,0,0,.12)}
+.bgd-row{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.bgd-row .sw{width:24px;height:24px}
+.bgd-row input[type=color]{width:34px;height:28px;padding:0;border:1px solid var(--line);border-radius:6px;background:none;cursor:pointer}
+.bgd-row input[type=range]{flex:1;min-width:120px;accent-color:#3B5BFD}
+.bgd-row label{font-size:12.5px;color:var(--mute);display:flex;align-items:center;gap:8px}
+.bgd-foot{display:flex;gap:10px;justify-content:flex-end;padding:12px 16px;border-top:1px solid var(--line)}
+@media (max-width:760px){.bgd{grid-template-columns:1fr}.bgd-prev{position:static}.bgd-presets{grid-template-columns:repeat(4,minmax(0,1fr))}}
 </style>
 </head>
 <body>
@@ -395,10 +495,12 @@ details.more[open]>summary{margin-bottom:4px;border-bottom:1px solid var(--line)
 </section>
 <main>
   <aside class="strip">
+    <div class="strip-head">Slides<b id="slideCount">1</b></div>
     <div class="thumbs" id="thumbs"></div>
     <div class="strip-actions">
       <button class="btn sa-new" id="newSlide" title="Add an empty slide after this one"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>New slide</button>
       <button class="btn" id="dupSlide" title="Copy this slide. Change the copy and everything animates between them"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="8" y="8" width="12" height="12" rx="2"/><path d="M16 8V5a1 1 0 00-1-1H5a1 1 0 00-1 1v10a1 1 0 001 1h3"/></svg>Duplicate</button>
+      <button class="btn sa-del" id="delSlide2" aria-label="Delete this slide" title="Delete this slide"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 7h16M10 11v6M14 11v6M6 7l1 13h10l1-13M9 7V4h6v3"/></svg>Delete</button>
       <div class="sa-move"><span>Move this slide</span><button class="btn" id="upSlide" aria-label="Move slide up" title="Move this slide up"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 19V5M6 11l6-6 6 6"/></svg></button><button class="btn" id="downSlide" aria-label="Move slide down" title="Move this slide down"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5v14M6 13l6 6 6-6"/></svg></button></div>
     </div>
   </aside>
@@ -427,6 +529,13 @@ details.more[open]>summary{margin-bottom:4px;border-bottom:1px solid var(--line)
   <div class="dialog vid-dialog" role="dialog" aria-modal="true" aria-labelledby="vidTitle">
     <header><h2 id="vidTitle">Make a video</h2><div class="spacer"></div><button class="btn" id="vidClose">Close</button></header>
     <div class="body" id="vidBody"></div>
+  </div>
+</div>
+<div id="bgModal" hidden>
+  <div class="dialog bg-dialog" role="dialog" aria-modal="true" aria-labelledby="bgTitle">
+    <header><h2 id="bgTitle">Design the background</h2><div class="spacer"></div><button class="btn" id="bgClose">Close</button></header>
+    <div class="body" id="bgBody"></div>
+    <div class="bgd-foot"><button class="btn" id="bgCancel" type="button">Cancel</button><button class="btn cta" id="bgApply" type="button">Apply to every slide</button></div>
   </div>
 </div>
 <div class="toast" id="toast"></div>
@@ -1664,7 +1773,7 @@ let anim=null;
    moving, turning, scaling or fading an object just updates one attribute. */
 let renderEpoch=0;const GROWS=new Set(['arrow','vector','axes','_morph']);const layers=new WeakMap();
 function layerOf(svg){let L=layers.get(svg);if(!L||L.bg.parentNode!==svg){svg.innerHTML='';const bg=el('rect',{x:-FW/2,y:-FH/2,width:FW,height:FH},svg);
-  L={bg,grid:el('g',{},svg),g:el('g',{},svg),hud:el('g',{},svg),cache:new Map()};layers.set(svg,L);}L.bg.setAttribute('fill',deck.bg||'#000');return L;}
+  L={bg,grid:el('g',{},svg),g:el('g',{},svg),hud:el('g',{},svg),cache:new Map()};layers.set(svg,L);}applyBg(svg,L);return L;}
 const SIGSKIP=new Set(['_geo','keys','paths','x','y','scale','rot','opacity','vmapAuto','linkError','parseError']);
 function sigOf(o,reveal,inter){return JSON.stringify(o,function(k,v){return this===o&&SIGSKIP.has(k)?undefined:v;})+'|'+(reveal===undefined?'':reveal.toFixed(4))+'|'+renderEpoch+(inter?'|i':'');}
 function drawItems(svg,items,opts={}){const L=layerOf(svg),count=new Map(),next=new Map();
@@ -1770,12 +1879,14 @@ canvas.addEventListener('dblclick',e=>{/* the first click re-draws the selection
   const f=document.querySelector('#f_src')||document.querySelector('#f_tex')||document.querySelector('#props .rte')||document.querySelector('#f_rows');if(f){f.focus();if(f.select)f.select();else{const r=document.createRange();r.selectNodeContents(f);const s2=getSelection();s2.removeAllRanges();s2.addRange(r);}}});
 
 /* ---------- slide strip ---------- */
-function renderThumbs(){const box=$('#thumbs');box.innerHTML='';
+function renderThumbs(){const box=$('#thumbs');box.innerHTML='';{const c=$('#slideCount');if(c)c.textContent=deck.slides.length;const d2=$('#delSlide2');if(d2)d2.disabled=deck.slides.length<2;}
   deck.slides.forEach((s,i)=>{const wrap=document.createElement('div');
     const b=document.createElement('button');b.className='thumb'+(i===cur?' on':'');b.setAttribute('aria-label',`Slide ${i+1}`);
     const sv=document.createElementNS(NS,'svg');sv.setAttribute('viewBox',`${-FW/2} ${-FH/2} ${FW} ${FH}`);drawStatic(sv,finalOf(s));setCam(layerOf(sv),CAM0);b.appendChild(sv);
     const n=document.createElement('span');n.className='n';n.textContent=i+1;b.appendChild(n);
     b.onclick=()=>{cur=i;sel=null;editStep=null;refresh();};wrap.appendChild(b);
+    {const ta=document.createElement('div');ta.className='tacts';ta.innerHTML=`<button type="button" data-ta="dup" title="Duplicate this slide" aria-label="Duplicate slide ${i+1}">${PP_IC(UI_IC.dup)}</button>${deck.slides.length>1?`<button type="button" class="tdel" data-ta="del" title="Delete this slide" aria-label="Delete slide ${i+1}">${PP_IC(UI_IC.del)}</button>`:''}`;
+     ta.onclick=e=>{const t=e.target.closest('[data-ta]');if(!t)return;e.stopPropagation();cur=i;sel=null;editStep=null;if(t.dataset.ta==='dup')$('#dupSlide').click();else{delSlide();toast('Slide deleted. Press Undo (Ctrl+Z) to bring it back.');}};wrap.appendChild(ta);}
     const cap=document.createElement('div');cap.className='tcap';const ms=maxStep(s);
     if(i>0){const d=diffSummary(finalOf(deck.slides[i-1]),visibleAt(s,0));if(d!=='no change'){const c=document.createElement('span');c.className='tchip anim';c.textContent='Animates in';c.title='Animates from slide '+i+': '+d;cap.appendChild(c);}}
     if(ms){const c=document.createElement('span');c.className='tchip';c.textContent=ms+' click'+(ms>1?'s':'');c.title='Press Next '+ms+' time'+(ms>1?'s':'')+' to build this slide';cap.appendChild(c);}
@@ -1888,40 +1999,155 @@ function animHTML(o){const s2=slide(),K=maxStep(s2),st=stepOf(o),ex=exitOf(o),op
       <div class="field"><label for="f_arc">When it moves</label><select id="f_arc" data-k="arc" data-num="1">${opt(0,'Straight line',+o.arc||0)}${opt(90,'Curve to the left',+o.arc||0)}${opt(-90,'Curve to the right',+o.arc||0)}</select></div>
       <div class="field"><label for="f_loop">Keeps moving</label><select id="f_loop" data-k="loop">${loops}</select></div></div>
     ${o.loop&&o.loop!=='none'?`<div class="field"><label for="f_loopTime">One cycle takes<output>${(+o.loopTime||4).toFixed(1)} s</output></label><input id="f_loopTime" data-k="loopTime" type="range" min="0.5" max="12" step="0.5" value="${+o.loopTime||4}"></div>`:''}${fieldHTML(EMPH,o)}</details></section>`;}
+
+/* ---------- settings panel sections (a rail of sections, one open at a time) ---------- */
+let PSEC={obj:'content',slide:'slide'};try{Object.assign(PSEC,JSON.parse(localStorage.getItem('trace-psec')||'{}'));}catch(e){}
+const PP_ICONS={content:'<path d="M4 20h4L18.5 9.5a2.1 2.1 0 00-3-3L5 17v3z"/><path d="M13.5 8.5l3 3"/>',
+  style:'<path d="M12 3a9 9 0 100 18c1.2 0 1.6-.9 1.6-1.7 0-1-.7-1.4-.7-2.2 0-1 .8-1.7 1.7-1.7H17a4 4 0 004-4C21 6.6 17 3 12 3z"/><circle cx="7.5" cy="11.5" r="1.1"/><circle cx="10.5" cy="7.5" r="1.1"/><circle cx="15.5" cy="7.5" r="1.1"/>',
+  pos:'<path d="M12 3v18M3 12h18"/><path d="M9 6l3-3 3 3M9 18l3 3 3-3M6 9l-3 3 3 3M18 9l3 3-3 3"/>',
+  anim:'<circle cx="12" cy="12" r="9"/><path d="M10 8.5l5.5 3.5-5.5 3.5z"/>',
+  slide:'<rect x="3" y="5" width="18" height="12" rx="1.5"/><path d="M8 21h8M12 17v4"/>',
+  bg:'<rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 15l5-5 4 4 3-3 6 6"/><circle cx="16" cy="8.5" r="1.4"/>',
+  objs:'<path d="M9 6h12M9 12h12M9 18h12"/><circle cx="4.5" cy="6" r="1.2"/><circle cx="4.5" cy="12" r="1.2"/><circle cx="4.5" cy="18" r="1.2"/>',
+  help:'<circle cx="12" cy="12" r="9"/><path d="M9.6 9.3a2.5 2.5 0 014.9.7c0 1.7-2.5 2.1-2.5 3.9M12 17.2v.1"/>'};
+const PP_IC=(n,w)=>`<svg viewBox="0 0 24 24"${w?` width="${w}" height="${w}"`:''} fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${n}</svg>`;
+const UI_IC={dup:'<rect x="8" y="8" width="12" height="12" rx="2"/><path d="M16 8V5a1 1 0 00-1-1H5a1 1 0 00-1 1v10a1 1 0 001 1h3"/>',
+  front:'<rect x="8" y="8" width="12" height="12" rx="2" fill="currentColor" fill-opacity=".25"/><path d="M4 16V5a1 1 0 011-1h11"/>',
+  back:'<rect x="4" y="4" width="12" height="12" rx="2" fill="currentColor" fill-opacity=".25"/><path d="M20 8v11a1 1 0 01-1 1H8"/>',
+  del:'<path d="M4 7h16M10 11v6M14 11v6M6 7l1 13h10l1-13M9 7V4h6v3"/>',
+  plot:'<path d="M3 3v18h18"/><path d="M6 15c2.5-7 5-7 7-2s4 4 6-5"/>',
+  brush:'<path d="M14.5 4.5l5 5L11 18l-5-5z"/><path d="M6 13l-2.5 6.5L10 17"/>',
+  up:'<path d="M12 19V5M6 11l6-6 6 6"/>',down:'<path d="M12 5v14M6 13l6 6 6-6"/>'};
+function ppShell(kind,secs,head,foot){
+  secs=secs.filter(s=>s[3]&&s[3].trim());let on=PSEC[kind];if(!secs.some(s=>s[0]===on))on=secs[0][0];
+  return`<div class="pp-col"><div class="pp-main">${head}${secs.map(([id,lab,title,h])=>`<section class="pane" data-pane="${id}"${id===on?'':' hidden'}><h3 class="pane-h">${title}</h3>${h}</section>`).join('')}</div>${foot||''}</div>
+  <nav class="pp-rail" aria-label="Settings sections" data-kind="${kind}">${secs.map(([id,lab,title])=>`<button type="button" data-go="${id}" class="${id===on?'on':''}" aria-pressed="${id===on}" title="${title}">${PP_IC(PP_ICONS[id])}<span>${lab}</span></button>`).join('')}</nav>`;}
+function wireRail(P){P.querySelectorAll('.pp-rail [data-go]').forEach(b=>b.onclick=()=>showPane(b.dataset.go));}
+function showPane(id){const P=$('#props'),rail=P&&P.querySelector('.pp-rail');if(!rail)return false;const b=rail.querySelector(`[data-go="${id}"]`);if(!b)return false;
+  PSEC[rail.dataset.kind]=id;try{localStorage.setItem('trace-psec',JSON.stringify(PSEC));}catch(e){}
+  P.querySelectorAll('.pane').forEach(p=>p.hidden=p.dataset.pane!==id);rail.querySelectorAll('[data-go]').forEach(x=>{const y=x===b;x.classList.toggle('on',y);x.setAttribute('aria-pressed',String(y));});
+  const m=P.querySelector('.pp-main');if(m)m.scrollTop=0;return true;}
+/* anything asked for inside a closed section (a tour step, a test, a shortcut) opens that section first */
+function revealInProps(t){const p=t&&t.closest&&t.closest('#props .pane[hidden]');if(p)showPane(p.dataset.pane);}
+const STYLE_KEYS=new Set(['fillOpacity','stroke','dashed','corner','paint','fontSize','numSize','spacing','nodeR']);
+const isStyleField=f=>f[1]==='color'||STYLE_KEYS.has(f[0]);
+
+/* ---------- backgrounds: a colour, a gradient or a glow, a pattern and darker edges ---------- */
+let bgSeq=0;
+const BG_PATTERNS={none:'None',grid:'Grid',graph:'Graph paper',dots:'Dots',lines:'Ruled lines'};
+function bgSig(d){d=d||deck;const x=d.bgx||{};return[d.bg,x.style,x.c2,x.angle,x.pattern,x.pc,x.pop,x.vig].join('|');}
+function applyBg(svg,L,d){d=d||deck;const sig=bgSig(d);if(L.bgSig===sig)return;L.bgSig=sig;const x=d.bgx||{},base=d.bg||'#000000';
+  if(!L.bgId)L.bgId='tbg'+(++bgSeq);
+  if(!L.bgDefs||L.bgDefs.parentNode!==svg){L.bgDefs=document.createElementNS(NS,'defs');svg.insertBefore(L.bgDefs,L.bg);L.bgOver=document.createElementNS(NS,'g');L.bgOver.setAttribute('pointer-events','none');svg.insertBefore(L.bgOver,L.bg.nextSibling);}
+  L.bgDefs.innerHTML='';L.bgOver.innerHTML='';const id=L.bgId;let fill=base;
+  const stop=(g,o,c,a)=>el('stop',{offset:o,'stop-color':c,'stop-opacity':a??1},g);
+  if(x.style==='linear'&&x.c2){const g=el('linearGradient',{id:id+'g',gradientTransform:`rotate(${(+x.angle||90)-90} .5 .5)`,x1:0,y1:0,x2:0,y2:1},L.bgDefs);stop(g,0,base);stop(g,1,x.c2);fill=`url(#${id}g)`;}
+  else if(x.style==='radial'&&x.c2){const g=el('radialGradient',{id:id+'g',cx:.5,cy:.42,r:.75},L.bgDefs);stop(g,0,x.c2);stop(g,1,base);fill=`url(#${id}g)`;}
+  L.bg.setAttribute('fill',fill);
+  const R={x:-FW/2,y:-FH/2,width:FW,height:FH};
+  if(x.pattern&&x.pattern!=='none'){const pc=x.pc||(isDarkHex(base)?'#FFFFFF':'#1C2B4A'),op=x.pop??0.14,s=x.pattern==='graph'?1:0.5;
+    const p=el('pattern',{id:id+'p',patternUnits:'userSpaceOnUse',width:s,height:s,x:0,y:0},L.bgDefs);
+    if(x.pattern==='grid')el('path',{d:`M${s} 0H0V${s}`,fill:'none',stroke:pc,'stroke-width':0.018,opacity:op},p);
+    else if(x.pattern==='lines')el('path',{d:`M0 ${s}H${s}`,fill:'none',stroke:pc,'stroke-width':0.02,opacity:op},p);
+    else if(x.pattern==='dots')el('circle',{cx:s/2,cy:s/2,r:0.032,fill:pc,opacity:Math.min(1,op*1.6)},p);
+    else if(x.pattern==='graph'){let d='';for(let i=1;i<5;i++)d+=`M${i/5} 0V1M0 ${i/5}H1`;el('path',{d,fill:'none',stroke:pc,'stroke-width':0.008,opacity:op*0.7},p);el('path',{d:'M1 0H0V1',fill:'none',stroke:pc,'stroke-width':0.02,opacity:op*1.3},p);}
+    el('rect',{...R,fill:`url(#${id}p)`},L.bgOver);}
+  if(x.vig){const g=el('radialGradient',{id:id+'v',cx:.5,cy:.5,r:.72},L.bgDefs);stop(g,.55,'#000',0);stop(g,1,'#000',isDarkHex(base)?0.55:0.22);el('rect',{...R,fill:`url(#${id}v)`},L.bgOver);}}
+/* how light the background looks on average, for advice on text colour */
+function bgIsDark(d){d=d||deck;const x=d.bgx||{};if((x.style==='linear'||x.style==='radial')&&x.c2){const a=isDarkHex(d.bg),b=isDarkHex(x.c2);return a===b?a:isDarkHex(d.bg);}return isDarkHex(d.bg);}
+const BG_PRESETS=[
+  ['Classic','#000000',{}],['Night sky','#0B1020',{style:'radial',c2:'#1E2A55',vig:true}],['Blueprint','#0F3A78',{pattern:'grid',pc:'#FFFFFF',pop:.16}],['Chalkboard','#1F3B2F',{style:'radial',c2:'#2B4F3F',vig:true}],
+  ['Whiteboard','#FFFFFF',{}],['Graph paper','#FFFFFF',{pattern:'graph',pc:'#3B6FB6',pop:.28}],['Notebook','#FBF8F1',{pattern:'lines',pc:'#7AA7D9',pop:.45}],['Dotted','#F4F5F7',{pattern:'dots',pc:'#5B6170',pop:.35}],
+  ['Deep sea','#06202B',{style:'linear',c2:'#0E4A5C',angle:160}],['Sunset','#2A1035',{style:'linear',c2:'#7A2E4E',angle:150}],['Slate','#1C2128',{style:'linear',c2:'#2E3640',angle:180,pattern:'dots',pc:'#FFFFFF',pop:.08}],['Soft grey','#E9ECEF',{style:'radial',c2:'#FFFFFF'}]];
+function bgMini(bg,bgx,label){const d={bg,bgx},sv=document.createElementNS(NS,'svg');sv.setAttribute('viewBox',`${-FW/2} ${-FH/2} ${FW} ${FH}`);sv.setAttribute('preserveAspectRatio','none');
+  const L={bg:el('rect',{x:-FW/2,y:-FH/2,width:FW,height:FH},sv)};applyBg(sv,L,d);
+  if(label!==false){const dk=bgIsDark(d);el('text',{x:0,y:0.35,'text-anchor':'middle','font-size':1.6,'font-family':'Georgia,serif','font-style':'italic',fill:dk?'#FFFFFF':'#1C1C1C'},sv).textContent='y = x²';}
+  return sv;}
+function openBgDialog(){closeMenus&&closeMenus();const m=$('#bgModal'),b=$('#bgBody');const orig={bg:deck.bg,bgx:deck.bgx?JSON.parse(JSON.stringify(deck.bgx)):undefined};
+  let st={bg:deck.bg||'#000000',...JSON.parse(JSON.stringify(deck.bgx||{}))};st.style=st.style||'solid';st.pattern=st.pattern||'none';
+  const BASES=['#000000','#0E1116','#1C2128','#0B1020','#0F3A78','#1F3B2F','#2A1035','#06202B','#FFFFFF','#FBF8F1','#F4F5F7','#E9ECEF'];
+  const SECOND=['#1E2A55','#2B4F3F','#0E4A5C','#7A2E4E','#3B5BFD','#58C4DD','#F4D345','#FFFFFF','#E9ECEF','#000000'];
+  const commit=()=>{deck.bg=st.bg;const x={};if(st.style!=='solid'&&st.c2){x.style=st.style;x.c2=st.c2;if(st.style==='linear')x.angle=+st.angle||150;}if(st.pattern!=='none'){x.pattern=st.pattern;if(st.pc)x.pc=st.pc;x.pop=+st.pop||0.14;}if(st.vig)x.vig=true;
+    if(Object.keys(x).length)deck.bgx=x;else delete deck.bgx;};
+  const sw=(list,cur2,k)=>list.map(c=>`<button class="sw${c.toLowerCase()===String(cur2||'').toLowerCase()?' on':''}" style="background:${c}" data-k="${k}" data-c="${c}" aria-label="${k==='bg'?'Main':'Second'} colour ${c}"></button>`).join('');
+  const seg=(k,opts,cur2)=>`<div class="seg" role="group">${Object.entries(opts).map(([v,l])=>`<button type="button" data-seg="${k}" data-v="${v}" aria-pressed="${String(v)===String(cur2)}">${l}</button>`).join('')}</div>`;
+  const whites=()=>deck.slides.reduce((n,s)=>n+s.objects.filter(o=>/^#f{3}(f{3})?$/i.test(o.color||'')).length,0),darks=()=>deck.slides.reduce((n,s)=>n+s.objects.filter(o=>/^#(1c1c1c|000000|000)$/i.test(o.color||'')).length,0);
+  function draw(){
+    b.innerHTML=`<div class="bgd"><div class="bgd-prev"><div id="bgPrev"></div><p class="bgd-tip" id="bgTip"></p></div>
+      <div class="bgd-ctl">
+        <div><h4>Ready-made</h4><div class="bgd-presets" id="bgPresets"></div></div>
+        <div><h4>Style</h4>${seg('style',{solid:'One colour',linear:'Gradient',radial:'Soft glow'},st.style)}</div>
+        <div><h4>${st.style==='solid'?'Colour':'Main colour'}</h4><div class="bgd-row">${sw(BASES,st.bg,'bg')}<input type="color" id="bgC1" value="${st.bg}" aria-label="Any main colour"></div></div>
+        ${st.style!=='solid'?`<div><h4>${st.style==='radial'?'Glow colour (centre)':'Second colour'}</h4><div class="bgd-row">${sw(SECOND,st.c2,'c2')}<input type="color" id="bgC2" value="${st.c2||'#1E2A55'}" aria-label="Any second colour"></div>
+          ${st.style==='linear'?`<div class="bgd-row" style="margin-top:8px"><label for="bgAng">Direction</label><input type="range" id="bgAng" min="0" max="360" step="15" value="${+st.angle||150}"><output>${+st.angle||150}°</output></div>`:''}</div>`:''}
+        <div><h4>Pattern</h4>${seg('pattern',BG_PATTERNS,st.pattern)}
+          ${st.pattern!=='none'?`<div class="bgd-row" style="margin-top:8px"><label for="bgPop">Strength</label><input type="range" id="bgPop" min="0.04" max="0.6" step="0.02" value="${st.pop??0.14}"><input type="color" id="bgPc" value="${st.pc||(isDarkHex(st.bg)?'#FFFFFF':'#1C2B4A')}" aria-label="Pattern colour"></div>`:''}</div>
+        <div class="bgd-row"><label><input type="checkbox" id="bgVig"${st.vig?' checked':''}> Darken the edges a little (spotlight)</label></div>
+      </div></div>`;
+    const pv=$('#bgPrev');pv.innerHTML='';const sv=document.createElementNS(NS,'svg');sv.setAttribute('viewBox',`${-FW/2} ${-FH/2} ${FW} ${FH}`);pv.appendChild(sv);
+    const save=deck;try{commit();drawStatic(sv,finalOf(slide()));setCam(layerOf(sv),CAM0);}catch(e){}
+    const pr=$('#bgPresets');BG_PRESETS.forEach(([n,c,x])=>{const bt=document.createElement('button');bt.type='button';const on=c===st.bg&&bgSig({bg:c,bgx:x})===bgSig({bg:st.bg,bgx:(()=>{const y={};if(st.style!=='solid'&&st.c2){y.style=st.style;y.c2=st.c2;if(st.style==='linear')y.angle=+st.angle||150;}if(st.pattern!=='none'){y.pattern=st.pattern;if(st.pc)y.pc=st.pc;y.pop=+st.pop||0.14;}if(st.vig)y.vig=true;return y;})()});
+      bt.className=on?'on':'';bt.appendChild(bgMini(c,x));bt.appendChild(document.createTextNode(n));bt.onclick=()=>{st={bg:c,style:x.style||'solid',c2:x.c2,angle:x.angle,pattern:x.pattern||'none',pc:x.pc,pop:x.pop,vig:!!x.vig};draw();};pr.appendChild(bt);});
+    const dark=bgIsDark(),w=whites(),k=darks(),tip=$('#bgTip');
+    if(!dark&&w){tip.className='bgd-tip warn';tip.innerHTML=`On a light background, white writing is hard to read. ${w} object${w>1?'s are':' is'} white. <button class="btn soft" id="bgFix" type="button">Make them dark</button>`;}
+    else if(dark&&k){tip.className='bgd-tip warn';tip.innerHTML=`On a dark background, black writing is hard to read. ${k} object${k>1?'s are':' is'} black. <button class="btn soft" id="bgFix" type="button">Make them white</button>`;}
+    else{tip.className='bgd-tip';tip.textContent=dark?'Tip: on dark backgrounds, white or pale colours read best from the back of the room.':'Tip: on light backgrounds, dark text and strong colours read best.';}
+    const fx=$('#bgFix');if(fx)fx.onclick=()=>{snap();deck.slides.forEach(s=>s.objects.forEach(o=>{if(!dark&&/^#f{3}(f{3})?$/i.test(o.color||''))o.color='#1C1C1C';else if(dark&&/^#(1c1c1c|000000|000)$/i.test(o.color||''))o.color='#FFFFFF';}));persist();refresh();draw();toast('Colours switched for this background.');};
+    b.querySelectorAll('[data-seg]').forEach(x=>x.onclick=()=>{const k2=x.dataset.seg;st[k2]=x.dataset.v;if(k2==='style'&&st.style!=='solid'&&!st.c2)st.c2=isDarkHex(st.bg)?'#1E2A55':'#E9ECEF';draw();});
+    b.querySelectorAll('.sw[data-k]').forEach(x=>x.onclick=()=>{st[x.dataset.k]=x.dataset.c;if(x.dataset.k==='bg')delete st.pc;draw();});
+    const c1=$('#bgC1');c1.onchange=()=>{st.bg=c1.value;delete st.pc;draw();};const c2=$('#bgC2');if(c2)c2.onchange=()=>{st.c2=c2.value;draw();};
+    const an=$('#bgAng');if(an)an.oninput=()=>{st.angle=+an.value;an.nextElementSibling.textContent=an.value+'°';commit();const s3=$('#bgPrev svg');if(s3){layerOf(s3);}};
+    if(an)an.onchange=()=>draw();
+    const po=$('#bgPop');if(po){po.oninput=()=>{st.pop=+po.value;commit();const s3=$('#bgPrev svg');if(s3)layerOf(s3);};po.onchange=()=>draw();}
+    const pc=$('#bgPc');if(pc)pc.onchange=()=>{st.pc=pc.value;draw();};
+    $('#bgVig').onchange=e=>{st.vig=e.target.checked;draw();};}
+  draw();m.hidden=false;
+  const close=keep=>{m.hidden=true;if(keep){const now={bg:deck.bg,bgx:deck.bgx};deck.bg=orig.bg;if(orig.bgx)deck.bgx=orig.bgx;else delete deck.bgx;snap();deck.bg=now.bg;if(now.bgx)deck.bgx=now.bgx;else delete deck.bgx;persist();toast('Background applied to every slide.');}else{deck.bg=orig.bg;if(orig.bgx)deck.bgx=orig.bgx;else delete deck.bgx;}refresh();};
+  $('#bgApply').onclick=()=>{commit();close(true);};$('#bgCancel').onclick=()=>close(false);$('#bgClose').onclick=()=>close(false);
+  m.onclick=e=>{if(e.target===m)close(false);};m._close=close;}
+document.addEventListener('keydown',e=>{const m=$('#bgModal');if(e.key==='Escape'&&m&&!m.hidden){e.stopPropagation();m._close&&m._close(false);}},true);
+
+function plotCtaHTML(o){const k=plotKind(o);if(k.error)return`<div class="note">Plot this equation: ${String(k.error).replace(/</g,'&lt;')}</div>`;
+  const has=slide().objects.some(x=>x.source===o.id);
+  return`<div class="plotcta${has?'':' pulse'}"><p>${has?'This equation already has a graph on this slide. You can add another view of it.':'Turn this equation into a graph. The graph follows the equation when you edit it.'}</p><button class="btn cta big" id="plotEq">${PP_IC(UI_IC.plot)}Plot this equation as ${k.label}</button></div>`;}
 function renderProps(){const P=$('#props');const o=sel&&obj(sel);
-  if(!o){const s=slide();P.innerHTML=`<h2>Slide ${cur+1}</h2><p class="sub">${cur?'Animates in from slide '+cur+': '+diffSummary(deck.slides[cur-1].objects,s.objects):'Objects appear with their entry animation.'}</p>
-    ${s.objects.length?`<section class="psec"><h3>On this slide <span class="animsum">${s.objects.length} object${s.objects.length>1?'s':''}, front first</span></h3><div class="objlist">${[...s.objects].reverse().map(x=>`<button data-pick="${x.id}"><span class="on">${objName(x).replace(/&/g,'&amp;').replace(/</g,'&lt;')}</span><span class="os">${stepOf(x)?'click '+stepOf(x):'start'}</span></button>`).join('')}</div></section>`:''}
-    <div class="field"><label for="f_rt">Transition length<output>${(+s.runTime).toFixed(1)} s</output></label><input id="f_rt" type="range" min="0.3" max="4" step="0.1" value="${s.runTime}"></div>
+  if(!o){const s=slide();const nObj=s.objects.length;
+    const head=`<div class="pp-head"><h2>Slide ${cur+1}</h2><p class="sub">${cur?'Animates in from slide '+cur+': '+diffSummary(deck.slides[cur-1].objects,s.objects):'Objects appear with their entry animation.'}</p></div>`;
+    const slideSec=`<div class="field"><label for="f_rt">Transition length<output>${(+s.runTime).toFixed(1)} s</output></label><input id="f_rt" type="range" min="0.3" max="4" step="0.1" value="${s.runTime}"></div>
     <div class="field"><label for="f_feel">Motion feel</label><select id="f_feel">${Object.entries(FEELS).map(([k,v])=>`<option value="${k}"${(s.feel||'smooth')===k?' selected':''}>${v.label}</option>`).join('')}</select></div>
     <div class="field check"><label><input type="checkbox" id="f_stagger"${s.stagger?' checked':''}>Objects that appear together come in one after another</label></div>
-    <div class="field"><label>Background (whole deck)</label><div class="swatches" id="bgsw">${['#000000','#0E1116','#1C1C1C','#0B1F2A','#FFFFFF'].map(c=>`<button class="sw${c===deck.bg?' on':''}" style="background:${c}" data-c="${c}" aria-label="Background ${c}"></button>`).join('')}</div></div>
-    <div class="field"><label><span>Show grid</span><input type="checkbox" id="f_grid" ${showGrid?'checked':''}></label></div>
-    <hr><button class="btn del" id="delSlide" ${deck.slides.length<2?'disabled':''}>Delete slide</button>
-    <div class="note">Two ways to animate. <b>Clicks</b>: give objects “Appears on click 1, 2…” to build the slide step by step, and zoom the view on any click. <b>Slides</b>: duplicate a slide and change it; everything that moved, grew or changed animates across.</div>
-    <div class="note">Click an object to select it; the dashed outline shows what you will pick. <b>Alt+click</b> picks the object underneath and <b>Tab</b> the next one, or choose it in the list above. New here? <a href="#" data-tour="first">Take the 2-minute tour</a>.</div>`;
+    <div class="field"><label><span>Show grid while editing</span><input type="checkbox" id="f_grid" ${showGrid?'checked':''}></label></div>`;
+    const bgSec=`<div class="bgcard"><button type="button" class="bgprev" id="bgPrevBtn" title="Design the background" aria-label="Design the background"></button>
+      <button class="btn cta big" id="bgDesign" type="button">${PP_IC(UI_IC.brush)}Design the background…</button>
+      <div class="field"><label>Quick colours (whole deck)</label><div class="swatches" id="bgsw">${['#000000','#0E1116','#1C1C1C','#0B1F2A','#FFFFFF'].map(c=>`<button class="sw${c===deck.bg&&!deck.bgx?' on':''}" style="background:${c}" data-c="${c}" aria-label="Background ${c}"></button>`).join('')}</div></div></div>`;
+    const objSec=nObj?`<section class="psec"><h3>On this slide</h3><p class="sub" style="margin:0 0 8px">${nObj} object${nObj>1?'s':''}, front first. Click one to select it.</p><div class="objlist">${[...s.objects].reverse().map(x=>`<button data-pick="${x.id}"><span class="on">${objName(x).replace(/&/g,'&amp;').replace(/</g,'&lt;')}</span><span class="os">${stepOf(x)?'click '+stepOf(x):'start'}</span></button>`).join('')}</div></section>`:'<p class="sub">Nothing on this slide yet. Use the Add menus at the top.</p>';
+    const helpSec=`<div class="note">Two ways to animate. <b>Clicks</b>: give objects “Appears on click 1, 2…” to build the slide step by step, and zoom the view on any click. <b>Slides</b>: duplicate a slide and change it; everything that moved, grew or changed animates across.</div>
+    <div class="note">Click an object to select it; the dashed outline shows what you will pick. <b>Alt+click</b> picks the object underneath and <b>Tab</b> the next one, or choose it in the Objects list. New here? <a href="#" data-tour="first">Take the 2-minute tour</a>.</div>`;
+    const foot=`<div class="pp-foot"><button class="btn del grow" id="delSlide" ${deck.slides.length<2?'disabled':''}>${PP_IC(UI_IC.del)}Delete slide</button></div>`;
+    P.innerHTML=ppShell('slide',[['slide','Slide','Slide settings',slideSec],['bg','Back&shy;ground','Background',bgSec],['objs','Objects','Objects',objSec],['help','Help','Help',helpSec]],head,foot);
+    wireRail(P);{const pb=$('#bgPrevBtn');if(pb){pb.appendChild(bgMini(deck.bg,deck.bgx,false));pb.onclick=openBgDialog;}$('#bgDesign').onclick=openBgDialog;}
     $('#f_rt').oninput=e=>{if(!P._s){snap();P._s=1;}s.runTime=+e.target.value;e.target.previousElementSibling.querySelector('output').textContent=(+e.target.value).toFixed(1)+' s';persist();};
     $('#f_feel').onchange=e=>{snap();s.feel=e.target.value;persist();};$('#f_stagger').onchange=e=>{snap();s.stagger=e.target.checked;persist();};
-    $('#bgsw').onclick=e=>{const b=e.target.closest('[data-c]');if(!b)return;snap();deck.bg=b.dataset.c;refresh();};
+    $('#bgsw').onclick=e=>{const b=e.target.closest('[data-c]');if(!b)return;snap();deck.bg=b.dataset.c;delete deck.bgx;refresh();};
     $('#f_grid').onchange=e=>{showGrid=e.target.checked;renderCanvas();};
     $('#delSlide').onclick=delSlide;P._s=0;
     P.querySelectorAll('[data-pick]').forEach(b=>{b.onclick=()=>{sel=b.dataset.pick;renderCanvas();renderProps();};b.onmouseenter=()=>showHover(b.dataset.pick);b.onmouseleave=()=>showHover(null);});return;}
   const uses=deck.slides.filter(s=>s.objects.some(x=>x.id===o.id)).length;
-  P.innerHTML=`<h2>${o.type==='drawing'?String(o.name||'Drawing').replace(/</g,'&lt;'):o.type==='axes3d'&&o.showAxes===false?((o.solids||[]).length===1?SOLID_KINDS[o.solids[0].kind]||'3D object':'3D scene'):TYPES[o.type]}</h2><p class="sub">${uses>1?`On ${uses} slides: changes between them animate.`:'Only on this slide.'}</p>
+  const LV=liveOf(o),SP=SPEC[o.type],isEq=o.type==='latex';
+  const cF=SP.filter(f=>!isStyleField(f)),sF=SP.filter(isStyleField);
+  let cHTML=cF.map(f=>fieldHTML(f,LV)).join('');
+  if(isEq){const at=Math.max(cF.findIndex(f=>f[0]==='src'),cF.findIndex(f=>f[0]==='tex'));const pre=cF.slice(0,at+1).map(f=>fieldHTML(f,LV)).join(''),post=cF.slice(at+1).map(f=>fieldHTML(f,LV)).join('');
+    cHTML=pre+`<div id="plotWrap">${plotCtaHTML(o)}</div>`+post+`<div id="plotSyms">${symsHTML(o)}</div>`;}
+  const sHTML=sF.map(f=>fieldHTML(f,LV)).join('')+(o.type==='drawing'&&(LV.paint||'original')==='original'?'':fieldHTML(['color','color','Colour'],LV));
+  const pHTML=`<div class="row2">${COMMON.slice(0,2).map(f=>fieldHTML(f,LV)).join('')}</div>${COMMON.slice(2).map(f=>fieldHTML(f,LV)).join('')}`;
+  const head=`<div class="pp-head"><h2>${o.type==='drawing'?String(o.name||'Drawing').replace(/</g,'&lt;'):o.type==='axes3d'&&o.showAxes===false?((o.solids||[]).length===1?SOLID_KINDS[o.solids[0].kind]||'3D object':'3D scene'):TYPES[o.type]}</h2><p class="sub">${uses>1?`On ${uses} slides: changes between them animate.`:'Only on this slide.'}</p></div>
     ${animK(o)!==null?`<div class="note" style="border-left-color:var(--pen);color:var(--ink)"><b>Click ${editStep}:</b> whatever you change now (drag it, resize, turn, recolour, edit a value) animates on this click.
       <div class="field" style="margin:8px 0 0"><label for="f_path">Travels</label><select id="f_path"><option value="">Straight to where you put it</option>${slide().objects.filter(t=>t.id!==o.id&&PATHABLE.has(t.type)).map((t,i)=>`<option value="${t.id}"${o.paths&&o.paths[editStep]&&o.paths[editStep].target===t.id?' selected':''}>Along the ${TYPES[t.type].toLowerCase()} (${i+1})</option>`).join('')}</select>
       ${o.paths&&o.paths[editStep]?(()=>{const ph=o.paths[editStep];return`<div class="pathopts"><label><input type="checkbox" id="f_face"${ph.face?' checked':''}> Turn to face where it goes</label><label><input type="checkbox" id="f_trail"${ph.trail?' checked':''}> Leave a trail</label>${ph.face?`<label>Its front points <select id="f_nose">${[[0,'right'],[90,'up'],[180,'left'],[270,'down']].map(([v,l])=>`<option value="${v}"${(((+o.nose||0)%360)+360)%360===v?' selected':''}>${l}</option>`).join('')}</select></label>`:''}</div>`;})():''}</div>
-      <button class="btn" id="clearKey" style="margin-top:4px">Undo this click’s changes</button></div>`:''}
-    <section class="psec" aria-label="Content and look"><h3>Content and look</h3>
-    ${SPEC[o.type].map(f=>fieldHTML(f,liveOf(o))).join('')}
-    ${o.type==='drawing'&&(liveOf(o).paint||'original')==='original'?'':fieldHTML(['color','color','Colour'],liveOf(o))}
-    <div id="plotWrap">${o.type==='latex'?(()=>{const k=plotKind(o);return k.error?`<div class="note">Plot this equation: ${String(k.error).replace(/</g,'&lt;')}</div>`:`<button class="btn" id="plotEq" style="width:100%;margin-top:4px">Plot this equation as ${k.label}</button>`;})():''}</div>
-    <div id="plotSyms">${o.type==='latex'?symsHTML(o):''}</div></section>
-    <details class="more" data-more="pos"${moreOpen('pos')}><summary>Position, size and turn</summary>
-    <div class="row2">${COMMON.slice(0,2).map(f=>fieldHTML(f,liveOf(o))).join('')}</div>
-    ${COMMON.slice(2).map(f=>fieldHTML(f,liveOf(o))).join('')}</details>
-    ${animHTML(o)}
-    <hr><div class="row2"><button class="btn" id="dupObj">Duplicate</button><button class="btn del" id="delObj">Delete</button>
-    <button class="btn" id="toFront" title="Put it above the other objects">Bring to front</button><button class="btn" id="toBack" title="Put it behind the other objects">Send to back</button></div>`;
+      <button class="btn" id="clearKey" style="margin-top:4px">Undo this click’s changes</button></div>`:''}`;
+  const foot=`<div class="pp-foot"><button class="btn grow" id="dupObj" title="Make a copy (Ctrl+D)">${PP_IC(UI_IC.dup)}Duplicate</button><button class="btn ic" id="toFront" title="Bring to front: put it above the other objects" aria-label="Bring to front">${PP_IC(UI_IC.front)}<span>Bring to front</span></button><button class="btn ic" id="toBack" title="Send to back: put it behind the other objects" aria-label="Send to back">${PP_IC(UI_IC.back)}<span>Send to back</span></button><button class="btn del" id="delObj" title="Delete (Del)">${PP_IC(UI_IC.del)}<span class="lbl">Delete</span></button></div>`;
+  P.innerHTML=ppShell('obj',[['content','Content',isEq?'Equation':'Content',`<section class="psec" aria-label="Content">${cHTML}</section>`],['style','Style','Colours and style',sHTML],['pos','Place','Position, size and turn',pHTML],['anim','Animate','Animation',animHTML(o)]],head,foot);
+  wireRail(P);
   let snapped=false;
   P.querySelectorAll('[data-k]').forEach(inp=>{inp.addEventListener('focus',()=>snapped=false);
     inp.addEventListener(inp.type==='checkbox'?'change':'input',()=>{const k=inp.dataset.k;let v=inp.type==='checkbox'?inp.checked:inp.value;if(inp.dataset.num)v=parseFloat(v)||0;if(inp.type==='number'||inp.type==='range'){v=parseFloat(v);if(!isFinite(v))return;}
@@ -1942,7 +2168,7 @@ function renderProps(){const P=$('#props');const o=sel&&obj(sel);
   const pe=$('#plotEq');if(pe)pe.onclick=()=>plotEquation(o);
   const ri=$('#replaceImg');if(ri)ri.onclick=()=>pickImage(o);
   const sd=$('#swapDrawing');if(sd)sd.onclick=()=>openLibraryFor(o);
-  if(o.type==='axes3d'){const box=document.createElement('div');box.innerHTML=solidsHTML(o);const hrs=P.querySelectorAll('hr');P.insertBefore(box,hrs[hrs.length-1]);bindSolids(o);}
+  if(o.type==='axes3d'){const box=document.createElement('div');box.innerHTML=solidsHTML(o);(P.querySelector('[data-pane="content"]')||P.querySelector('.pp-main')).appendChild(box);bindSolids(o);}
   const rte=P.querySelector('.rte');let rteSnap=false;const selIn=()=>{if(!rte)return false;const sl=getSelection();return sl.rangeCount&&!sl.isCollapsed&&rte.contains(sl.anchorNode)&&rte.contains(sl.focusNode);};
   const syncRte=()=>{if(!rteSnap){snap();rteSnap=true;}const k=rte.dataset.rich;writeOf(o,k)[k]=htmlToRich(rte);persist();renderCanvas();thumbsSoon();};
   if(rte){rte.addEventListener('input',syncRte);rte.addEventListener('blur',()=>{rteSnap=false;});rte.addEventListener('keydown',e=>{if((e.ctrlKey||e.metaKey)&&['b','i','u'].includes(e.key.toLowerCase())){e.preventDefault();e.stopPropagation();if(selIn()){document.execCommand({b:'bold',i:'italic',u:'underline'}[e.key.toLowerCase()]);syncRte();}}});}
@@ -1974,7 +2200,7 @@ function bindSyms(eq){const box=$('#plotSyms');if(!box||eq.type!=='latex')return
   box.querySelectorAll('[data-lmin],[data-lmax]').forEach(inp=>inp.addEventListener('change',()=>{const n=inp.dataset.lmin||inp.dataset.lmax,v=parseFloat(inp.value);if(!isFinite(v))return;snap();
     const L={...((eq.live||{})[n]||{on:true})};L[inp.dataset.lmin?'min':'max']=v;eq.live={...(eq.live||{}),[n]:L};persist();renderLiveBar();}));
   box.querySelectorAll('[data-param]').forEach(inp=>{inp.addEventListener('focus',()=>snapped=false);inp.addEventListener('input',()=>{const v=parseFloat(inp.value);if(!isFinite(v))return;if(!snapped){snap();snapped=true;}{const w=writeOf(eq);w.params={...(liveOf(eq).params||{}),[inp.dataset.param]:v};}syncAll();renderCanvas();thumbsSoon();persist();});});}
-function refreshPlotBtn(o){const w=$('#plotWrap');if(!w)return;const t=plotKind(o);w.innerHTML=t.error?`<div class="note">Plot this equation: ${String(t.error).replace(/</g,'&lt;')}</div>`:`<button class="btn" id="plotEq" style="width:100%;margin-top:4px">Plot this equation as ${t.label}</button>`;const b=$('#plotEq');if(b)b.onclick=()=>plotEquation(o);}
+function refreshPlotBtn(o){const w=$('#plotWrap');if(!w)return;w.innerHTML=plotCtaHTML(o);const b=$('#plotEq');if(b)b.onclick=()=>plotEquation(o);}
 function liveNotes(o,inp){const k=inp.dataset.k,box=inp.parentElement.querySelector('.err');
   if(box){const FV={rfn:'theta',fn:'x',xt:'t',yt:'t',fx:'x,y',fy:'x,y',zfn:'x,y',F2:'x,y',F:'x,y,z',px:'u,v',py:'u,v',pz:'u,v',cx:'t',cy:'t',cz:'t'}[k];const msg=k==='fz'?cxError(o.fz):k==='src'?(o.parseError||''):FV?fnError((k==='F'||k==='F2')?normF(o[k]):o[k],FV):'';box.textContent=msg;box.hidden=!msg;}
   if(o.type==='latex'&&(k==='src'||k==='tex')){refreshPlotBtn(o);const box=$('#plotSyms');if(box){box.innerHTML=symsHTML(o);bindSyms(o);}}}
@@ -2422,7 +2648,7 @@ function add3d(type){const def=SOLO3[type];snap();const host=sel&&obj(sel);
   if(host&&host.type==='axes3d'){host.solids=host.solids||[];host.solids.push({c:[0,0,0],...clone(def),color:SOLO_COLORS[host.solids.length%5],op:0.9});refresh();toast(`${MENU_PRESETS[type]} added to the selected 3D scene.`);return;}
   const o=make('axes3d');Object.assign(o,{surface:false,showAxes:false,numbers:false,labels:false,xmin:-2,xmax:2,ymin:-2,ymax:2,zmin:-2,zmax:2,len:3.2,zlen:3.2,az:-35,tilt:65,solids:[{c:[0,0,0],...clone(def),color:'#58C4DD',op:0.9}]});
   const n=slide().objects.filter(x=>x.type==='axes3d').length;o.x=Math.min(5,n*2.5-2);slide().objects.push(o);sel=o.id;refresh();}
-function addObj(type){if(PRO_ADD.has(type)&&!needPro('3d'))return;if(type==='image')return pickImage(null);if(SOLO3[type])return add3d(type);if(type==='shapes3d'){snap();const o=make('axes3d');Object.assign(o,{surface:false,numbers:false,labels:true,xmin:-3,xmax:3,ymin:-3,ymax:3,zmin:-3,zmax:3,len:4.4,zlen:4.4,az:-35,tilt:65,
+function addObj(type){if(PRO_ADD.has(type)&&!needPro('3d'))return;PSEC.obj='content';if(type==='image')return pickImage(null);if(SOLO3[type])return add3d(type);if(type==='shapes3d'){snap();const o=make('axes3d');Object.assign(o,{surface:false,numbers:false,labels:true,xmin:-3,xmax:3,ymin:-3,ymax:3,zmin:-3,zmax:3,len:4.4,zlen:4.4,az:-35,tilt:65,
     solids:[{kind:'sphere',c:[0,0,0],r:1.2,color:'#58C4DD',op:0.85},{kind:'box',c:[2,-1.5,-1.5],size:[1,1,1],color:'#F4D345',op:0.85},{kind:'arrow',a:[0,0,0],b:[2,2,2],color:'#FC6255',label:'\\vec{v}'}]});
     slide().objects.push(o);sel=o.id;refresh();return;}
   snap();const o=make(type);const n=slide().objects.filter(x=>x.type===type).length;o.x=Math.min(5,n*0.4);o.y=-Math.min(3,n*0.3);slide().objects.push(o);sel=o.id;refresh();}
@@ -2480,7 +2706,7 @@ function pasteSVGDialog(){const box=document.createElement('div');box.className=
   document.body.appendChild(box);const close=()=>box.remove();$('#svgpX').focus();$('#svgpC').onclick=close;box.addEventListener('click',e=>{if(e.target===box)close();});box.addEventListener('keydown',e=>{e.stopPropagation();if(e.key==='Escape')close();});
   $('#svgpOk').onclick=async()=>{const t=$('#svgpX').value.trim();if(!/<svg[\s>]/i.test(t)){toast('That is not SVG code: it should start with <svg.');return;}if(await addDrawingFromText(t,'Drawing'))close();};}
 
-$('#dupSlide').onclick=dupSlide;$('#newSlide').onclick=newSlide;$('#upSlide').onclick=()=>moveSlide(-1);$('#downSlide').onclick=()=>moveSlide(1);
+$('#dupSlide').onclick=dupSlide;$('#newSlide').onclick=newSlide;$('#upSlide').onclick=()=>moveSlide(-1);$('#downSlide').onclick=()=>moveSlide(1);$('#delSlide2').onclick=()=>{delSlide();toast('Slide deleted. Press Undo (Ctrl+Z) to bring it back.');};
 $('#undo').onclick=undo;
 const stageEl=document.querySelector('.stage');
 stageEl.addEventListener('dragover',e=>{if([...e.dataTransfer.types].includes('Files')){e.preventDefault();stageEl.style.outline='2px dashed var(--accent)';}});
@@ -3993,7 +4219,7 @@ const TOURS={
 const fld=k=>document.querySelector(`#props [data-k="${k}"]`);
 const fldBox=k=>{const e=fld(k);return e&&(e.closest('.field')||e);};
 function setF(k,v){const e=fld(k);if(!e)return;if(e.type==='checkbox'){e.checked=!!v;e.dispatchEvent(new Event('change',{bubbles:true}));}else{e.value=v;e.dispatchEvent(new Event('input',{bubbles:true}));e.dispatchEvent(new Event('change',{bubbles:true}));}}
-function openMore(name){const d=document.querySelector(`#props details[data-more="${name}"]`);if(d&&!d.open)d.open=true;}
+function openMore(name){if(name==='pos'){showPane('pos');return;}const pn=document.querySelector(`#props details[data-more="${name}"]`);revealInProps(pn);const d=document.querySelector(`#props details[data-more="${name}"]`);if(d&&!d.open)d.open=true;}
 const byId=id=>slide().objects.find(o=>o.id===id);
 const ensureSel=id=>{if(sel!==id&&byId(id)){sel=id;renderCanvas();renderProps();}};
 const ensureStep=k=>{if(editStep!==k){editStep=k;refresh();}};
@@ -4177,7 +4403,7 @@ function tourShow(i){if(!tour)return;i=Math.max(0,Math.min(i,tour.steps.length-1
   tour.lastScroll=0;
   tourUI.card.innerHTML=`<div class="tour-top"><span>${n>1?`Step ${i+1} of ${n}`:'Tour'}</span><button class="tour-x" data-tb="end" aria-label="End the tour" title="End the tour">×</button></div><h3>${st.title}</h3><p>${typeof st.body==='function'?st.body():st.body}</p>${st.wait?'<p class="tour-wait">Waiting for you… the tour moves on when it is done.</p>':''}<div class="tour-btns">${btns.join('')}</div>`;
   tourTick();}
-function tourTick(){if(!tour)return;const st=tour.steps[tour.i],t=st.target&&st.target(),presenting=!$('#present').hidden;
+function tourTick(){if(!tour)return;const st=tour.steps[tour.i],t=st.target&&st.target(),presenting=!$('#present').hidden;revealInProps(t);
   let r=t&&t.getBoundingClientRect&&t.getBoundingClientRect();const visible=r&&(r.width>0||r.height>0)&&t.isConnected;
   if(visible&&(r.width<28||r.height<28)){const cx=r.left+r.width/2,cy=r.top+r.height/2,w=Math.max(28,r.width),h=Math.max(28,r.height);r={left:cx-w/2,top:cy-h/2,right:cx+w/2,bottom:cy+h/2,width:w,height:h};}   /* thin lines still get a visible spot */
   // bring the place to act into view (again if the page moved it away)

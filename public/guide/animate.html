@@ -39,8 +39,8 @@
 <p>You can mix both freely. Clicks are best for building up one picture; duplicated slides are best for a sequence of states, like a story board.</p>
 
 <h2 id="clicks">Building a slide click by click</h2>
-<p>Select an object and look at <span class="ui">Animation</span> in the settings. <span class="ui">Appears</span> says when it comes in: <span class="ui">With the slide</span>, or <span class="ui">On click 1</span>, <span class="ui">On click 2</span>… The last option, marked <span class="ui">(new)</span>, adds a click to the slide.</p>
-<figure class="narrow" style="--w:296px"><img src="/guide/img/animation-panel.webp" alt="Animation settings: a summary line, Appears, Enters with, the morph choice, and the folded section Leaving, moving and looping" width="296" height="227" loading="lazy"><figcaption>The Animation settings of an object. The first line sums them up.</figcaption></figure>
+<p>Select an object and press <span class="ui">Animate</span> on the right edge of the settings. <span class="ui">Appears</span> says when it comes in: <span class="ui">With the slide</span>, or <span class="ui">On click 1</span>, <span class="ui">On click 2</span>… The last option, marked <span class="ui">(new)</span>, adds a click to the slide.</p>
+<figure class="narrow" style="--w:269px"><img src="/guide/img/animation-panel.webp" alt="Animation settings: a summary line, Appears, Enters with, the morph choice, and the folded section Leaving, moving and looping" width="269" height="217" loading="lazy"><figcaption>The Animation settings of an object. The first line sums them up.</figcaption></figure>
 <p><span class="ui">Leaves</span>, <span class="ui">When it moves</span>, <span class="ui">Keeps moving</span> and <span class="ui">Emphasis</span> are folded under <span class="ui">Leaving, moving and looping</span>: click it to open it. To practise, open <span class="ui">Tour</span> → <span class="ui">Change things on a click</span> or <span class="ui">Animate between slides</span>.</p>
 <p>Objects that appear on the same click come in together. To bring them in one after another, tick <span class="ui">Objects that appear together come in one after another</span> in the slide settings.</p>
 
@@ -49,7 +49,7 @@
 
 <h2 id="change">Changing an object on a click</h2>
 <p>This is the heart of Tracé. Click a step in the clicks bar under the slide, for example <span class="ui">Click 1</span>. The slide now shows that moment, and <b>whatever you change animates on that click</b>: drag an object, resize or turn it, recolour it, or change any value in its settings.</p>
-<figure class=""><img src="/guide/img/click-editing.webp" alt="Editing at Click 1: a triangle selected, the clicks bar showing Click 1 with its length, by itself, view zoom and Play" width="800" height="608" loading="lazy"><figcaption>At Click 1, dragging the triangle’s corner makes it move there on that click.</figcaption></figure>
+<figure class=""><img src="/guide/img/click-editing.webp" alt="Editing at Click 1: a triangle selected, the clicks bar showing Click 1 with its length, by itself, view zoom and Play" width="800" height="638" loading="lazy"><figcaption>At Click 1, dragging the triangle’s corner makes it move there on that click.</figcaption></figure>
 <ul>
 <li><b>Values animate too:</b> the number of Riemann rectangles, a slider value, <span class="ui">Curve drawn so far</span>, the number of series terms, a wave’s phase, a matrix, a 3D view. Set a different value on each click and it changes smoothly.</li>
 <li><b>Follow a path:</b> while a click is selected, <span class="ui">Travels</span> can send the object along a curve, circle or other shape on the slide instead of in a straight line. A dashed line shows the route. Tick <span class="ui">Turn to face where it goes</span> so a rocket or a car points along the path (set <span class="ui">Its front points</span> if it faces the wrong way), and <span class="ui">Leave a trail</span> to draw the route behind it.</li>
@@ -70,7 +70,7 @@
 <h2 id="voice">Recording your voice <span class="pro-tag">PRO</span></h2>
 <p>Each step of a slide can have its own recording: explain the graph as it draws itself, then the next idea on the next click.</p>
 <ol class="steps-big">
-<li><div><b>Choose the step.</b> In the clicks bar, click <span class="ui">Opens</span> (the start of the slide) or a click.</div></li>
+<li><div><b>Choose the step.</b> <span class="ui">Record voice</span> is always under the slide, next to <span class="ui">Play this slide</span>. It records for the start of the slide; to record for a click instead, select that click in the clicks bar first (the button then says which click).</div></li>
 <li><div><b>Record.</b> Press <span class="ui">Record voice</span>. The first time, the browser asks to use the microphone: allow it. Speak, then press <span class="ui">Stop</span>. Recordings can be up to 3 minutes.</div></li>
 <li><div><b>Check it.</b> <span class="ui">▶ Voice</span> plays it back; <span class="ui">Re-record</span> replaces it; <span class="ui">×</span> deletes it. Steps with a recording show a 🎙 in the clicks bar.</div></li>
 </ol>
@@ -83,15 +83,25 @@
 <li><div>On the copy, change what should change: move the point, edit the equation, turn the 3D view, add a new object, delete one.</div></li>
 <li><div>Press <span class="ui">Play this slide</span>, or present: going to the copy animates every change. Objects that only exist on the new slide enter; objects that are gone leave.</div></li>
 </ol>
-<p>The line under each slide in the list sums up what will animate, for example “2 move, 1 morph, 1 new”.</p>
+<p>Slides that animate in from the one before are marked <b>Animates in</b> in the list. Point at it to see what happens, for example “2 moving, 1 changing shape, 1 new”.</p>
 
 <h2 id="slide-settings">Speed and feel</h2>
 <p>Click an empty part of the slide to see the slide settings:</p>
 <ul>
 <li><span class="ui">Transition length</span>: how long the move into this slide takes.</li>
 <li><span class="ui">Motion feel</span>: <span class="ui">Smooth</span>, <span class="ui">Steady (constant speed)</span>, <span class="ui">Snappy (fast start)</span>, <span class="ui">Bouncy (slight overshoot)</span> and more.</li>
-<li><span class="ui">Background (whole deck)</span> and <span class="ui">Show grid</span>, a grid that helps you line things up and never shows when presenting.</li>
+<li><span class="ui">Show grid while editing</span>, a grid that helps you line things up and never shows when presenting.</li>
 </ul>
+<h2 id="background">Designing the background</h2>
+<p>Click an empty part of the slide, open <span class="ui">Background</span> in the settings and press <span class="ui">Design the background…</span>. You can:</p>
+<ul>
+<li>pick a ready-made background: <span class="ui">Blueprint</span>, <span class="ui">Chalkboard</span>, <span class="ui">Graph paper</span>, <span class="ui">Notebook</span>, <span class="ui">Night sky</span> and more;</li>
+<li>choose <span class="ui">One colour</span>, a <span class="ui">Gradient</span> between two colours (and its direction), or a <span class="ui">Soft glow</span> in the middle;</li>
+<li>add a pattern (<span class="ui">Grid</span>, <span class="ui">Graph paper</span>, <span class="ui">Dots</span>, <span class="ui">Ruled lines</span>) and set how strong it is;</li>
+<li>darken the edges a little, like a spotlight.</li>
+</ul>
+<figure class=""><img src="/guide/img/background.webp" alt="The background designer: a preview of the slide on a blueprint background, ready-made backgrounds, style, colours and pattern" width="800" height="672" loading="lazy"><figcaption>The background designer with the Blueprint background chosen.</figcaption></figure>
+<p>The preview shows your current slide. If white writing would be hard to read on a light background (or black writing on a dark one), Tracé says so and offers to switch those colours for you. <span class="ui">Apply to every slide</span> changes the whole deck; <span class="ui">Undo</span> brings the old background back. Backgrounds show when presenting, on share links and in videos.</p>
 
 <h2 id="tips">Tips</h2>
 <ul>
