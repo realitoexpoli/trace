@@ -10,3 +10,17 @@
   X-Robots-Tag: noindex
 /img/*
   Cache-Control: public, max-age=604800
+/app*
+  Cache-Control: no-cache
+/account.js
+  Cache-Control: no-cache
+/cloud.js
+  Cache-Control: no-cache
+/config.js
+  Cache-Control: no-cache
+/landing.css
+  Cache-Control: no-cache
+/profile-ui.js
+  Cache-Control: no-cache
+/site.css
+  Cache-Control: no-cache

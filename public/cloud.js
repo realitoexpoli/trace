@@ -93,7 +93,7 @@
   .acctmenu .menulink{display:flex;padding:7px 10px;border-radius:3px;color:inherit;text-decoration:none}
   .acctmenu .menulink:hover{background:var(--hover)}
   body.viewer>header,body.viewer>main{display:none}
-  #present .badge{display:inline-flex;align-items:center;gap:6px;position:fixed;left:12px;bottom:calc(12px + env(safe-area-inset-bottom,0px));background:rgba(255,255,255,.08);color:#cfd4d0;font-size:12px;padding:5px 9px;border-radius:3px;text-decoration:none;z-index:57}
+  #present .badge{display:inline-flex;align-items:center;gap:6px;position:fixed;left:50%;transform:translateX(-50%);bottom:calc(8px + env(safe-area-inset-bottom,0px));background:rgba(255,255,255,.08);color:#cfd4d0;font-size:12px;padding:5px 12px;border-radius:999px;text-decoration:none;z-index:57;white-space:nowrap}#present .badge .dom{opacity:.7}
   #present .badge b{color:#fff}
   #vend{position:fixed;inset:0;background:#000;color:#e2e5e0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;z-index:70;text-align:center;padding:20px}
   #vend[hidden]{display:none}
@@ -690,7 +690,7 @@
       v.innerHTML = `<h1>${esc(title)}</h1><p>${esc(text)}</p><a class="btn primary" href="/">Make your own with Tracé</a>`;
       document.body.appendChild(v);
     };
-    const DEMOS = { showcase: ['Tracé in motion', 'buildShowcaseDeck'], signal: ['How a signal travels', 'buildSignalDeck'], jamming: ['Le brouillage des communications', 'buildJammingDeck'] };
+    const DEMOS = { showcase: ['Tracé in motion', 'buildShowcaseDeck'], lighthouses: ['Lighthouses and π', 'buildLighthouseDeck'], signal: ['How a signal travels', 'buildSignalDeck'], jamming: ['Le brouillage des communications', 'buildJammingDeck'] };
     let row;
     if (demo) {
       const dm = DEMOS[demo];
@@ -710,7 +710,7 @@
     document.title = row.name + ' · Tracé';
     const present = $q('#present');
     if (row.owner_name) document.title = row.name + ' by ' + row.owner_name + ' · Tracé';
-    if (row.owner_plan !== 'pro') present.insertAdjacentHTML('beforeend', '<a class="badge" href="/" target="_blank" rel="noopener"><svg viewBox="0 0 64 64" width="14" height="14" aria-hidden="true"><g fill="currentColor"><circle cx="13" cy="23" r="4.5"/><circle cx="22" cy="16" r="4.5"/><circle cx="32" cy="16" r="4.5"/><circle cx="42" cy="16" r="4.5"/><circle cx="52" cy="16" r="4.5"/><circle cx="32" cy="27" r="4.5"/><circle cx="32" cy="38" r="4.5"/></g><g fill="#3B5BFD"><circle cx="42" cy="49" r="6.5"/></g></svg>Made with <b>Tracé</b></a>');
+    if (row.owner_plan !== 'pro') present.insertAdjacentHTML('beforeend', '<a class="badge" href="/" target="_blank" rel="noopener"><svg viewBox="0 0 64 64" width="14" height="14" aria-hidden="true"><g fill="currentColor"><circle cx="13" cy="23" r="4.5"/><circle cx="22" cy="16" r="4.5"/><circle cx="32" cy="16" r="4.5"/><circle cx="42" cy="16" r="4.5"/><circle cx="52" cy="16" r="4.5"/><circle cx="32" cy="27" r="4.5"/><circle cx="32" cy="38" r="4.5"/></g><g fill="#3B5BFD"><circle cx="42" cy="49" r="6.5"/></g></svg>Made with <b>Tracé</b><span class="dom">· traceanim.com</span></a>');
     const end = document.createElement('div');
     end.id = 'vend'; end.hidden = true;
     end.innerHTML = `<h1>${esc(row.name)}</h1>${row.owner_name ? `<p>by ${esc(row.owner_name)}</p>` : ''}<p>You have reached the end.</p><div class="row" style="display:flex;gap:10px"><button class="btn" id="vAgain">Watch again</button><a class="btn primary" href="/">Make your own with Tracé</a></div>`;
