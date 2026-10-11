@@ -1,3 +1,5 @@
+/* invite links: remember ?ref=CODE until the visitor has an account */
+try { const q = new URLSearchParams(location.search).get('ref'); if (q && /^[A-Za-z0-9]{4,12}$/.test(q)) localStorage.setItem('trace-ref', q.toUpperCase()); } catch (_) {}
 /* Shared pieces for the account pages and the editor:
    - TRACE_PLANS: what each plan includes (one list, used everywhere in the app)
    - TraceUI.planTable(): the Free / Pro comparison
@@ -206,6 +208,7 @@
   const longDate = d => new Date(d).toLocaleDateString(undefined, { day: 'numeric', month: 'long', year: 'numeric' });
   // Loads the profile; works before 004_promo_codes.sql has been run too.
   async function fetchProfile(sb, uid, cols) {
+    try { const ref = localStorage.getItem('trace-ref'); if (ref) { const r = await sb.rpc('claim_referral', { p_code: ref }); if (!r.error) localStorage.removeItem('trace-ref'); } } catch (_) {}
     try { await sb.rpc('refresh_my_plan'); } catch (_) {}
     let r = await sb.from('profiles').select(cols + ',comp_until,comp_code').eq('id', uid).maybeSingle();
     if (r.error) r = await sb.from('profiles').select(cols).eq('id', uid).maybeSingle();

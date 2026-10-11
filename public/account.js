@@ -337,6 +337,13 @@
         <details class="plans-peek"><summary>Compare Free and Pro</summary>${TraceUI.planTable(profile.plan)}</details>
       </section>
 
+      <section class="acct-sec" id="invite"><h2>Invite friends, get Pro free</h2>
+        <p class="muted sec-sub">Every <b id="invPer">20</b> friends who join with your link give you <b id="invDays">1 month</b> of Pro free. No card needed. A friend counts once they have confirmed their email and filled in their profile.</p>
+        <div class="inv-row"><input id="invLink" readonly value="…" aria-label="Your invite link"><button class="btn primary" type="button" id="invCopy">Copy link</button></div>
+        <div class="meter" role="progressbar" aria-label="Friends towards your next free month" aria-valuemin="0" id="invMeter"><i style="width:0%"></i></div>
+        <p class="fine" id="invStat">Loading…</p>
+      </section>
+
       <section class="acct-sec" id="profile"><h2>Profile</h2><p class="muted sec-sub">Shown on decks you share.</p><div id="pf"></div></section>
 
       <section class="acct-sec" id="security"><h2>Sign-in and security</h2>
@@ -363,6 +370,18 @@
       onSubmit: async v => { await saveProfile(v); say('Profile saved.', 'ok'); renderHeaderUser(); refreshHead(); window.scrollTo({ top: 0, behavior: 'smooth' }); },
     });
     wirePw(main);
+    (async () => {
+      try {
+        const { data } = await sb.rpc('my_referral');
+        if (!data || !data.ok) { $('invite').hidden = true; return; }
+        const link = location.origin + '/?ref=' + data.code, per = data.per_reward, done = data.friends % per;
+        $('invLink').value = link; $('invPer').textContent = per; $('invDays').textContent = data.reward_days === 30 ? '1 month' : data.reward_days + ' days';
+        $('invMeter').setAttribute('aria-valuemax', per); $('invMeter').setAttribute('aria-valuenow', done); $('invMeter').firstElementChild.style.width = Math.round(100 * done / per) + '%';
+        $('invStat').textContent = `${data.friends} friend${data.friends === 1 ? '' : 's'} joined · ${data.next_in} more for your next free month` + (data.rewards ? ` · ${data.rewards} free month${data.rewards === 1 ? '' : 's'} earned so far` : '');
+        $('invCopy').onclick = async () => { try { await navigator.clipboard.writeText(link); } catch (_) { $('invLink').select(); document.execCommand('copy'); } $('invCopy').textContent = 'Copied'; setTimeout(() => { $('invCopy').textContent = 'Copy link'; }, 1600); };
+        if (data.new_rewards > 0) { const fresh = await TraceUI.fetchProfile(sb, user.id, 'display_name,role,subject,organization,avatar_color,plan,subscription_status,plan_renews_at,paddle_customer_id'); if (fresh) profile = fresh; say(`Thank you! Your friends earned you ${data.new_rewards} free month${data.new_rewards === 1 ? '' : 's'} of Pro.`, 'ok'); setTimeout(() => { accountView(); renderHeaderUser(); }, 1500); }
+      } catch (_) { const s = $('invite'); if (s) s.hidden = true; }
+    })();
     if ($('promoBox')) TraceUI.promoForm($('promoBox'), sb, async until => {
       const fresh = await TraceUI.fetchProfile(sb, user.id, 'display_name,role,subject,organization,avatar_color,plan,subscription_status,plan_renews_at,paddle_customer_id');
       if (fresh) profile = fresh;

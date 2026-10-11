@@ -508,6 +508,28 @@ body.portrait .stagebar,body.portrait .stepbar,body.portrait .livebar{width:min(
 .frame{flex-shrink:0}
 .bgcard .bgprev{aspect-ratio:16/9!important;background:var(--desk)}
 body.portrait .frame{width:min(100%,calc((100vh - 330px) * var(--ar)))}
+
+/* ---------- feature search ---------- */
+.fsearch{display:inline-flex;align-items:center;gap:6px;height:32px;padding:0 10px;margin-right:6px;border:1px solid var(--line);border-radius:9px;background:var(--desk);color:var(--mute);font:600 13px inherit;cursor:pointer}
+.fsearch:hover{color:var(--ink);border-color:var(--mute)}
+.fsearch kbd{font:600 10.5px/1 inherit;border:1px solid var(--line);border-radius:5px;padding:2px 5px;background:var(--paper)}
+@media (max-width:1280px){.fsearch kbd,.fsearch span{display:none}}
+#fsModal{position:fixed;inset:0;background:rgba(12,14,13,.45);z-index:60;display:flex;justify-content:center;align-items:flex-start;padding:10vh 12px 12px}
+#fsModal[hidden]{display:none}
+.fs-box{width:min(620px,100%);background:var(--paper);border:1px solid var(--line);border-radius:14px;box-shadow:0 30px 70px -20px rgba(0,0,0,.55);overflow:hidden;display:flex;flex-direction:column;max-height:76vh}
+.fs-in{display:flex;align-items:center;gap:10px;padding:12px 14px;border-bottom:1px solid var(--line);color:var(--mute)}
+.fs-in input{flex:1;min-width:0;border:none;outline:none;background:none;font:500 17px inherit;color:var(--ink)}
+.fs-in kbd{font:600 11px inherit;border:1px solid var(--line);border-radius:5px;padding:2px 6px}
+.fs-list{overflow:auto;padding:6px}
+.fs-list .fs-sec{font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--mute);padding:10px 10px 4px}
+.fs-list button{display:flex;align-items:center;gap:12px;width:100%;text-align:left;border:none;background:none;padding:9px 10px;border-radius:9px;cursor:pointer;color:var(--ink);font:inherit}
+.fs-list button[aria-selected="true"]{background:color-mix(in srgb,#3B5BFD 12%,var(--paper))}
+.fs-list .fs-ic{width:30px;height:30px;flex:none;border-radius:8px;display:flex;align-items:center;justify-content:center;background:var(--desk);color:#3B5BFD}
+.fs-list .fs-ic svg{width:17px;height:17px}
+.fs-list b{display:block;font-size:14px;font-weight:600}
+.fs-list small{display:block;font-size:12px;color:var(--mute)}
+.fs-list .fs-none{padding:18px 12px;color:var(--mute);font-size:14px}
+.fs-foot{margin:0;padding:8px 14px;border-top:1px solid var(--line);font-size:11.5px;color:var(--mute)}
 </style>
 </head>
 <body>
@@ -517,7 +539,7 @@ body.portrait .frame{width:min(100%,calc((100vh - 330px) * var(--ar)))}
   <span class="sep" aria-hidden="true"></span>
   <div class="tools" id="tools" aria-label="Add objects"></div>
   <div class="spacer"></div>
-  <div class="menuwrap tourwrap"><button class="tourbtn" id="tourBtn" data-menu="tours" aria-haspopup="true" aria-expanded="false" title="The interactive tutorial: learn every feature by doing it"><svg viewBox="0 0 16 16" aria-hidden="true"><circle cx="8" cy="8" r="6.6" fill="none" stroke="currentColor" stroke-width="1.4"/><path d="M6.5 5.2v5.6L11 8z" fill="currentColor"/></svg>Tour</button><div class="menu helpmenu tourmenu" role="menu" hidden style="left:auto;right:0"></div></div>
+  <div class="menuwrap tourwrap"><button class="fsearch" id="fsBtn" type="button" title="Search every feature (Ctrl+K)" aria-label="Search features"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="6.5"/><path d="M16 16l4.5 4.5"/></svg><span>Search</span><kbd>Ctrl K</kbd></button><button class="tourbtn" id="tourBtn" data-menu="tours" aria-haspopup="true" aria-expanded="false" title="The interactive tutorial: learn every feature by doing it"><svg viewBox="0 0 16 16" aria-hidden="true"><circle cx="8" cy="8" r="6.6" fill="none" stroke="currentColor" stroke-width="1.4"/><path d="M6.5 5.2v5.6L11 8z" fill="currentColor"/></svg>Tour</button><div class="menu helpmenu tourmenu" role="menu" hidden style="left:auto;right:0"></div></div>
   <div class="menuwrap"><button class="tool iconbtn" data-menu="more" aria-haspopup="true" aria-expanded="false" aria-label="More" title="More: export, help, guide"><svg viewBox="0 0 16 16" aria-hidden="true"><circle cx="3.5" cy="8" r="1.4" fill="currentColor"/><circle cx="8" cy="8" r="1.4" fill="currentColor"/><circle cx="12.5" cy="8" r="1.4" fill="currentColor"/></svg></button><div class="menu helpmenu moremenu richmenu" data-c="blue" role="menu" hidden style="left:auto;right:0"><div class="rm-sec">Save and share</div><div class="rm-grid mm-share"><button role="menuitem" id="videoBtn"><span class="rm-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2.5" y="6" width="13" height="12" rx="2"/><path d="M15.5 10.5l6-3.5v10l-6-3.5z"/></svg></span><span class="rm-tx"><b>Make a video</b><small>An MP4 of every click, with your voice</small></span></button><button role="menuitem" id="exportBtn"><span class="rm-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v12M7 10l5 5 5-5"/><path d="M4 17v3h16v-3"/></svg></span><span class="rm-tx"><b>Save as a file</b><small>Download the deck, or the Python video script</small></span></button></div><div class="rm-sec">Learn</div><div class="rm-grid mm-learn"><button role="menuitem" data-tutmenu><span class="rm-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 9l10-5 10 5-10 5z"/><path d="M6 11v5c3 2 9 2 12 0v-5"/></svg></span><span class="rm-tx"><b>Interactive tutorial</b><small>Learn every feature, one step at a time</small></span></button><button role="menuitem" data-tour="first"><span class="rm-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M10 8.5l5 3.5-5 3.5z"/></svg></span><span class="rm-tx"><b>Make your first moving slide</b><small>A 2-minute guided tour</small></span></button><button role="menuitem" data-tour="screen"><span class="rm-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="13" rx="1.5"/><path d="M8 21h8M12 17v4"/></svg></span><span class="rm-tx"><b>What is on the screen</b><small>A 1-minute guided tour</small></span></button><a role="menuitem" id="guideLink" href="/guide/" target="_blank" rel="noopener" hidden><span class="rm-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 19V5a2 2 0 012-2h12v16H6a2 2 0 00-2 2"/><path d="M8 7h6M8 11h4"/></svg></span><span class="rm-tx"><b>Read the full guide</b><small>Opens in a new tab</small></span></a></div><div class="rm-sec">More</div><div class="rm-grid mm-more"><button role="menuitem" data-ex="radar"><span class="rm-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 12l6-5"/><circle cx="12" cy="12" r="4"/></svg></span><span class="rm-tx"><b>Add example slides</b><small>Radar jamming, in 3D</small></span></button><button role="menuitem" data-gohome><span class="rm-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg></span><span class="rm-tx"><b>All projects and templates</b><small>Open or start another presentation</small></span></button></div></div></div>
   <button class="btn iconbtn" id="undo" title="Undo (Ctrl+Z)" aria-label="Undo"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M5.5 4L2.5 7l3 3M2.8 7H10a3.5 3.5 0 0 1 0 7H7" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></button><button class="btn iconbtn" id="redo" title="Redo (Ctrl+Shift+Z)" aria-label="Redo"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M10.5 4l3 3-3 3M13.2 7H6a3.5 3.5 0 0 0 0 7h3" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
   <button class="btn videobtn" id="videoHdr" title="Make an MP4 video of the whole presentation"><svg viewBox="0 0 16 16" width="15" height="15" aria-hidden="true"><rect x="1.5" y="4" width="9" height="8" rx="1.6" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M10.5 7l4-2.2v6.4l-4-2.2z" fill="currentColor"/></svg>Video</button>
@@ -576,6 +598,7 @@ body.portrait .frame{width:min(100%,calc((100vh - 330px) * var(--ar)))}
     <div class="bgd-foot"><button class="btn" id="bgCancel" type="button">Cancel</button><button class="btn cta" id="bgApply" type="button">Apply to every slide</button></div>
   </div>
 </div>
+<div id="fsModal" hidden><div class="fs-box" role="dialog" aria-modal="true" aria-label="Search features"><div class="fs-in"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="6.5"/><path d="M16 16l4.5 4.5"/></svg><input id="fsInput" type="search" placeholder="What do you want to do? Try “graph”, “video”, “background”…" autocomplete="off" spellcheck="false" aria-controls="fsList"><kbd>Esc</kbd></div><div class="fs-list" id="fsList" role="listbox"></div><p class="fs-foot">↑ ↓ to choose · Enter to open</p></div></div>
 <div class="toast" id="toast"></div>
 
 <script>
@@ -3009,7 +3032,55 @@ function warmNext(){const s2=deck.slides[pi];if(!s2)return;let A,B;if(ps<maxStep
 function presPrev(){presQueued=false;if(ps>0)presShow(pi,ps-1,false);else if(pi>0)presShow(pi-1,maxStep(deck.slides[pi-1]),false);}
 function openPresent(){syncAspect();presShown=null;pi=-1;presQueued=false;if(innerHeight<520)liveHidden=true;/* a phone on its side has no room for sliders over the slide; one tap shows them */LOOP0=performance.now();$('#present').hidden=false;document.body.classList.add('presenting');try{document.documentElement.requestFullscreen&&document.documentElement.requestFullscreen().catch(()=>{});}catch(e){}presAt(cur,true);}
 function closePresent(){voiceStop();finishAnim();stopLoop();$('#present').hidden=true;document.body.classList.remove('presenting');if(document.fullscreenElement)document.exitFullscreen().catch(()=>{});renderCanvas();}
-$('#presentBtn').onclick=openPresent;wirePanels();$('#exitPres').onclick=e=>{e.stopPropagation();closePresent();};
+$('#presentBtn').onclick=openPresent;wirePanels();
+/* ---------- feature search: find any object, action, setting or lesson by typing ---------- */
+function fsItems(){const L=[],add=(sec,label,sub,kw,run,ic)=>L.push({sec,label,sub:sub||'',kw:(label+' '+(sub||'')+' '+(kw||'')).toLowerCase(),run,ic});
+  const I={act:'<path d="M5 12h14M13 6l6 6-6 6"/>',add:'<path d="M12 5v14M5 12h14"/>',set:'<circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3M4.9 4.9l2.1 2.1M17 17l2.1 2.1M4.9 19.1L7 17M17 7l2.1-2.1"/>',learn:'<path d="M2 9l10-5 10 5-10 5z"/><path d="M6 11v5c3 2 9 2 12 0v-5"/>'};
+  const o=sel&&obj(sel),click=q=>()=>{const e=$(q);if(e)e.click();};
+  add('Do','Present','Full screen, one click at a time','show slideshow play fullscreen',()=>openPresent(),I.act);
+  add('Do','Make a video','An MP4 of every click, with your voice','video mp4 export movie youtube render film',()=>openVideoDialog(),I.act);
+  add('Do','Play this slide','Watch the animation into this slide','preview play animation',click('#preview'),I.act);
+  add('Do','Record voice','Your voice on this click (Pro)','voice microphone narration audio record sound',()=>{const b=$('#vRec');if(b)b.click();},I.act);
+  if($('#shareBtn'))add('Do','Share a link','Anyone can watch it on any device','share link url send students',click('#shareBtn'),I.act);
+  add('Do','Save as a file','Download the deck','export download save file json backup',click('#exportBtn'),I.act);
+  add('Do','Export a Manim script','Python code for Manim (Pro)','manim python code script export render',()=>{const b=$('#exportBtn');if(b)b.click();setTimeout(()=>{const t=document.querySelector('.tab[data-tab="code"]');if(t)t.click();},60);},I.act);
+  add('Slides','New slide','An empty slide after this one','add slide page blank',click('#newSlide'),I.add);
+  add('Slides','Duplicate this slide','Change the copy: Tracé animates the difference','copy slide morph magic move',click('#dupSlide'),I.add);
+  add('Slides','Delete this slide','','remove slide',()=>delSlide(),I.set);
+  add('Slides','Add a click','A new step on this slide','step click build',click('#addClick'),I.add);
+  add('Slides','Design the background','Colours, gradients, patterns, a picture','background colour color gradient pattern grid picture image photo wallpaper theme',()=>openBgDialog(),I.set);
+  Object.entries(SIZES).forEach(([z,v])=>add('Slides','Slide size: '+v.label,v.hint,'size format aspect ratio portrait vertical square wide shorts reels tiktok '+z,()=>setSlideSize(z,true),I.set));
+  add('Slides','Transition and motion feel','How slides move into each other','transition speed duration easing feel bouncy',()=>{sel=null;editStep=null;refresh();showPane('slide');},I.set);
+  GROUPS.forEach(([g,list])=>list.forEach(k=>add('Add','Add '+(TYPES[k]||MENU_PRESETS[k]||k).toLowerCase().replace(/^./,c=>c.toUpperCase()),(typeof ADD_DESC!=='undefined'&&ADD_DESC[k])||g,g+' '+k,()=>addObj(k),I.add)));
+  add('Add','Add an image','A picture from your computer','image picture photo upload png jpg',()=>addObj('image'),I.add);
+  if(o){[['content','Content','what it shows, the equation, the text'],['style','Style','colour color size thickness font fill'],['pos','Place','position size scale rotate turn opacity'],['anim','Animate','appear click enter exit move loop path']].forEach(([id,l,kw])=>add('This object',l+' settings','For the selected '+(TYPES[o.type]||'object').toLowerCase(),kw,()=>{showPane(id);},I.set));
+    add('This object','Duplicate it','','copy clone',()=>dupObj(),I.add);add('This object','Delete it','','remove',()=>delObj(),I.set);
+    if(o.type==='latex')add('This object','Plot this equation','Turn it into a graph','graph plot curve function',()=>{showPane('content');const b=$('#plotEq');if(b)b.click();},I.act);}
+  add('View','Hide the slide list','More room for the slide','panel sidebar collapse',()=>togglePanel('l',false),I.set);
+  add('View','Hide the settings','More room for the slide','panel sidebar collapse inspector',()=>togglePanel('r',false),I.set);
+  add('View','Show or hide the grid','Lines that help you align things','grid align snap',()=>{showGrid=!showGrid;renderCanvas();if(!sel)renderProps();},I.set);
+  add('View','Undo','Ctrl+Z','undo back',()=>undo(),I.set);add('View','Redo','Ctrl+Shift+Z','redo',()=>redo(),I.set);
+  add('View','All projects and templates','Open or start another presentation','projects home templates open',()=>showHome(),I.act);
+  TUT.forEach(([part,chs])=>chs.forEach(([id,t])=>add('Learn','Lesson: '+t,part,'tutorial tour learn how help '+id,()=>startTour(id),I.learn)));
+  add('Learn','Read the full guide','Opens in a new tab','help guide manual docs',()=>window.open('/guide/','_blank'),I.learn);
+  return L;}
+let fsList=[],fsI=0;
+function fsRender(){const q=$('#fsInput').value.trim().toLowerCase(),words=q.split(/\s+/).filter(Boolean),all=fsItems();
+  const score=it=>{if(!words.length)return 1;let sc=0;for(const w of words){const i=it.kw.indexOf(w);if(i<0)return 0;sc+=it.label.toLowerCase().startsWith(w)?6:it.label.toLowerCase().includes(w)?4:i<it.label.length?3:1;}return sc;};
+  fsList=all.map(it=>({it,sc:score(it)})).filter(x=>x.sc>0).sort((a,b)=>b.sc-a.sc).map(x=>x.it);if(!words.length)fsList=all.filter(it=>it.sec!=='Add'&&it.sec!=='Learn').concat(all.filter(it=>it.sec==='Learn').slice(0,3));
+  fsList=fsList.slice(0,40);fsI=Math.min(fsI,Math.max(0,fsList.length-1));const box=$('#fsList');
+  if(!fsList.length){box.innerHTML=`<p class="fs-none">Nothing found for “${q.replace(/</g,'&lt;')}”. Try another word, or <a href="/guide/" target="_blank" rel="noopener">read the guide</a>.</p>`;return;}
+  let last='',h='';fsList.forEach((it,i)=>{if(it.sec!==last&&!words.length){h+=`<div class="fs-sec">${it.sec}</div>`;last=it.sec;}h+=`<button type="button" role="option" data-i="${i}" aria-selected="${i===fsI}"><span class="fs-ic">${PP_IC(it.ic)}</span><span><b>${it.label}</b>${it.sub?`<small>${it.sub}</small>`:''}</span></button>`;});
+  box.innerHTML=h;box.querySelectorAll('[data-i]').forEach(b=>{b.onclick=()=>fsRun(+b.dataset.i);b.onmousemove=()=>{if(fsI!==+b.dataset.i){fsI=+b.dataset.i;box.querySelectorAll('[data-i]').forEach(x=>x.setAttribute('aria-selected',String(+x.dataset.i===fsI)));}};});
+  const on=box.querySelector('[aria-selected="true"]');if(on)on.scrollIntoView({block:'nearest'});}
+function fsOpen(){if(!$('#present').hidden)return;closeMenus();if(homeShown)showEditor();const m=$('#fsModal');m.hidden=false;const i=$('#fsInput');i.value='';fsI=0;fsRender();i.focus();}
+function fsClose(){$('#fsModal').hidden=true;}
+function fsRun(i){const it=fsList[i];if(!it)return;fsClose();try{it.run();}catch(e){}}
+$('#fsBtn').onclick=fsOpen;$('#fsModal').addEventListener('mousedown',e=>{if(e.target.id==='fsModal')fsClose();});
+$('#fsInput').addEventListener('input',()=>{fsI=0;fsRender();});
+$('#fsInput').addEventListener('keydown',e=>{if(e.key==='ArrowDown'||e.key==='ArrowUp'){e.preventDefault();fsI=(fsI+(e.key==='ArrowDown'?1:-1)+fsList.length)%Math.max(1,fsList.length);fsRender();}else if(e.key==='Enter'){e.preventDefault();fsRun(fsI);}else if(e.key==='Escape'){e.preventDefault();e.stopPropagation();fsClose();}});
+document.addEventListener('keydown',e=>{if((e.ctrlKey||e.metaKey)&&!e.shiftKey&&e.key.toLowerCase()==='k'){e.preventDefault();if($('#fsModal').hidden)fsOpen();else fsClose();}},true);
+$('#exitPres').onclick=e=>{e.stopPropagation();closePresent();};
 let pdrag=null,justOrbited=false;
 pc.addEventListener('pointerdown',e=>{if(document.body.classList.contains('watch-only'))return;const g=e.target.closest('g[data-type="axes3d"]');if(!g)return;const base=(presShown||deck.slides[pi].objects).find(o=>o.id===g.dataset.id);if(!base)return;
   finishAnim();pdrag={id:base.id,cx:e.clientX,cy:e.clientY,az:base.az,tilt:base.tilt,moved:false};pc.setPointerCapture(e.pointerId);e.preventDefault();});
