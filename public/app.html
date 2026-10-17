@@ -623,6 +623,7 @@ html[dir=rtl] #stage,html[dir=rtl] #canvas,html[dir=rtl] #thumbs,html[dir=rtl] #
 html[dir=rtl] .menu[style*="right:0"]{right:auto!important;left:0!important}
 html[dir=rtl] .toast,html[dir=rtl] #toast{direction:rtl}
 .rm-sep{height:1px;background:var(--line);margin:4px 8px}
+#aiCountWrap{margin-inline-start:10px}
 </style>
 </head>
 <body>
@@ -701,7 +702,7 @@ html[dir=rtl] .toast,html[dir=rtl] #toast{direction:rtl}
       <div class="ai-log" id="aiLog" hidden aria-live="polite"></div>
       <textarea id="aiPrompt" rows="3" maxlength="2000" placeholder="What should the slides cover?"></textarea>
       <div class="ai-chips" id="aiChips"></div>
-      <div class="ai-row"><label id="aiSizeWrap">Format <select id="aiSize"><option value="16:9">16:9 screen</option><option value="9:16">9:16 phone</option><option value="4:3">4:3</option><option value="1:1">1:1 square</option></select></label><span class="ai-usage" id="aiUsage"></span><div class="spacer"></div><button class="btn cta" id="aiGo" type="button">Create the presentation</button></div>
+      <div class="ai-row"><label id="aiSizeWrap">Format <select id="aiSize"><option value="16:9">16:9 screen</option><option value="9:16">9:16 phone</option><option value="4:3">4:3</option><option value="1:1">1:1 square</option></select></label><label id="aiCountWrap">Slides <select id="aiCount"><option value="0">Auto</option><option value="3">3</option><option value="5">5</option><option value="8">8 (2 credits)</option><option value="10">10 (3 credits)</option><option value="12">12 (3 credits)</option><option value="15">15 (4 credits)</option></select></label><span class="ai-usage" id="aiUsage"></span><div class="spacer"></div><button class="btn cta" id="aiGo" type="button">Create the presentation</button></div>
     </div>
   </div>
 </div>
@@ -5528,7 +5529,7 @@ function openAI(mode){closeMenus&&closeMenus();const m=$('#aiModal');AI.mode=mod
   if(!A&&!AI.log.length)aiLogAdd('bot','The AI builder works in your Tracé account at <a href="https://www.traceanim.com/app" target="_blank" rel="noopener">traceanim.com</a>.');
   m.hidden=false;aiUsage().then(r=>{if(r&&r.left<=0&&!AI.log.length)aiLogAdd('bot',AI_NOCRED(r.pro));});setTimeout(()=>$('#aiPrompt').focus(),30);}
 function aiSetMode(md){AI.mode=homeShown&&md==='add'?'new':md;document.querySelectorAll('[data-aimode]').forEach(b=>{b.setAttribute('aria-pressed',String(b.dataset.aimode===AI.mode));b.disabled=homeShown&&b.dataset.aimode==='add';});
-  const sv=AI.mode==='solve';$('#aiSizeWrap').hidden=!(AI.mode==='new'||sv&&homeShown);$('#aiGo').textContent=AI.mode==='new'?'Create the presentation':sv?'Solve it step by step':'Add the slides';
+  const sv=AI.mode==='solve';$('#aiSizeWrap').hidden=!(AI.mode==='new'||sv&&homeShown);$('#aiCountWrap').hidden=sv;$('#aiGo').textContent=AI.mode==='new'?'Create the presentation':sv?'Solve it step by step':'Add the slides';
   $('#aiPrompt').placeholder=sv?'Type an equation or a word problem':'What should the slides cover?';
   $('#aiChips').innerHTML=(sv?AI_EX_SOLVE:AI_EX).map(t=>`<button type="button" class="ai-chip">${t}</button>`).join('');}
 function closeAI(){$('#aiModal').hidden=true;}
@@ -5538,10 +5539,10 @@ async function aiGo(){if(AI.busy)return;const p=$('#aiPrompt').value.trim(),A=wi
   if(!A.signedIn()){closeAI();A.signIn();return;}
   const esc=t=>String(t).replace(/&/g,'&amp;').replace(/</g,'&lt;');const solve=AI.mode==='solve',mode=solve?(homeShown?'new':'add'):AI.mode,size=mode==='new'?$('#aiSize').value:sizeOf();
   aiLogAdd('me',esc(p));aiLogAdd('bot','<span class="ai-dots">Writing your slides</span>');AI.busy=true;$('#aiGo').disabled=true;
-  let r;try{r=await A.build({prompt:p,mode,size,solve,context:mode==='add'?{title:curMeta()?.name||'',slides:aiSlideTitles()}:{}});}catch(_){r={error:'offline'};}
+  let r;try{r=await A.build({prompt:p,mode,size,solve,count:solve?0:+$('#aiCount').value||0,context:mode==='add'?{title:curMeta()?.name||'',slides:aiSlideTitles()}:{}});}catch(_){r={error:'offline'};}
   AI.busy=false;$('#aiGo').disabled=false;AI.log.pop();
   if(!r||r.error||!r.spec){const e=r&&r.error;
-    const msg=e==='signin'?'Please sign in first.':e==='no_credits'?AI_NOCRED(r.pro)
+    const msg=e==='signin'?'Please sign in first.':e==='no_credits'?(r.need?`This deck needs ${r.need} credits. `:'')+AI_NOCRED(r.pro)
       :e==='not_configured'?'The AI builder is not switched on for this site yet.':e==='offline'?'You seem to be offline. Try again in a moment.':'The AI could not finish this one. Try again, or describe it a little differently (your request was not counted).';
     const det=r&&r.detail&&e!=='no_credits'&&e!=='signin'?`<br><small class="ai-det">Reason: ${esc(r.detail)}</small>`:'';
     aiLogAdd('bot',msg+det);if(e==='signin'){closeAI();A.signIn();}aiUsage();return;}
