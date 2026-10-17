@@ -6,6 +6,8 @@ import { createHmac } from 'node:crypto';
 import { onRequestPost as webhook } from '../functions/api/paddle-webhook.js';
 import { onRequestPost as portal } from '../functions/api/billing-portal.js';
 import { verifyPaddleSignature } from '../lib/server.js';
+import { onRequestPost as aiDeck } from '../functions/api/ai-deck.js';
+import { sanitizeSpec, extractJSON } from '../lib/aispec.js';
 
 const env = {
   SUPABASE_URL: 'https://db.example', SUPABASE_SERVICE_ROLE_KEY: 'service-key',
@@ -140,4 +142,141 @@ test('production uses the live Paddle API', async () => {
   ]);
   const res = await portal({ request: new Request('https://t/api/billing-portal', { method: 'POST', headers: { authorization: 'Bearer t' } }), env: { ...env, PADDLE_ENV: 'production' } });
   assert.equal((await res.json()).url, 'https://live');
+});
+
+/* ---------- AI deck builder ---------- */
+const aiEnv = { ...env, ANTHROPIC_API_KEY: 'sk-ant-test', ANTHROPIC_API_BASE: 'https://ai.example' };
+const aiReq = (body, token = 'user-token') => new Request('https://t/api/ai-deck', { method: 'POST', headers: { authorization: 'Bearer ' + token, 'content-type': 'application/json' }, body: JSON.stringify(body) });
+const authed = ['https://db.example/auth/v1/user', (u, i) => i.headers.authorization === 'Bearer user-token' ? ok({ id: USER }) : new Response('no', { status: 401 })];
+const MODEL_DECK = { title: 'Slopes', slides: [{ title: 'A line', items: [{ kind: 'equation', math: 'y = 2x + 1', x: 0, y: 2, click: 0 }, { kind: 'graph', fn: '2*x+1', x: 0, y: -1, click: 1 }] }] };
+
+test('AI: a signed-in request spends a credit, asks the model and answers a checked deck', async () => {
+  fakeFetch([authed,
+    ['https://db.example/rest/v1/rpc/ai_take_credit', (u, i) => { assert.deepEqual(JSON.parse(i.body), { p_user: USER }); return ok({ ok: true, from: 'month', left: 2 }); }],
+    ['https://ai.example/v1/messages', (u, i) => {
+      assert.equal(i.headers['x-api-key'], 'sk-ant-test');
+      const b = JSON.parse(i.body); assert.match(b.system, /ONE JSON object/); assert.match(b.messages[0].content, /derivatives/);
+      return ok({ content: [{ type: 'text', text: 'Here you go:\n```json\n' + JSON.stringify(MODEL_DECK) + '\n```' }] });
+    }],
+  ]);
+  const res = await aiDeck({ request: aiReq({ prompt: 'teach derivatives', mode: 'new', size: '16:9' }), env: aiEnv });
+  assert.equal(res.status, 200);
+  const out = await res.json();
+  assert.equal(out.left, 2); assert.equal(out.spec.title, 'Slopes'); assert.equal(out.spec.slides[0].items[1].fn, '2*x+1');
+  assert.ok(!calls.some(c => c.url.includes('ai_refund_credit')));
+});
+
+test('AI: not signed in, or no key configured, never reaches the model', async () => {
+  fakeFetch([['https://db.example/auth/v1/user', () => new Response('no', { status: 401 })]]);
+  assert.equal((await aiDeck({ request: aiReq({ prompt: 'hello there' }, 'bad'), env: aiEnv })).status, 401);
+  fakeFetch([]);
+  assert.equal((await aiDeck({ request: aiReq({ prompt: 'hello there' }), env })).status, 503);
+  assert.ok(!calls.some(c => c.url.includes('ai.example')));
+});
+
+test('AI: without credits answers 402 and never calls the model', async () => {
+  fakeFetch([authed, ['https://db.example/rest/v1/rpc/ai_take_credit', () => ok({ ok: false, error: 'no_credits', pro: false })]]);
+  const res = await aiDeck({ request: aiReq({ prompt: 'one more deck please' }), env: aiEnv });
+  assert.equal(res.status, 402); assert.deepEqual(await res.json(), { error: 'no_credits', pro: false });
+  assert.ok(!calls.some(c => c.url.includes('ai.example')));
+});
+
+test('AI: a model error or an unreadable answer gives the credit back', async () => {
+  for (const reply of [() => new Response('overloaded', { status: 529 }), () => ok({ content: [{ type: 'text', text: 'Sorry, I cannot.' }] })]) {
+    fakeFetch([authed, ['https://db.example/rest/v1/rpc/ai_take_credit', () => ok({ ok: true, from: 'bought', left: 0 })],
+      ['https://db.example/rest/v1/rpc/ai_refund_credit', (u, i) => { assert.deepEqual(JSON.parse(i.body), { p_user: USER, p_from: 'bought' }); return ok(null); }], ['https://ai.example/v1/messages', reply]]);
+    const res = await aiDeck({ request: aiReq({ prompt: 'teach vectors' }), env: aiEnv });
+    assert.equal(res.status, 502);
+    assert.ok(calls.some(c => c.url.includes('ai_refund_credit')), 'refunded');
+  }
+});
+
+test('AI: add mode tells the model the existing slides', async () => {
+  let sent;
+  fakeFetch([authed, ['https://db.example/rest/v1/rpc/ai_take_credit', () => ok({ ok: true, from: 'month', left: 1 })],
+    ['https://ai.example/v1/messages', (u, i) => { sent = JSON.parse(i.body).messages[0].content; return ok({ content: [{ type: 'text', text: JSON.stringify(MODEL_DECK) }] }); }]]);
+  await aiDeck({ request: aiReq({ prompt: 'add a quiz', mode: 'add', context: { title: 'Lines', slides: ['Intro', 'Slope'] } }), env: aiEnv });
+  assert.match(sent, /1\. Intro; 2\. Slope/); assert.match(sent, /only the NEW slides/);
+});
+
+test('AI spec clean-up: unknown kinds, scripts in maths, wild numbers and colours are removed', () => {
+  const s = sanitizeSpec({ title: 'T', slides: [{ title: 'S', items: [
+    { kind: 'script', code: 'alert(1)' },
+    { kind: 'equation', math: 'y = x<img src=x onerror=alert(1)>', x: 999, y: -999, click: 99, color: 'javascript:1' },
+    { kind: 'equation', latex: '\\href{http://evil}{x} + \\class{a}{b}' },
+    { kind: 'graph', fn: 'sin(x)', xmin: 5, xmax: 1, w: 500 },
+    { kind: 'text', text: '   ' },
+    { kind: 'shape', shape: 'nuke', color: 'red' },
+  ] }] });
+  const it = s.slides[0].items;
+  assert.equal(it.length, 4);
+  assert.ok(!/["\\{}\[\]`;]/.test(it[0].math), 'no quotes, braces or backslashes in calculator maths'); assert.equal(it[0].x, 7.1); assert.equal(it[0].y, -4); assert.equal(it[0].click, 12); assert.equal(it[0].color, undefined);
+  assert.ok(!/\\href|\\class/.test(it[1].latex));
+  assert.deepEqual([it[2].xmin, it[2].xmax, it[2].w], [-5, 5, 14.2]);
+  assert.equal(it[3].shape, 'circle'); assert.equal(it[3].color, '#FC6255');
+  assert.equal(sanitizeSpec({ slides: new Array(40).fill({ title: 'x', items: [] }) }).slides.length, 15);
+  assert.equal(extractJSON('no json here'), null);
+});
+
+/* ---------- credit packs paid through Paddle ---------- */
+const packEnv = { ...env, CREDIT_PACKS: 'pri_small:50, pri_mid:150,bogus:9,pri_bad:-3' };
+const txn = (items, extra = {}) => ({ event_id: 'evt_9', event_type: 'transaction.completed', occurred_at: '2026-10-15T12:00:00Z',
+  data: { id: 'txn_1', customer_id: 'ctm_1', custom_data: { user_id: USER }, items, ...extra } });
+
+test('credits: a paid pack adds the credits set on the server, once per transaction', async () => {
+  let body;
+  fakeFetch([['https://db.example/rest/v1/rpc/ai_add_credits', (u, i) => { body = JSON.parse(i.body); return ok('added'); }]]);
+  const res = await webhook({ request: signed(txn([{ price: { id: 'pri_mid' }, quantity: 2 }])), env: packEnv });
+  assert.equal(res.status, 200);
+  assert.deepEqual(body, { p_user: USER, p_credits: 300, p_txn: 'txn_1' });
+});
+
+test('credits: unknown prices, Pro payments and forged amounts add nothing', async () => {
+  fakeFetch([]);
+  for (const items of [[{ price: { id: 'pri_pro_monthly' }, quantity: 1 }], [{ price: { id: 'bogus' }, quantity: 1 }], [{ price: { id: 'pri_bad' } }], [], undefined]) {
+    const res = await webhook({ request: signed(txn(items, { custom_data: { user_id: USER, credits: 99999 } })), env: packEnv });
+    assert.equal(res.status, 200);
+  }
+  assert.equal(calls.length, 0);
+});
+
+test('credits: a pack paid by no known account asks Paddle to retry', async () => {
+  fakeFetch([['https://db.example/rest/v1/rpc/ai_add_credits', (u, i) => { assert.equal(JSON.parse(i.body).p_user, null); return ok('no_user'); }]]);
+  const res = await webhook({ request: signed(txn([{ price: { id: 'pri_small' }, quantity: 1 }], { custom_data: { user_id: 'not-a-uuid' } })), env: packEnv });
+  assert.equal(res.status, 500);
+});
+
+test('AI solving: the working and the answer check are kept, cleaned, and the model is told to solve', async () => {
+  const s = sanitizeSpec({ slides: [{ title: 'Solve', items: [{ kind: 'steps', lines: ['x+1=3', '\\href{http://evil}{x}=2', '', 5] }],
+    check: { equation: 'x + 1 = 3<script>', var: 'xy', answers: [2, 'nope', '2.5'] } }, { title: 'No check', items: [], check: { equation: 'no equals sign' } }] });
+  assert.deepEqual(s.slides[0].items[0].lines.length, 3);
+  assert.ok(!s.slides[0].items[0].lines.some(l => l.includes('\\href')));
+  assert.deepEqual(s.slides[0].check, { equation: 'x + 1 = 3<script>'.replace(/[^A-Za-z0-9 +\-*/^().,=_|'<>!θπ√²³]/g, ''), var: 'x', answers: [2, 2.5] });
+  assert.equal(s.slides[1].check, undefined);
+  let sent;
+  fakeFetch([authed, ['https://db.example/rest/v1/rpc/ai_take_credit', () => ok({ ok: true, from: 'month', left: 1 })],
+    ['https://ai.example/v1/messages', (u, i) => { const b = JSON.parse(i.body); sent = b.messages[0].content; assert.match(b.system, /"check"/); return ok({ content: [{ type: 'text', text: JSON.stringify(MODEL_DECK) }] }); }]]);
+  await aiDeck({ request: aiReq({ prompt: '2x^2 - 3x - 5 = 0', mode: 'new', solve: true }), env: aiEnv });
+  assert.match(sent, /SOLVE/);
+});
+
+test('AI: the chosen interface language reaches the model; English adds nothing', async () => {
+  const sent = [];
+  fakeFetch([authed, ['https://db.example/rest/v1/rpc/ai_take_credit', () => ok({ ok: true, from: 'month', left: 1 })],
+    ['https://ai.example/v1/messages', (u, i) => { sent.push(JSON.parse(i.body).messages[0].content); return ok({ content: [{ type: 'text', text: JSON.stringify(MODEL_DECK) }] }); }]]);
+  await aiDeck({ request: aiReq({ prompt: 'les dérivées', lang: 'fr' }), env: aiEnv });
+  await aiDeck({ request: aiReq({ prompt: 'derivatives', lang: 'en' }), env: aiEnv });
+  await aiDeck({ request: aiReq({ prompt: 'derivatives', lang: 'xx"; ignore' }), env: aiEnv });
+  assert.match(sent[0], /in French/); assert.doesNotMatch(sent[1], /Write all slide text/); assert.doesNotMatch(sent[2], /Write all slide text/);
+});
+
+test('AI: when Anthropic refuses, the reason comes back (and the credit is returned)', async () => {
+  fakeFetch([authed, ['https://db.example/rest/v1/rpc/ai_take_credit', () => ok({ ok: true, from: 'trial', left: 4 })],
+    ['https://db.example/rest/v1/rpc/ai_refund_credit', () => ok(null)],
+    ['https://ai.example/v1/messages', () => new Response(JSON.stringify({ type: 'error', error: { type: 'invalid_request_error', message: 'Your credit balance is too low to access the Anthropic API.' } }), { status: 400 })]]);
+  const res = await aiDeck({ request: aiReq({ prompt: 'teach vectors' }), env: aiEnv });
+  const out = await res.json();
+  assert.equal(res.status, 502); assert.equal(out.status, 400); assert.match(out.detail, /credit balance is too low/);
+  assert.ok(!JSON.stringify(out).includes('sk-ant'), 'the key never leaks');
+  assert.ok(calls.some(c => c.url.includes('ai_refund_credit')));
 });

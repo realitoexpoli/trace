@@ -4,8 +4,12 @@ do $$ begin
   if not exists (select from pg_roles where rolname = 'authenticated') then create role authenticated nologin; end if;
   if not exists (select from pg_roles where rolname = 'service_role') then create role service_role nologin bypassrls; end if;
 end $$;
+-- Like Supabase: pgcrypto is installed in its own "extensions" schema, not in public.
+create schema if not exists extensions;
+create extension if not exists pgcrypto schema extensions;
 create schema auth;
 create table auth.users (id uuid primary key, email text);
+alter table auth.users add column if not exists email_confirmed_at timestamptz default now();
 create function auth.uid() returns uuid language sql stable as
 $$ select coalesce(nullif(current_setting('request.jwt.claim.sub', true), ''),
                   (nullif(current_setting('request.jwt.claims', true), '')::jsonb ->> 'sub'))::uuid $$;
