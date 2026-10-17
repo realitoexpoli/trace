@@ -10,7 +10,7 @@ Tracé is a browser editor for animated maths and physics slides. This package t
 - A **home page** with pricing, a **user guide** at `/guide`, and **terms / privacy / refund** templates
 - **Five languages** (English, French, Spanish, Portuguese, Arabic) for the website, the account pages and the editor
 
-Everything was tested on a full local copy of the stack (686 automated checks, see [Tests](#tests)).
+Everything was tested on a full local copy of the stack (688 automated checks, see [Tests](#tests)).
 
 ---
 
@@ -71,11 +71,13 @@ tools/make-app.mjs       rebuilds public/app.html when you update trace.html
 | Record your voice on slides and clicks | – | ✓ |
 | Python video script (Manim) | – (or with a mark, see below) | ✓ |
 | Decks in the browser | unlimited | unlimited |
-| Decks in the account | 3 | unlimited |
+| Decks in the account | 3 | 50 |
 | Size of one deck (images and voice included) | 2 MB | 20 MB |
+| Online space in total | 5 MB | 200 MB |
+| Export / import project files (`.trace.json`) | ✓ | ✓ |
 | “Made with Tracé” badge | on share links and while presenting | none; view counts |
 
-The real limits live in the database function `plan_limits` (in `001_init.sql`). If you change them, also update `freeDecks` in `public/config.js` and the pricing section of `public/index.html`.
+The real limits live in the database function `plan_storage` (in `008_storage.sql`): number of decks, size of one deck and total space. People see their space in the account menu and on the account page. When it is full, new work stays on their device and they are told to export old decks as project files and delete them online; nothing is ever deleted for them. Supabase's free database holds 500 MB, so move to a paid Supabase plan before many Pro accounts fill their 200 MB. If you change them, also update `freeDecks` in `public/config.js` and the pricing section of `public/index.html`.
 Prices are set in Paddle; the labels shown in the app are `priceLabels` in `config.js`.
 
 - Which add-menu items are Pro is the list `PRO_ADD` in `trace.html` (search for “plans”). The Free/Pro table shown in the app is `TRACE_PLANS` in `public/profile-ui.js`.
@@ -117,7 +119,7 @@ You need: a GitHub account, and accounts at Supabase, Cloudflare, Paddle and Res
 ### 1. Supabase (database and sign-in)
 
 1. Create a project at [supabase.com](https://supabase.com). Choose a region close to your users (for Europe: Frankfurt). Save the database password somewhere safe.
-2. **SQL Editor → New query**: paste the whole of `supabase/migrations/001_init.sql`, then **Run**. Then do the same with `002_profiles.sql`, `003_pro_features.sql`, `004_promo_codes.sql` `005_share_fix.sql`, `006_referrals.sql` and `007_ai.sql`. All are safe to run again (in that order). For promo codes, also turn on **Database → Extensions → pg_cron** before running `004` (it ends finished free periods every hour; without it they still end, as soon as the person signs in).
+2. **SQL Editor → New query**: paste the whole of `supabase/migrations/001_init.sql`, then **Run**. Then do the same with `002_profiles.sql`, `003_pro_features.sql`, `004_promo_codes.sql` `005_share_fix.sql`, `006_referrals.sql`, `007_ai.sql` and `008_storage.sql`. All are safe to run again (in that order). For promo codes, also turn on **Database → Extensions → pg_cron** before running `004` (it ends finished free periods every hour; without it they still end, as soon as the person signs in).
 3. **Project Settings → API**: copy
    - the **Project URL** → `supabaseUrl` in `public/config.js`
    - the **anon / publishable** key → `supabaseAnonKey` in `public/config.js`
@@ -229,7 +231,7 @@ The **AI** button in the editor (and **Create with AI** on the projects page) op
 
 **Solve an equation:** the third tab takes an equation or a word problem. The AI writes the worked solution, one line of working per click, the answer highlighted and a graph of the solutions. The editor then **checks the answer itself**: it puts each answer back into the original equation and looks for any solution the AI missed (between −100 and 100). It shows “✓ Checked” or a red warning with a button to the slide to correct.
 
-**Credits** (`007_ai.sql`, numbers in `ai_rule()`): 1 credit = 1 request.
+**Credits** (`007_ai.sql`, numbers in `ai_rule()`): 1 credit = 1 request of up to 6 slides. Longer decks (the Slides choice in the AI window, up to 15) are planned first and then written in parts of about 4 slides at the same time, one credit per part: 8 slides = 2 credits, 10 or 12 = 3, 15 = 4. A part that fails is not counted.
 
 | Who | Credits |
 |---|---|
@@ -276,7 +278,7 @@ People who already have an account are asked for their profile the next time the
 ## Tests
 
 ```
-npm test                       # server functions (23 checks) + database rules (103 checks)
+npm test                       # server functions (28 checks) + database rules (103 checks)
 ```
 
 The database tests need a local PostgreSQL (`createdb`, `psql`). The end-to-end test runs real browsers against a local copy of the whole stack: Postgres with the migration, [PostgREST](https://postgrest.org) (the data server Supabase uses), a small stand-in for Supabase Auth, and Cloudflare's own local runtime (wrangler) running the functions:
