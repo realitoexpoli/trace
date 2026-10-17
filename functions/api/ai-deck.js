@@ -38,7 +38,7 @@ export async function onRequestPost({ request, env }) {
     const res = await fetch(`${env.ANTHROPIC_API_BASE || 'https://api.anthropic.com'}/v1/messages`, {
       method: 'POST', signal: ac.signal,
       headers: { 'x-api-key': env.ANTHROPIC_API_KEY, 'anthropic-version': '2023-06-01', 'content-type': 'application/json' },
-      body: JSON.stringify({ model: env.AI_MODEL || 'claude-sonnet-5-5', max_tokens: 8000, system: systemPrompt(size), messages: [{ role: 'user', content: task }] }),
+      body: JSON.stringify({ model: env.AI_MODEL || 'claude-sonnet-5-5', max_tokens: Math.min(8000, Math.max(1500, Number(env.AI_MAX_TOKENS) || 4500)), system: systemPrompt(size), messages: [{ role: 'user', content: task }] }),
     });
     clearTimeout(timer);
     if (!res.ok) {
@@ -51,6 +51,8 @@ export async function onRequestPost({ request, env }) {
     }
     const out = await res.json();
     stop = out.stop_reason || '';
+    // what this request cost in tokens (Cloudflare → Worker → Logs), to compare with the credit price
+    if (out.usage) console.log('ai-deck: tokens in', out.usage.input_tokens, 'out', out.usage.output_tokens, 'stop', out.stop_reason);
     text = (out.content || []).filter(c => c.type === 'text').map(c => c.text).join('');
   } catch (e) {
     console.log('ai-deck: request failed', e && e.name, e && e.message);
