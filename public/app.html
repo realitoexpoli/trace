@@ -446,6 +446,41 @@ aside.props{padding:0!important;display:flex;overflow:hidden}
 }
 
 /* ---------- background designer ---------- */
+#aiModal{position:fixed;inset:0;background:rgba(12,14,13,.5);z-index:41;display:flex;align-items:center;justify-content:center;padding:12px}
+#aiModal[hidden]{display:none}
+.ai-dialog{width:min(640px,100%)}
+.ai-dialog .body{display:grid;gap:12px}
+.ai-mode{display:inline-flex;border:1px solid var(--line);border-radius:999px;padding:3px;gap:2px;justify-self:start;flex-wrap:wrap}
+.ai-mode button{border:0;background:none;padding:6px 12px;border-radius:999px;font:inherit;font-size:13px;color:var(--mute);cursor:pointer}
+.ai-mode button[aria-pressed="true"]{background:var(--ink);color:var(--paper)}
+.ai-mode button:disabled{opacity:.4;cursor:default}
+.ai-log{max-height:260px;overflow:auto;display:grid;gap:8px;padding:2px}
+.ai-log[hidden]{display:none}
+.ai-msg{padding:9px 12px;border-radius:12px;font-size:14px;line-height:1.45;max-width:92%}
+.ai-msg.me{justify-self:end;background:var(--ink);color:var(--paper);border-bottom-right-radius:4px}
+.ai-msg.bot{justify-self:start;background:color-mix(in srgb,#F4D345 18%,var(--paper));color:var(--ink);border-bottom-left-radius:4px}
+.ai-msg .btn{margin-left:6px}
+.ai-msg.ok{background:color-mix(in srgb,#83C167 22%,var(--paper))}
+.ai-msg.warn{background:color-mix(in srgb,#FC6255 20%,var(--paper))}
+.ai-dots::after{content:'…';animation:aidots 1.2s steps(4) infinite;display:inline-block;width:1.2em;overflow:hidden;vertical-align:bottom}
+@keyframes aidots{0%{width:0}100%{width:1.2em}}
+#aiPrompt{width:100%;box-sizing:border-box;font:inherit;font-size:15px;padding:10px 12px;border:1px solid var(--line);border-radius:12px;resize:vertical;background:var(--paper);color:var(--ink)}
+.ai-chips{display:flex;flex-wrap:wrap;gap:6px}
+.ai-chip{border:1px solid var(--line);background:none;border-radius:999px;padding:5px 10px;font:inherit;font-size:12.5px;color:var(--mute);cursor:pointer}
+.ai-chip:hover{color:var(--ink);border-color:var(--ink)}
+.ai-row{display:flex;align-items:center;gap:10px;flex-wrap:wrap;font-size:13px}
+.ai-row label[hidden]{display:none}
+.ai-row select{font:inherit;margin-left:4px}
+.ai-usage{color:var(--mute);font-size:12.5px}
+.ai-note{margin:0;font-size:12px;color:var(--mute)}
+.aibtn{display:inline-flex;align-items:center;gap:5px}
+.aibtn svg{color:#F4D345}
+.ai-usage button{border:0;background:none;padding:0;font:inherit;color:#3B5BFD;cursor:pointer;text-decoration:underline}
+.ai-hero{display:flex;align-items:center;gap:14px;width:100%;text-align:left;border:0;border-radius:16px;padding:16px 18px;margin:0 0 18px;cursor:pointer;font:inherit;background:#141824;color:#fff}
+.ai-hero svg{color:#F4D345;flex-shrink:0}
+.ai-hero b{display:block;font-size:17px}
+.ai-hero small{display:block;opacity:.75;font-size:13.5px;margin-top:2px}
+.ai-hero:hover{background:#1d2333}
 #bgModal{position:fixed;inset:0;background:rgba(12,14,13,.5);z-index:41;display:flex;align-items:center;justify-content:center;padding:12px}
 #bgModal[hidden]{display:none}
 .bg-dialog{width:min(900px,100%)}
@@ -530,6 +565,34 @@ body.portrait .frame{width:min(100%,calc((100vh - 330px) * var(--ar)))}
 .fs-list small{display:block;font-size:12px;color:var(--mute)}
 .fs-list .fs-none{padding:18px 12px;color:var(--mute);font-size:14px}
 .fs-foot{margin:0;padding:8px 14px;border-top:1px solid var(--line);font-size:11.5px;color:var(--mute)}
+
+/* ---------- Tracé look: ink top bar, warm dotted "desk", chalk-yellow accents ---------- */
+header{background:#141824;border-bottom:1px solid #0B0E16;color:#E8EAEE}
+header>button:not(.primary),header>.menuwrap>button,#tools>.menuwrap>button,header>a,header .proj,header .proj *,header>span,header>div:not(.menuwrap):not(#tools)>button{color:#E8EAEE}
+header>button:not(.primary):hover,header>.menuwrap>button:hover,#tools>.menuwrap>button:hover{background:rgba(255,255,255,.1)}
+#tools>.menuwrap>button[aria-expanded="true"],header>.menuwrap>button[aria-expanded="true"]{background:rgba(255,255,255,.16)}
+#tools .addlabel{color:#F4D345;opacity:1}
+header input,header #projName{color:#fff;background:transparent}
+header .videobtn,header .tourbtn{border-color:rgba(255,255,255,.28)!important;background:transparent!important;color:#fff!important}
+header .videobtn svg,header .tourbtn svg{color:#F4D345}
+header #presentBtn{background:#F4D345;border-color:#F4D345;color:#141824}
+header #presentBtn:hover{filter:brightness(1.06)}
+.fsearch{min-width:180px;justify-content:flex-start;background:rgba(255,255,255,.08);border-color:rgba(255,255,255,.18);color:#C9CED4;font-weight:500}
+.fsearch span{flex:1;text-align:left}
+.fsearch kbd{background:transparent;border-color:rgba(255,255,255,.25);color:#C9CED4}
+.fsearch:hover{background:rgba(255,255,255,.14);color:#fff;border-color:rgba(255,255,255,.35)}
+@media (max-width:1760px){.fsearch kbd{display:none}}@media (max-width:1500px){.fsearch{min-width:0}}
+@media (max-width:1400px){.fsearch span{display:inline!important;flex:none}.fsearch span::after{content:''}}
+@media (max-width:1400px){.fsearch span{font-size:0}.fsearch span::before{content:'Search';font-size:13px}}
+@media (max-width:1100px){.fsearch span{display:none!important}}
+main>.stage{background-color:#F2EFE7;background-image:radial-gradient(rgba(20,24,36,.16) 1px,transparent 1.3px);background-size:18px 18px}
+.frame{border-radius:10px;box-shadow:0 0 0 1px rgba(20,24,36,.18),0 28px 50px -26px rgba(20,24,36,.6)}
+.thumb.on{outline-color:#F4D345!important;outline-width:3px}
+.pp-rail button.on{color:#141824}.pp-rail button.on::before{background:#F4D345}.pp-rail button.on svg{color:#3B5BFD}
+.strip-head{color:#141824}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .strip-head,:root:not([data-theme="light"]) .pp-rail button.on{color:var(--ink)}}
+#homeBtn>span{display:none}
+@media (max-width:1640px){#videoHdr>span{display:none}#videoHdr{padding-inline:9px}}
 </style>
 </head>
 <body>
@@ -539,16 +602,18 @@ body.portrait .frame{width:min(100%,calc((100vh - 330px) * var(--ar)))}
   <span class="sep" aria-hidden="true"></span>
   <div class="tools" id="tools" aria-label="Add objects"></div>
   <div class="spacer"></div>
-  <div class="menuwrap tourwrap"><button class="fsearch" id="fsBtn" type="button" title="Search every feature (Ctrl+K)" aria-label="Search features"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="6.5"/><path d="M16 16l4.5 4.5"/></svg><span>Search</span><kbd>Ctrl K</kbd></button><button class="tourbtn" id="tourBtn" data-menu="tours" aria-haspopup="true" aria-expanded="false" title="The interactive tutorial: learn every feature by doing it"><svg viewBox="0 0 16 16" aria-hidden="true"><circle cx="8" cy="8" r="6.6" fill="none" stroke="currentColor" stroke-width="1.4"/><path d="M6.5 5.2v5.6L11 8z" fill="currentColor"/></svg>Tour</button><div class="menu helpmenu tourmenu" role="menu" hidden style="left:auto;right:0"></div></div>
+  <div class="menuwrap tourwrap"><button class="fsearch" id="fsBtn" type="button" title="Search every feature (Ctrl+K)" aria-label="Search features"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="6.5"/><path d="M16 16l4.5 4.5"/></svg><span>Search features…</span><kbd>Ctrl K</kbd></button><button class="tourbtn" id="tourBtn" data-menu="tours" aria-haspopup="true" aria-expanded="false" title="The interactive tutorial: learn every feature by doing it"><svg viewBox="0 0 16 16" aria-hidden="true"><circle cx="8" cy="8" r="6.6" fill="none" stroke="currentColor" stroke-width="1.4"/><path d="M6.5 5.2v5.6L11 8z" fill="currentColor"/></svg>Tour</button><div class="menu helpmenu tourmenu" role="menu" hidden style="left:auto;right:0"></div></div>
   <div class="menuwrap"><button class="tool iconbtn" data-menu="more" aria-haspopup="true" aria-expanded="false" aria-label="More" title="More: export, help, guide"><svg viewBox="0 0 16 16" aria-hidden="true"><circle cx="3.5" cy="8" r="1.4" fill="currentColor"/><circle cx="8" cy="8" r="1.4" fill="currentColor"/><circle cx="12.5" cy="8" r="1.4" fill="currentColor"/></svg></button><div class="menu helpmenu moremenu richmenu" data-c="blue" role="menu" hidden style="left:auto;right:0"><div class="rm-sec">Save and share</div><div class="rm-grid mm-share"><button role="menuitem" id="videoBtn"><span class="rm-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2.5" y="6" width="13" height="12" rx="2"/><path d="M15.5 10.5l6-3.5v10l-6-3.5z"/></svg></span><span class="rm-tx"><b>Make a video</b><small>An MP4 of every click, with your voice</small></span></button><button role="menuitem" id="exportBtn"><span class="rm-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v12M7 10l5 5 5-5"/><path d="M4 17v3h16v-3"/></svg></span><span class="rm-tx"><b>Save as a file</b><small>Download the deck, or the Python video script</small></span></button></div><div class="rm-sec">Learn</div><div class="rm-grid mm-learn"><button role="menuitem" data-tutmenu><span class="rm-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 9l10-5 10 5-10 5z"/><path d="M6 11v5c3 2 9 2 12 0v-5"/></svg></span><span class="rm-tx"><b>Interactive tutorial</b><small>Learn every feature, one step at a time</small></span></button><button role="menuitem" data-tour="first"><span class="rm-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M10 8.5l5 3.5-5 3.5z"/></svg></span><span class="rm-tx"><b>Make your first moving slide</b><small>A 2-minute guided tour</small></span></button><button role="menuitem" data-tour="screen"><span class="rm-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="13" rx="1.5"/><path d="M8 21h8M12 17v4"/></svg></span><span class="rm-tx"><b>What is on the screen</b><small>A 1-minute guided tour</small></span></button><a role="menuitem" id="guideLink" href="/guide/" target="_blank" rel="noopener" hidden><span class="rm-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 19V5a2 2 0 012-2h12v16H6a2 2 0 00-2 2"/><path d="M8 7h6M8 11h4"/></svg></span><span class="rm-tx"><b>Read the full guide</b><small>Opens in a new tab</small></span></a></div><div class="rm-sec">More</div><div class="rm-grid mm-more"><button role="menuitem" data-ex="radar"><span class="rm-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 12l6-5"/><circle cx="12" cy="12" r="4"/></svg></span><span class="rm-tx"><b>Add example slides</b><small>Radar jamming, in 3D</small></span></button><button role="menuitem" data-gohome><span class="rm-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg></span><span class="rm-tx"><b>All projects and templates</b><small>Open or start another presentation</small></span></button></div></div></div>
   <button class="btn iconbtn" id="undo" title="Undo (Ctrl+Z)" aria-label="Undo"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M5.5 4L2.5 7l3 3M2.8 7H10a3.5 3.5 0 0 1 0 7H7" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></button><button class="btn iconbtn" id="redo" title="Redo (Ctrl+Shift+Z)" aria-label="Redo"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M10.5 4l3 3-3 3M13.2 7H6a3.5 3.5 0 0 0 0 7h3" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
-  <button class="btn videobtn" id="videoHdr" title="Make an MP4 video of the whole presentation"><svg viewBox="0 0 16 16" width="15" height="15" aria-hidden="true"><rect x="1.5" y="4" width="9" height="8" rx="1.6" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M10.5 7l4-2.2v6.4l-4-2.2z" fill="currentColor"/></svg>Video</button>
+  <button class="btn videobtn" id="videoHdr" title="Make an MP4 video of the whole presentation"><svg viewBox="0 0 16 16" width="15" height="15" aria-hidden="true"><rect x="1.5" y="4" width="9" height="8" rx="1.6" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M10.5 7l4-2.2v6.4l-4-2.2z" fill="currentColor"/></svg><span>Video</span></button>
+  <button class="btn aibtn" id="aiBtn" title="Describe a lesson and AI builds the slides"><svg viewBox="0 0 24 24" width="15" height="15" aria-hidden="true"><path d="M12 2l1.9 5.6L19.5 9.5l-5.6 1.9L12 17l-1.9-5.6L4.5 9.5l5.6-1.9zM19 15l.9 2.1L22 18l-2.1.9L19 21l-.9-2.1L16 18l2.1-.9z" fill="currentColor"/></svg>AI</button>
   <button class="btn primary" id="presentBtn">Present</button>
 </header>
 <section id="home" hidden aria-label="Your projects">
   <div class="home-top"><a class="home-logo" href="/" title="Tracé home" aria-label="Tracé home"><svg class="home-logo-svg" viewBox="0 0 216.9 64" height="26" role="img" aria-label="Tracé"><g fill="currentColor"><circle cx="13" cy="23" r="4.5"/><circle cx="22" cy="16" r="4.5"/><circle cx="32" cy="16" r="4.5"/><circle cx="42" cy="16" r="4.5"/><circle cx="52" cy="16" r="4.5"/><circle cx="32" cy="27" r="4.5"/><circle cx="32" cy="38" r="4.5"/></g><g fill="#3B5BFD"><circle cx="42" cy="49" r="6.5"/></g><g transform="translate(73.40 55.14) scale(0.06162)" fill="currentColor"><path d="M260 0Q211 0 180.5 -30.5Q150 -61 150 -112V-392H26V-496H150V-650H276V-496H412V-392H276V-134Q276 -104 304 -104H400V0Z M476.0 0V-496H600.0V-440H618.0Q629.0 -470 654.5 -484.0Q680.0 -498 714.0 -498H774.0V-386H712.0Q664.0 -386 633.0 -360.5Q602.0 -335 602.0 -282V0Z M964.0 14Q911.0 14 869.0 -4.5Q827.0 -23 802.5 -58.5Q778.0 -94 778.0 -145Q778.0 -196 802.5 -230.5Q827.0 -265 870.5 -282.5Q914.0 -300 970.0 -300H1106.0V-328Q1106.0 -363 1084.0 -385.5Q1062.0 -408 1014.0 -408Q967.0 -408 944.0 -386.5Q921.0 -365 914.0 -331L798.0 -370Q810.0 -408 836.5 -439.5Q863.0 -471 907.5 -490.5Q952.0 -510 1016.0 -510Q1114.0 -510 1171.0 -461.0Q1228.0 -412 1228.0 -319V-134Q1228.0 -104 1256.0 -104H1296.0V0H1212.0Q1175.0 0 1151.0 -18.0Q1127.0 -36 1127.0 -66V-67H1108.0Q1104.0 -55 1090.0 -35.5Q1076.0 -16 1046.0 -1.0Q1016.0 14 964.0 14ZM986.0 -88Q1039.0 -88 1072.5 -117.5Q1106.0 -147 1106.0 -196V-206H979.0Q944.0 -206 924.0 -191.0Q904.0 -176 904.0 -149Q904.0 -122 925.0 -105.0Q946.0 -88 986.0 -88Z M1561.0 14Q1489.0 14 1430.5 -16.0Q1372.0 -46 1338.0 -103.0Q1304.0 -160 1304.0 -241V-255Q1304.0 -336 1338.0 -393.0Q1372.0 -450 1430.5 -480.0Q1489.0 -510 1561.0 -510Q1632.0 -510 1683.0 -485.0Q1734.0 -460 1765.5 -416.5Q1797.0 -373 1807.0 -318L1685.0 -292Q1681.0 -322 1667.0 -346.0Q1653.0 -370 1627.5 -384.0Q1602.0 -398 1564.0 -398Q1526.0 -398 1495.5 -381.5Q1465.0 -365 1447.5 -332.5Q1430.0 -300 1430.0 -253V-243Q1430.0 -196 1447.5 -163.5Q1465.0 -131 1495.5 -114.5Q1526.0 -98 1564.0 -98Q1621.0 -98 1650.5 -127.5Q1680.0 -157 1688.0 -205L1810.0 -176Q1797.0 -123 1765.5 -79.5Q1734.0 -36 1683.0 -11.0Q1632.0 14 1561.0 14Z M2090.0 14Q2016.0 14 1959.5 -17.5Q1903.0 -49 1871.5 -106.5Q1840.0 -164 1840.0 -242V-254Q1840.0 -332 1871.0 -389.5Q1902.0 -447 1958.0 -478.5Q2014.0 -510 2088.0 -510Q2161.0 -510 2215.0 -477.5Q2269.0 -445 2299.0 -387.5Q2329.0 -330 2329.0 -254V-211H1968.0Q1970.0 -160 2006.0 -128.0Q2042.0 -96 2094.0 -96Q2147.0 -96 2172.0 -119.0Q2197.0 -142 2210.0 -170L2313.0 -116Q2299.0 -90 2272.5 -59.5Q2246.0 -29 2202.0 -7.5Q2158.0 14 2090.0 14ZM1969.0 -305H2201.0Q2197.0 -348 2166.5 -374.0Q2136.0 -400 2087.0 -400Q2036.0 -400 2006.0 -374.0Q1976.0 -348 1969.0 -305ZM2012.0 -552 2086.0 -700H2228.0L2122.0 -552Z"/></g></svg></a><div class="home-search"><svg viewBox="0 0 16 16" aria-hidden="true"><circle cx="7" cy="7" r="4.5" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M10.5 10.5L14 14" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg><input type="search" id="homeSearch" placeholder="Search your projects" aria-label="Search your projects" autocomplete="off"></div><div class="home-right"><span id="homeAcct"></span></div></div>
   <div class="home-body">
     <div class="home-tut" id="homeTut"><div><b>Learn Tracé by doing</b><span class="ht-sub"></span></div><button class="btn primary" data-tour="first">Start the tutorial</button><button class="btn" data-tutmenu-home>All chapters</button></div>
+    <button type="button" class="ai-hero" id="aiHome"><svg viewBox="0 0 24 24" width="26" height="26" aria-hidden="true"><path d="M12 2l1.9 5.6L19.5 9.5l-5.6 1.9L12 17l-1.9-5.6L4.5 9.5l5.6-1.9zM19 15l.9 2.1L22 18l-2.1.9L19 21l-.9-2.1L16 18l2.1-.9z" fill="currentColor"/></svg><span><b>Create with AI</b><small>Describe your lesson. Get animated slides in seconds, ready to edit. 5 free credits to try it.</small></span></button>
     <section class="home-sec"><h2>Start something new</h2><div class="tpl-grid" id="tplGrid"></div></section>
     <section class="home-sec"><div class="home-h"><h2>Your projects</h2><div class="home-tools"><label class="sr-only" for="homeSort">Sort by</label><select id="homeSort"><option value="updated">Last edited</option><option value="name">Name</option></select><button class="btn" id="homeImport" type="button">Import a project file…</button></div></div><div class="proj-grid" id="projGrid"></div></section>
   </div>
@@ -596,6 +661,19 @@ body.portrait .frame{width:min(100%,calc((100vh - 330px) * var(--ar)))}
     <header><h2 id="bgTitle">Design the background</h2><div class="spacer"></div><button class="btn" id="bgClose">Close</button></header>
     <div class="body" id="bgBody"></div>
     <div class="bgd-foot"><button class="btn" id="bgCancel" type="button">Cancel</button><button class="btn cta" id="bgApply" type="button">Apply to every slide</button></div>
+  </div>
+</div>
+<div id="aiModal" hidden>
+  <div class="dialog ai-dialog" role="dialog" aria-modal="true" aria-labelledby="aiTitle">
+    <header><h2 id="aiTitle">Create with AI</h2><div class="spacer"></div><button class="btn" id="aiClose">Close</button></header>
+    <div class="body">
+      <div class="ai-mode"><button type="button" data-aimode="new" aria-pressed="true">New presentation</button><button type="button" data-aimode="add" aria-pressed="false">Add slides to this one</button><button type="button" data-aimode="solve" aria-pressed="false">Solve an equation</button></div>
+      <div class="ai-log" id="aiLog" hidden aria-live="polite"></div>
+      <textarea id="aiPrompt" rows="3" maxlength="2000" placeholder="Describe it: topic, level, number of slides… e.g. “Introduce derivatives with a tangent line, 5 slides”"></textarea>
+      <div class="ai-chips" id="aiChips"></div>
+      <div class="ai-row"><label id="aiSizeWrap">Format <select id="aiSize"><option value="16:9">16:9 screen</option><option value="9:16">9:16 phone</option><option value="4:3">4:3</option><option value="1:1">1:1 square</option></select></label><span class="ai-usage" id="aiUsage"></span><div class="spacer"></div><button class="btn cta" id="aiGo" type="button">Create the presentation</button></div>
+      <p class="ai-note">The AI writes a first draft: check the maths, then edit anything like a normal slide.</p>
+    </div>
   </div>
 </div>
 <div id="fsModal" hidden><div class="fs-box" role="dialog" aria-modal="true" aria-label="Search features"><div class="fs-in"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="6.5"/><path d="M16 16l4.5 4.5"/></svg><input id="fsInput" type="search" placeholder="What do you want to do? Try “graph”, “video”, “background”…" autocomplete="off" spellcheck="false" aria-controls="fsList"><kbd>Esc</kbd></div><div class="fs-list" id="fsList" role="listbox"></div><p class="fs-foot">↑ ↓ to choose · Enter to open</p></div></div>
@@ -3037,6 +3115,9 @@ $('#presentBtn').onclick=openPresent;wirePanels();
 function fsItems(){const L=[],add=(sec,label,sub,kw,run,ic)=>L.push({sec,label,sub:sub||'',kw:(label+' '+(sub||'')+' '+(kw||'')).toLowerCase(),run,ic});
   const I={act:'<path d="M5 12h14M13 6l6 6-6 6"/>',add:'<path d="M12 5v14M5 12h14"/>',set:'<circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3M4.9 4.9l2.1 2.1M17 17l2.1 2.1M4.9 19.1L7 17M17 7l2.1-2.1"/>',learn:'<path d="M2 9l10-5 10 5-10 5z"/><path d="M6 11v5c3 2 9 2 12 0v-5"/>'};
   const o=sel&&obj(sel),click=q=>()=>{const e=$(q);if(e)e.click();};
+  add('Do','Solve an equation with AI','Worked steps, one per click, answer checked','solve equation solver steps working algebra',()=>openAI('solve'),I.act);
+  add('Do','Create slides with AI','Describe a lesson, get the slides','ai chatbot generate prompt write automatic',()=>openAI(),I.act);
+  if(window.TRACE_AI)add('Do','Buy AI credits','Packs that never expire','ai credits tokens buy pack',()=>window.TRACE_AI.buy(),I.act);
   add('Do','Present','Full screen, one click at a time','show slideshow play fullscreen',()=>openPresent(),I.act);
   add('Do','Make a video','An MP4 of every click, with your voice','video mp4 export movie youtube render film',()=>openVideoDialog(),I.act);
   add('Do','Play this slide','Watch the animation into this slide','preview play animation',click('#preview'),I.act);
@@ -4743,6 +4824,41 @@ const TEMPLATES=[
   {id:'geometry',name:'Pythagoras',desc:'A triangle, then the theorem on a click',build:()=>{const d=blankDeck(),os=d.slides[0].objects;
     os.push(P2('text',0,3.3,{text:'Pythagoras',fontSize:44}),P2('triangle',-1.8,-0.4,{ax:-2,ay:-1.4,bx:2,by:-1.4,cx:2,cy:1.6,showAngles:true}),
       P2('latex',3.6,0,{src:'a^2 + b^2 = c^2',fontSize:48,step:1}));return d;}},
+  {id:'quadratic',name:'Roots of a quadratic',desc:'Factorise, then the point visits each root',build:()=>{const d=blankDeck(),os=d.slides[0].objects;
+    const g=P2('axes',1.6,-0.7,{xmin:-3,xmax:5,ymin:-5,ymax:6,w:8,h:5,fn:'x^2 - 2*x - 3',fnColor:'#58C4DD',color:'#C9CED4',enter:'create'});g.keys={2:{mark:true,markX:-1},3:{markX:3}};
+    os.push(P2('text',0,3.4,{text:'Where does a parabola cross zero?',fontSize:40}),P2('latex',-4.9,1.6,{src:'y = x^2 - 2 x - 3',fontSize:32}),g,
+      P2('latex',-4.9,0.6,{src:'y = (x + 1)(x - 3)',fontSize:32,color:'#F4D345',step:1}),P2('text',-4.9,-0.5,{text:'Zero at x = −1 and x = 3',fontSize:24,color:'#F4D345',step:2,enter:'fadein'}));d.slides[0].times={3:2};return d;}},
+  {id:'derivative',name:'The derivative is a slope',desc:'A tangent slides along the curve, with a live slider',build:()=>{const d=blankDeck(),os=d.slides[0].objects;
+    const g=P2('axes',-1.4,-0.6,{xmin:-3,xmax:3,ymin:-2.5,ymax:2.5,w:8,h:5,fn:'x^3/6 - x',fnColor:'#58C4DD',color:'#C9CED4',mark:true,markX:-2.2,tangent:true,tlen:2.6,markLive:true,enter:'create'});g.keys={1:{markX:0},2:{markX:2.2}};
+    os.push(P2('text',0,3.4,{text:'The derivative is a slope',fontSize:44}),g,P2('latex',4.9,1.2,{src:'f(x) = x^3/6 - x',fontSize:30}),P2('latex',4.9,0.2,{src:"f'(x) = x^2/2 - 1",fontSize:30,color:'#F4D345',step:1}),
+      P2('text',4.9,-1.2,{text:'Flat tangent: slope 0',fontSize:22,color:'#C9CED4',step:1,enter:'fadein'}));d.slides[0].times={1:2,2:2};return d;}},
+  {id:'unitcircle',name:'Sine from a circle',desc:'A point turns round a circle and traces the sine wave',build:()=>{const d=blankDeck(),os=d.slides[0].objects;
+    const ph=P2('phasor',-3.4,-0.4,{R:1.5,theta:0,k:0.5,tlen:7,circle:true,proj:true,trace:true,color:'#F4D345'});ph.keys={1:{theta:360}};
+    os.push(P2('text',0,3.4,{text:'Sine comes from a circle',fontSize:44}),ph,P2('latex',3.2,2.3,{mode:'latex',tex:'y=\\sin\\theta',fontSize:40,color:'#F4D345',step:1}));d.slides[0].times={1:5};return d;}},
+  {id:'vectors',name:'Adding vectors',desc:'Tip to tail, then the sum, click by click',build:()=>{const d=blankDeck(),os=d.slides[0].objects;
+    os.push(P2('text',0,3.4,{text:'Adding vectors',fontSize:44}),P2('vector',-4,-2.4,{dx:3.5,dy:1,label:'\\vec a',color:'#58C4DD'}),
+      P2('vector',-0.5,-1.4,{dx:1.2,dy:3,label:'\\vec b',color:'#83C167',step:1}),P2('vector',-4,-2.4,{dx:4.7,dy:4,label:'',color:'#F4D345',step:2}),
+      P2('latex',4.3,1.2,{mode:'latex',tex:'\\vec a+\\vec b=(4.7,\\ 4)',fontSize:34,color:'#F4D345',step:2}));return d;}},
+  {id:'fourier',name:'Square wave from sines',desc:'Each click adds a harmonic',build:()=>{const d=blankDeck(),os=d.slides[0].objects;
+    const g=P2('axes',0,-0.6,{ckind:'series',stype:'square',N:1,showTarget:true,xmin:-7,xmax:7,ymin:-1.6,ymax:1.6,w:12,h:4.6,numbers:false,fnColor:'#F4D345',color:'#C9CED4',enter:'create'});g.keys={1:{N:2},2:{N:3},3:{N:6},4:{N:20}};
+    os.push(P2('text',0,3.4,{text:'A square wave, built from sine waves',fontSize:40}),g,P2('text',0,2.4,{text:'Each click adds one more harmonic',fontSize:24,color:'#C9CED4',enter:'fadein'}));return d;}},
+  {id:'venn',name:'Probability with a Venn diagram',desc:'Shade A ∪ B, then the formula line by line',build:()=>{const d=blankDeck(),os=d.slides[0].objects;
+    const v=P2('venn',-3,-0.5,{sets:2,r:1.6,sep:1.8,labels:'A, B',op:'none'});v.keys={1:{op:'union'},2:{op:'intersection'}};
+    os.push(P2('text',0,3.4,{text:'Probability of A or B',fontSize:44}),v,P2('latex',3.3,1,{mode:'latex',tex:'P(A\\cup B)',fontSize:40,step:1}),
+      P2('latex',3.3,-0.3,{mode:'latex',tex:'=P(A)+P(B)-P(A\\cap B)',fontSize:32,color:'#F4D345',step:2}));return d;}},
+  {id:'pitch',name:'Pitch: our growth',desc:'Not only maths: a chart, a counter and points that build up',build:()=>{const d=blankDeck(),os=d.slides[0].objects;
+    const bl=P2('bullets',3.6,-0.4,{items:'Teachers love it\nStudents **remember** more\nWorks on any device',fontSize:28,step:2,shown:1});bl.keys={3:{shown:2},4:{shown:3}};
+    os.push(P2('text',0,3.4,{text:'Our first year',fontSize:44}),P2('chart',-2.4,-0.8,{ctype:'bar',data:'Jan, 120\nMar, 480\nMay, 1300\nJul, 2900\nSep, 6100\nNov, 12480',w:6,h:4.4,barColor:'#58C4DD',enter:'create'}),
+      P2('counter',3.6,2.2,{value:12480,suffix:' users',fontSize:54,countTime:2.5,color:'#F4D345',step:1}),bl);return d;}},
+  {id:'process',name:'A process in 4 steps',desc:'Not only maths: steps appear one click at a time',build:()=>{const d=blankDeck(),os=d.slides[0].objects;os.push(P2('text',0,3.3,{text:'How it works',fontSize:44}));
+    const L=['Plan','Build','Test','Launch'],C=['#58C4DD','#83C167','#F4D345','#FC6255'];
+    L.forEach((t,i)=>{const x=-5.1+i*3.4,st=i+1;os.push(P2('circle',x,0.2,{radius:0.9,fillOpacity:0.25,color:C[i],step:st,enter:'grow'}),P2('text',x,0.2,{text:String(i+1),fontSize:48,step:st,enter:'fadein'}),P2('text',x,-1.3,{text:t,fontSize:30,color:C[i],step:st,enter:'fadein'}));
+      if(i<3)os.push(P2('arrow',x+1.7,0.2,{dx:1.2,dy:0,color:'#C9CED4',step:st+1,enter:'create'}));});return d;}},
+  {id:'quiz',name:'Quiz question',desc:'Ask, then reveal the right answer on a click',build:()=>{const d=blankDeck(),os=d.slides[0].objects;
+    os.push(P2('text',0,3.2,{text:'What is the derivative of x²?',fontSize:42}));const A=['x','2x','x²/2','2'];
+    A.forEach((t,i)=>{const x=i%2?3:-3,y=i<2?1.1:-1.3,ok=i===1,r=P2('rect',x,y,{w:5,h:1.7,corner:0.25,fillOpacity:0.12,color:'#C9CED4'}),tx=P2('text',x,y,{text:t,fontSize:40});
+      r.keys={1:ok?{color:'#83C167',fillOpacity:0.45}:{opacity:0.35}};if(!ok)tx.keys={1:{opacity:0.35}};os.push(r,tx);});
+    os.push(P2('text',0,-3.1,{text:'Bring the power down: d/dx x² = 2x',fontSize:26,color:'#83C167',step:1,enter:'fadein'}));d.slides[0].cams={};return d;}},
   {id:'showcase',name:'Tour of every feature',desc:'14 slides showing almost everything',build:()=>buildShowcaseDeck(),example:'Opened “Tracé in motion”: 14 slides. Press Present and click through.'},
   {id:'lighthouses',name:'Lighthouses and π',desc:'A vertical 10-slide proof, ready for Shorts and Reels',build:()=>buildLighthouseDeck(),example:'Opened “Lighthouses and π”: 10 vertical slides. Press Present and click through.'},
   {id:'signal',name:'Lecture: how a signal travels',desc:'An 11-slide physics lecture',build:()=>buildSignalDeck(),example:'Opened “How a signal travels”: 11 slides.'},
@@ -4779,6 +4895,105 @@ function showHome(replace){if(tour)endTour();closeMenus();if(!$('#present').hidd
 function showEditor(replace){homeShown=false;document.body.classList.remove('home-view');$('#home').hidden=true;moveAcct(false);
   if(location.hash!=='#edit'){try{history[replace?'replaceState':'pushState'](null,'',location.pathname+location.search+'#edit');}catch(_){}}refresh();updateProjectUI();setTimeout(()=>{if(typeof offerWelcome==='function')offerWelcome();},1200);}
 function openFromHome(id){openProject(id);showEditor();}
+/* ---------- AI: describe a lesson, get the slides ----------
+   The server (cloud.js → /api/ai-deck) asks the model for a small checked "spec"; specToSlides turns it into real Tracé objects. */
+function specToSlides(spec,d){const[W2,H2]=dimsOf(d||deck),W=W2/2,H=H2/2,out=[];
+  const cl=(v,a,b)=>Math.max(a,Math.min(b,+v||0));
+  for(const s of (spec&&spec.slides)||[]){const os=[],ids=new Set();
+    if(s.title)os.push(P2('text',0,+(H-0.7).toFixed(2),{text:s.title,fontSize:W<5?34:42}));
+    for(const it of s.items||[]){const x=cl(it.x,-W+0.3,W-0.3),y=cl(it.y,-H+0.3,H-0.3),step=Math.max(0,it.click|0),c=it.color;let o=null;
+      switch(it.kind){
+        case'text':o=P2('text',x,y,{text:it.text,fontSize:it.size||32});break;
+        case'bullets':o=P2('bullets',x,y,{items:(it.items||[]).join('\n'),fontSize:it.size||30});if(it.reveal&&o.items.split('\n').length>1){const n=o.items.split('\n').length;o.shown=1;o.keys={};for(let i=1;i<n;i++)o.keys[step+i]={shown:i+1};}break;
+        case'equation':o=it.latex?P2('latex',x,y,{mode:'latex',tex:it.latex,fontSize:it.size||44}):P2('latex',x,y,{mode:'plain',src:it.math,fontSize:it.size||44});break;
+        case'steps':{const fs=it.size||40,gap=+(fs*0.03).toFixed(2),n=it.lines.length;let y0=Math.min(y,H-1.3);if(y0-gap*(n-1)<-H+0.5)y0=-H+0.5+gap*(n-1);
+          it.lines.forEach((t,i)=>{const L=P2('latex',x,+(y0-i*gap).toFixed(2),{mode:'latex',tex:t,fontSize:fs});const st=step+i;if(st)L.step=st;if(i===n-1&&n>1){L.color=c||'#F4D345';L.emph='indicate';}else if(c)L.color=c;os.push(L);});continue;}
+        case'graph':o=P2('axes',x,y,{fn:it.fn,xmin:it.xmin,xmax:it.xmax,ymin:it.ymin,ymax:it.ymax,w:Math.min(it.w||8,W2-0.6),h:Math.min(it.h||4.5,H2-1.6),fnColor:c||'#F4D345',color:'#C9CED4',enter:'create'});if(it.point!=null){o.mark=true;o.markX=it.point;}break;
+        case'shape':{const z=it.size||1,t=it.shape;
+          if(t==='circle')o=P2('circle',x,y,{radius:z});else if(t==='rect')o=P2('rect',x,y,{w:it.w,h:it.h});else if(t==='star')o=P2('star',x,y,{r:z});
+          else if(t==='triangle')o=P2('triangle',x,y,{ax:-z,ay:-0.8*z,bx:z,by:-0.8*z,cx:0,cy:z,vlabels:'',slabels:''});else if(t==='arrow')o=P2('arrow',x,y,{dx:it.dx,dy:it.dy});
+          else if(t==='line')o=P2('line',x,y,{dx:it.dx,dy:it.dy});else o=P2('dot',x,y,{});
+          if('fillOpacity' in o&&it.fill)o.fillOpacity=it.fill;break;}
+        case'vector':o=P2('vector',x,y,{dx:it.dx,dy:it.dy,label:it.label||''});break;
+        case'counter':o=P2('counter',x,y,{value:it.value,decimals:it.decimals||0,prefix:it.prefix||'',suffix:it.suffix||'',fontSize:it.size||60});break;
+        case'chart':o=P2('chart',x,y,{ctype:it.type==='line'?'line':'bar',data:(it.data||[]).map(r=>r[0]+', '+r[1]).join('\n'),w:Math.min(it.w||8,W2-0.6),h:Math.min(it.h||4.5,H2-1.6),enter:'create'});if(c)o.barColor=c;break;
+        case'venn':{const L=(it.labels||['A','B']).slice(0,3);o=P2('venn',x,y,{sets:L.length>2?3:2,labels:L.join(', '),op:it.shade||'intersection'});break;}
+      }
+      if(!o)continue;if(o.w&&o.h&&['axes','chart','rect'].includes(o.type)){o.x=+cl(o.x,-W+o.w/2+0.2,W-o.w/2-0.2).toFixed(2);o.y=+cl(o.y,-H+o.h/2+0.2,H-1.2-o.h/2).toFixed(2);}
+if(c&&!['axes','chart'].includes(o.type))o.color=c;if(step)o.step=step;
+      if(it.id&&!ids.has(it.id)){ids.add(it.id);o.id='ai_'+it.id;}
+      os.push(o);}
+    out.push({objects:os,runTime:1.2});}
+  return out;}
+/* Checks the AI's answers by putting them back into the equation, and looks for solutions it missed. */
+function aiCheckSolve(ck){const fmt=v=>String(+(+v).toFixed(4)).replace('-','−');
+  const parts=String(ck.equation||'').split('=');if(parts.length!==2)return null;const v=ck.var||'x';
+  const f=compileFn(`(${parts[0]})-(${parts[1]})`,v),A=compileFn(parts[0],v),B=compileFn(parts[1],v);if(!f||!A||!B)return null;
+  const ev=x=>{try{const y=f(x);return Number.isFinite(y)?y:NaN;}catch(_){return NaN;}};
+  const near=a=>{const d=Math.max(1e-3,Math.abs(a)*1e-3),sc=Math.max(1,Math.abs(A(a))||0,Math.abs(B(a))||0);if(Math.abs(ev(a))<=1e-6*sc)return true;
+    let p=ev(a-d);for(let k=1;k<=40;k++){const q=ev(a-d+2*d*k/40);if(Number.isFinite(p)&&Number.isFinite(q)&&(p===0||p*q<0))return true;p=q;}return false;};
+  // real roots in [-100, 100]: sign changes, then refine (skipping jumps such as 1/x)
+  const roots=[],N=8000;let x0=-100,y0=ev(x0);
+  for(let i=1;i<=N;i++){const x1=-100+200*i/N,y1=ev(x1);
+    if(Number.isFinite(y0)&&Number.isFinite(y1)&&(y1===0||y0*y1<0)){let a=x0,b=x1,fa=y0;for(let k=0;k<60;k++){const m=(a+b)/2,fm=ev(m);if(!Number.isFinite(fm))break;if(fa*fm<=0)b=m;else{a=m;fa=fm;}}
+      const r=(a+b)/2;if(Math.abs(ev(r))<1e-6*Math.max(1,Math.abs(A(r))||0)&&!roots.some(q=>Math.abs(q-r)<1e-4))roots.push(r);}
+    x0=x1;y0=y1;}
+  const ans=ck.none?[]:(ck.answers||[]),bad=ans.filter(a=>!near(a)),missed=roots.filter(r=>!ans.some(a=>Math.abs(a-r)<Math.max(2e-3,Math.abs(r)*2e-3)));
+  const eq=String(ck.equation).replace(/\*/g,'·').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+  if(!bad.length&&!missed.length)return{ok:true,html:ck.none?`✓ Checked: ${eq} has no real solution between −100 and 100.`:`✓ Checked: ${ans.map(a=>`${v} = ${fmt(a)}`).join(' and ')} make${ans.length>1?'':'s'} ${eq} true, and there are no other solutions between −100 and 100.`};
+  return{ok:false,html:`⚠ <b>Check the answer:</b> ${bad.length?bad.map(a=>`${v} = ${fmt(a)}`).join(', ')+` do${bad.length>1?'':'es'} not make ${eq} true. `:''}${missed.length?`${eq} also has ${missed.map(r=>`${v} ≈ ${fmt(r)}`).join(', ')}. `:''}Correct the slides before presenting.`};}
+function aiChecks(spec){return(spec.slides||[]).map((s,i)=>s.check?Object.assign({slide:i},aiCheckSolve(s.check)||{}):null).filter(c=>c&&c.html);}
+const AI={mode:'new',busy:false,log:[]};
+const AI_EX_SOLVE=['2x^2 - 3x - 5 = 0','3(x - 4) = 2x + 7','x^2 + 6x + 13 = 0','e^x = 5','A train travels 240 km in 3 h. How fast?'];
+const AI_EX=['Solve 2x² − 3x − 5 = 0 step by step','Introduce derivatives with a tangent line, 5 slides','Pythagoras for 13-year-olds, with a worked example','Newton’s second law with a graph of F = m a','Probability of A or B with a Venn diagram','Our school science fair results, with a bar chart'];
+function aiSlideTitles(){return deck.slides.map(s=>{const t=(s.objects||[]).find(o=>o.type==='text');return t?String(t.text).slice(0,80):'';});}
+function aiLogAdd(who,html){AI.log.push({who,html});aiRenderLog();}
+function aiRenderLog(){const l=$('#aiLog');l.innerHTML=AI.log.map(m=>`<div class="ai-msg ${m.who}">${m.html}</div>`).join('');l.hidden=!AI.log.length;l.scrollTop=l.scrollHeight;}
+const AI_NOCRED=pro=>`You have no AI credits left. ${pro?'Your Pro credits come back on the 1st of the month, or':'Get <b>Tracé Pro</b> for 30 credits every month, or'} buy a pack (bought credits never expire). <button type="button" class="btn small" data-aibuy>Buy credits</button>${pro?'':' <button type="button" class="btn small" data-aiup>See Pro</button>'}`;
+function aiShowLeft(n){const u=$('#aiUsage');u.innerHTML=n==null?'':`${Math.max(0,n)} credit${n===1?'':'s'} left · <button type="button" data-aibuy>Get more</button>`;}
+async function aiUsage(){const A=window.TRACE_AI;aiShowLeft(null);if(!A||!A.signedIn())return null;const r=await A.usage();if(r)aiShowLeft(r.left);return r;}
+addEventListener('trace-credits',()=>{if(!$('#aiModal').hidden)aiUsage();});
+function openAI(mode){closeMenus&&closeMenus();const m=$('#aiModal');AI.mode=mode||(homeShown?'new':AI.mode);
+  $('#aiSize').value=homeShown?'16:9':sizeOf();aiSetMode(AI.mode);aiRenderLog();
+  const A=window.TRACE_AI;$('#aiGo').disabled=false;
+  if(!A&&!AI.log.length)aiLogAdd('bot','The AI builder works in your Tracé account at <a href="https://www.traceanim.com/app" target="_blank" rel="noopener">traceanim.com</a>.');
+  m.hidden=false;aiUsage().then(r=>{if(r&&r.left<=0&&!AI.log.length)aiLogAdd('bot',AI_NOCRED(r.pro));});setTimeout(()=>$('#aiPrompt').focus(),30);}
+function aiSetMode(md){AI.mode=homeShown&&md==='add'?'new':md;document.querySelectorAll('[data-aimode]').forEach(b=>{b.setAttribute('aria-pressed',String(b.dataset.aimode===AI.mode));b.disabled=homeShown&&b.dataset.aimode==='add';});
+  const sv=AI.mode==='solve';$('#aiSizeWrap').hidden=!(AI.mode==='new'||sv&&homeShown);$('#aiGo').textContent=AI.mode==='new'?'Create the presentation':sv?'Solve it step by step':'Add the slides';
+  $('#aiPrompt').placeholder=sv?'Type an equation or a problem, e.g. 2x^2 - 3x - 5 = 0':'Describe it: topic, level, number of slides… e.g. “Introduce derivatives with a tangent line, 5 slides”';
+  $('#aiChips').innerHTML=(sv?AI_EX_SOLVE:AI_EX).map(t=>`<button type="button" class="ai-chip">${t}</button>`).join('');}
+function closeAI(){$('#aiModal').hidden=true;}
+async function aiGo(){if(AI.busy)return;const p=$('#aiPrompt').value.trim(),A=window.TRACE_AI;
+  if(p.length<3){$('#aiPrompt').focus();return;}
+  if(!A){aiLogAdd('bot','Open Tracé at <a href="https://www.traceanim.com/app" target="_blank" rel="noopener">traceanim.com</a> and sign in to use the AI builder.');return;}
+  if(!A.signedIn()){closeAI();A.signIn();return;}
+  const esc=t=>String(t).replace(/&/g,'&amp;').replace(/</g,'&lt;');const solve=AI.mode==='solve',mode=solve?(homeShown?'new':'add'):AI.mode,size=mode==='new'?$('#aiSize').value:sizeOf();
+  aiLogAdd('me',esc(p));aiLogAdd('bot','<span class="ai-dots">Writing your slides</span>');AI.busy=true;$('#aiGo').disabled=true;
+  let r;try{r=await A.build({prompt:p,mode,size,solve,context:mode==='add'?{title:curMeta()?.name||'',slides:aiSlideTitles()}:{}});}catch(_){r={error:'offline'};}
+  AI.busy=false;$('#aiGo').disabled=false;AI.log.pop();
+  if(!r||r.error||!r.spec){const e=r&&r.error;
+    const msg=e==='signin'?'Please sign in first.':e==='no_credits'?AI_NOCRED(r.pro)
+      :e==='not_configured'?'The AI builder is not switched on for this site yet.':e==='offline'?'You seem to be offline. Try again in a moment.':'The AI could not finish this one. Try again, or describe it a little differently (your request was not counted).';
+    aiLogAdd('bot',msg);if(e==='signin'){closeAI();A.signIn();}aiUsage();return;}
+  const spec=r.spec;$('#aiPrompt').value='';
+  if(mode==='new'){const d=blankDeck();if(size!=='16:9')d.size=size;d.slides=specToSlides(spec,d);if(!d.slides.length)d.slides=[{objects:[],runTime:1.2}];
+    createProject(spec.title||'AI presentation',d);cur=0;sel=null;editStep=null;if(homeShown)showEditor();}
+  else{snap();const add=specToSlides(spec,deck),at=deck.slides.length;deck.slides.push(...add);cur=at;sel=null;editStep=null;refresh();}
+  const n=spec.slides.length;
+  aiLogAdd('bot',`${mode==='new'?'Made':'Added'} ${n} slide${n>1?'s':''}: ${spec.slides.map(s=>'<b>'+esc(s.title||'…')+'</b>').join(', ')}. Press <b>Present</b> to click through, or keep asking (“add a quiz slide”, “make it simpler”).${mode==='add'?' <button type="button" class="btn small" data-aiundo>Undo</button>':''}`);
+  for(const ck of aiChecks(spec))aiLogAdd(ck.ok?'bot ok':'bot warn',ck.html+(ck.ok?'':` <button type="button" class="btn small" data-aigo="${(mode==='new'?0:deck.slides.length-spec.slides.length)+ck.slide}">Show slide</button>`));
+  if(mode==='new'&&!solve)aiSetMode('add');
+  if(r.left!=null)aiShowLeft(r.left);}
+$('#aiModal').addEventListener('click',e=>{if(e.target.id==='aiModal'){closeAI();return;}
+  const ch=e.target.closest('.ai-chip');if(ch){$('#aiPrompt').value=ch.textContent;$('#aiPrompt').focus();return;}
+  const md=e.target.closest('[data-aimode]');if(md){aiSetMode(md.dataset.aimode);return;}
+  if(e.target.closest('[data-aiundo]')){undo();e.target.closest('[data-aiundo]').remove();toast('Removed the AI slides.');return;}
+  const gs=e.target.closest('[data-aigo]');if(gs){cur=Math.min(deck.slides.length-1,+gs.dataset.aigo);sel=null;editStep=null;refresh();closeAI();return;}
+  if(e.target.closest('[data-aiup]')){closeAI();window.TRACE_AI&&window.TRACE_AI.upgrade();return;}
+  if(e.target.closest('[data-aibuy]')){closeAI();window.TRACE_AI&&window.TRACE_AI.buy();}});
+$('#aiClose').onclick=closeAI;$('#aiGo').onclick=aiGo;$('#aiBtn').onclick=()=>openAI();$('#aiHome').onclick=()=>openAI('new');
+$('#aiPrompt').addEventListener('keydown',e=>{e.stopPropagation();if(e.key==='Enter'&&(e.ctrlKey||e.metaKey)){e.preventDefault();aiGo();}});
+document.addEventListener('keydown',e=>{const m=$('#aiModal');if(e.key==='Escape'&&m&&!m.hidden){e.stopPropagation();closeAI();}},true);
 function newFromTemplate(id){const t=TEMPLATES.find(x=>x.id===id);if(!t)return;const d=t.id==='blank'?blankDeck():clone(tplDeck(t));
   createProject(t.id==='blank'?'Untitled project':t.id==='showcase'?'Tracé in motion':t.id==='signal'?'How a signal travels':t.id==='jamming'?'Le brouillage des communications':t.name,d);cur=0;sel=null;editStep=null;showEditor();
   if(t.example)toast(t.example);else if(t.id==='blank')setTimeout(()=>{const i=$('#projName');i.focus();i.select();},60);}

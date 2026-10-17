@@ -26,7 +26,7 @@ try { const q = new URLSearchParams(location.search).get('ref'); if (q && /^[A-Z
       ['“Made with Tracé” badge', 'On share links and while presenting', 'None'],
       ['See how often each shared deck is watched', false, true],
     ],
-    proOnly: ['Advanced 3D: surfaces, 3D scenes, polyhedra, turning views', 'Record your voice on slides', 'The Python video script for Manim', 'Unlimited projects in your account, up to 20 MB each', 'No “Made with Tracé” badge', 'View counts on shared decks'],
+    proOnly: ['30 AI credits every month: describe a lesson, get animated slides', 'Advanced 3D: surfaces, 3D scenes, polyhedra, turning views', 'Record your voice on slides', 'The Python video script for Manim', 'Unlimited projects in your account, up to 20 MB each', 'No “Made with Tracé” badge', 'View counts on shared decks'],
   };
 
   const ROLES = [

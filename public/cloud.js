@@ -81,6 +81,12 @@
   .upg-price small{flex-basis:100%;color:var(--mute);font-size:13px}
   #cloudModal ul.upg-list{list-style:none;padding:0;margin:0;display:grid;gap:7px;font-size:14px;line-height:1.45}
   .upg-list li{display:flex;gap:10px;align-items:flex-start}
+  .cred-bal{margin:0;font-size:14px}.cred-bal b{font-size:20px}
+  .cred-packs{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:10px}
+  .cred-pack{display:grid;gap:2px;text-align:left;padding:12px 14px;border:1.5px solid var(--line,#ddd);border-radius:12px;background:none;font:inherit;color:inherit;cursor:pointer}
+  .cred-pack b{font-size:16px}.cred-pack span{font-size:20px;font-weight:700}.cred-pack small{font-size:12px;color:#3B5BFD;font-weight:600}
+  .cred-pack:hover,.cred-pack.best{border-color:#3B5BFD}
+  .cred-pro{font-size:13.5px;margin:0}
   .upg-list li::before{content:'';flex:none;width:10px;height:5px;border-left:2px solid #3B5BFD;border-bottom:2px solid #3B5BFD;transform:rotate(-45deg);margin-top:6px}
   #cloudModal .upg-go{background:#3B5BFD;border-color:#3B5BFD;color:#fff;font-size:15px;font-weight:700;padding:12px;border-radius:8px}
   #cloudModal .upg-go:hover{filter:brightness(1.08)}
@@ -613,21 +619,24 @@
       s.src = 'https://cdn.paddle.com/paddle/v2/paddle.js';
       s.onload = () => {
         if (CFG.paddleEnv !== 'production') window.Paddle.Environment.set('sandbox');
-        window.Paddle.Initialize({ token: CFG.paddleClientToken, eventCallback: ev => { if (ev && ev.name === 'checkout.completed') waitForPro(); } });
+        window.Paddle.Initialize({ token: CFG.paddleClientToken, eventCallback: ev => { if (ev && ev.name === 'checkout.completed') { if (checkoutKind === 'credits') waitForCredits(); else waitForPro(); } } });
         res(window.Paddle);
       };
       s.onerror = () => { paddleReady = null; rej(new Error('Paddle did not load')); };
       document.head.appendChild(s);
     }));
   }
-  async function checkout(priceId) {
-    if (!user) return signInDialog('Create a free account or sign in first, so Pro is added to your account.', '?upgrade=1');
+  let checkoutKind = 'pro', creditsBefore = 0;
+  async function checkout(priceId, kind) {
+    if (!user) return signInDialog(kind === 'credits' ? 'Create a free account or sign in first, so the credits are added to your account.' : 'Create a free account or sign in first, so Pro is added to your account.', kind === 'credits' ? '' : '?upgrade=1');
     closeDialog();
+    checkoutKind = kind === 'credits' ? 'credits' : 'pro';
+    if (checkoutKind === 'credits') { const c = await window.TRACE_AI.usage(); creditsBefore = c ? c.left : 0; }
     try {
       const P = await loadPaddle();
       P.Checkout.open({ items: [{ priceId, quantity: 1 }], customer: { email: user.email }, customData: { user_id: user.id },
-                        settings: { displayMode: 'overlay', variant: 'one-page', theme: 'light', allowLogout: false, showAddDiscounts: true,
-                                    successUrl: location.origin + location.pathname + '?upgraded=1' } });
+                        settings: { displayMode: 'overlay', variant: 'one-page', theme: 'light', allowLogout: false, showAddDiscounts: checkoutKind === 'pro',
+                                    ...(checkoutKind === 'pro' ? { successUrl: location.origin + location.pathname + '?upgraded=1' } : {}) } });
     } catch (_) { toast('The payment window could not open. Check your connection or ad blocker.'); }
   }
   async function proIsOn(msg) {
@@ -635,6 +644,30 @@
     for (const p of projects) if (p.localOnly || p.tooBig || p.needsPro) { p.localOnly = p.tooBig = p.needsPro = false; pending.add(p.id); }
     await flush(); renderAcct(); showStatus();
     toast(msg);
+  }
+  async function waitForCredits() {
+    toast('Payment received. Adding your credits…');
+    for (let i = 0; i < 30; i++) {
+      await new Promise(r => setTimeout(r, 2000));
+      const c = await window.TRACE_AI.usage();
+      if (c && c.left > creditsBefore) { toast(`${c.left - creditsBefore} AI credits added. You have ${c.left}.`); window.dispatchEvent(new Event('trace-credits')); return; }
+    }
+    toast('Your credits will appear in a moment. Reload the page if they do not.');
+  }
+  // "Buy AI credits": packs set in config.js (creditPacks). What a payment really gives is decided on the server (CREDIT_PACKS).
+  async function creditsDialog(reason) {
+    const packs = (CFG.creditPacks || []).filter(p => p && /^pri_/.test(p.price) && p.credits > 0);
+    const c = await window.TRACE_AI.usage();
+    const pro = c ? c.pro : isPro();
+    openDialog(`<div class="upg"><div class="upg-top"><h2 id="cloudTitle">AI credits</h2>
+      <p class="upg-why">${esc(reason || '1 credit = 1 AI request: a new presentation, or slides added to one.')}</p></div>
+      ${c ? `<p class="cred-bal"><b>${c.left}</b> credit${c.left === 1 ? '' : 's'} left${c.pro ? ` · ${c.month_left} of your ${c.pro_monthly} Pro credits this month, ${c.bought} bought` : ''}</p>` : ''}
+      ${packs.length ? `<div class="cred-packs">${packs.map((p, i) => `<button type="button" class="cred-pack${i === 1 ? ' best' : ''}" data-pack="${esc(p.price)}"><b>${p.credits} credits</b><span>${esc(p.label || '')}</span>${p.note ? `<small>${esc(p.note)}</small>` : ''}</button>`).join('')}</div>
+        <p class="upg-trust">${LOCK_I}<span>Secure checkout by Paddle · Bought credits never expire</span></p>` : '<p><b>Credit packs are coming soon.</b></p>'}
+      ${pro ? '' : `<p class="cred-pro">Or get <b>Tracé Pro</b>: ${c ? c.pro_monthly : 30} credits every month, plus advanced 3D, your voice and more. <button type="button" class="btn small" id="credPro">See Pro</button></p>`}
+    </div>`);
+    body().querySelectorAll('[data-pack]').forEach(b => b.onclick = () => checkout(b.dataset.pack, 'credits'));
+    const bp = $q('#credPro'); if (bp) bp.onclick = () => upgradeDialog('AI credits every month, and everything else in Pro.');
   }
   async function waitForPro() {
     toast('Payment received. Turning on Pro…');
@@ -677,6 +710,21 @@
   window.addEventListener('focus', () => { if (user && Date.now() - lastFocus > 60000) syncAll(); lastFocus = Date.now(); });
   window.addEventListener('online', () => { if (user) flush(); });
   window.addEventListener('beforeunload', e => { if (pending.size || busy) { flush(true); e.preventDefault(); e.returnValue = ''; } });
+  /* ---------- AI deck builder (the editor calls this; the key stays on the server) ---------- */
+  window.TRACE_AI = {
+    signedIn: () => !!user,
+    signIn: () => signInDialog('Create a free account or sign in to build slides with AI: you get 5 free credits to try it.'),
+    isPro: () => !!user && isPro(),
+    upgrade: () => upgradeDialog('AI credits every month, and everything else in Pro.'),
+    buy: reason => user ? creditsDialog(reason) : signInDialog('Create a free account or sign in to get AI credits: 5 are free.'),
+    async usage() { if (!user) return null; try { const { data } = await sb.rpc('my_ai_credits'); return data; } catch (_) { return null; } },
+    async build(body) {
+      if (!user || !session) return { error: 'signin' };
+      const res = await fetch('/api/ai-deck', { method: 'POST', headers: { 'content-type': 'application/json', authorization: 'Bearer ' + session.access_token }, body: JSON.stringify(body) }).catch(() => null);
+      if (!res) return { error: 'offline' };
+      return res.json().catch(() => ({ error: 'ai_unavailable' }));
+    },
+  };
   // test hook
   window.__traceCloud = { syncAll, flush, state: () => ({ user, profile, pending: [...pending], busy }) };
 
