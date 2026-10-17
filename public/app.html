@@ -5391,50 +5391,76 @@ function showEditor(replace){homeShown=false;document.body.classList.remove('hom
 function openFromHome(id){openProject(id);showEditor();}
 /* ---------- AI: describe a lesson, get the slides ----------
    The server (cloud.js → /api/ai-deck) asks the model for a small checked "spec"; specToSlides turns it into real Tracé objects. */
-/* Lays out an AI slide: the model only says what goes on it and in which order; this puts text in a column,
-   the picture (graph, chart, Venn) beside it or below it, wraps long lines and shrinks everything to fit. */
-function aiLayout(items,W,H,mode){
-  const TXT=['text','bullets','equation','steps','counter'],VIS=['graph','chart','venn'];
-  const flow=items.filter(it=>!it.free&&(TXT.includes(it.kind)||VIS.includes(it.kind)));if(mode==='free'||!flow.length)return items;
-  const em=fs=>fs/48*0.62,top=H-1.35,bot=-H+0.35,availH=top-bot,gap=0.32;
-  const texts=flow.filter(it=>TXT.includes(it.kind)),vis=flow.filter(it=>VIS.includes(it.kind));
-  const split=mode!=='stack'&&W>=5&&texts.length&&vis.length;
-  const colL=split?[-W+0.45,-0.15]:[-W+0.5,W-0.5],colR=[0.15,W-0.4];
-  const plainLen=t=>{let u=String(t||'');for(let i=0;i<4;i++)u=u.replace(/\\[dt]?frac\{([^{}]*)\}\{([^{}]*)\}/g,(m,a,b)=>a.length>b.length?a:b);return u.replace(/\\(left|right|lim|limits)/g,'').replace(/\\[a-zA-Z]+/g,'x').replace(/[{}^_\s\\]/g,'').length;};
-  const wrap=(t,fs,maxW)=>{const per=Math.max(8,Math.floor(maxW/(em(fs)*0.52)));return String(t).split('\n').map(line=>{const out=[];let cur='';for(const w of line.split(' ')){if(cur&&(cur+' '+w).length>per){out.push(cur);cur=w;}else cur=cur?cur+' '+w:w;}out.push(cur);return out.join('\n');}).join('\n');};
-  // size of one item at scale k, inside a column of width cw
-  const box=(it,k,cw)=>{const fs0=it.size||({text:32,bullets:30,equation:44,steps:40,counter:60}[it.kind]||32);let fs=Math.max(18,fs0*k),w,h,extra={};
-    switch(it.kind){
-      case'text':{let t=wrap(it.text,fs,cw);const n=t.split('\n').length;extra.text=t;w=Math.min(cw,Math.max(...t.split('\n').map(l=>l.length))*em(fs)*0.52);h=n*em(fs)*1.3;break;}
-      case'bullets':{const L=Math.max(...it.items.map(t=>String(t).length));w=L*em(fs)*0.52+em(fs)*1.2;if(w>cw){fs=Math.max(18,fs*cw/w);w=cw;}h=it.items.length*em(fs)*1.5;break;}
-      case'equation':{let L=plainLen(it.latex||it.math);w=L*em(fs)*0.55;if(w>cw){fs=Math.max(20,fs*cw/w);w=cw;}h=em(fs)*(/frac|\/|\^|sqrt|sum|int/.test(it.latex||it.math||'')?2.1:1.5);break;}
-      case'steps':{const L=Math.max(...it.lines.map(plainLen));w=L*em(fs)*0.55;if(w>cw){fs=Math.max(20,fs*cw/w);w=cw;}const g=fs*(it.lines.some(t=>/frac/.test(t))?0.05:0.03);h=g*(it.lines.length-1)+em(fs)*1.6;break;}
-      case'counter':h=em(fs)*1.4;w=cw;break;
-      case'graph':case'chart':{const ar=(it.h||4.5)/(it.w||8);w=Math.min(cw,(it.w||8)*k);h=Math.min(w*ar,availH*k);w=Math.min(w,h/ar);extra.w=+w.toFixed(2);extra.h=+h.toFixed(2);break;}
-      case'venn':w=Math.min(cw,4.6*k);h=3.2*k;extra.vscale=k;break;
-    }return{fs:+fs.toFixed(0),w,h,extra};};
-  const place=(list,col,centerX)=>{if(!list.length)return;const cw=col[1]-col[0];let k=1,boxes;
-    for(let i=0;i<12;i++){boxes=list.map(it=>box(it,k,cw));const tot=boxes.reduce((a,b)=>a+b.h,0)+gap*(list.length-1);if(tot<=availH||k<=0.55)break;k*=0.92;}
-    const tot=boxes.reduce((a,b)=>a+b.h,0)+gap*(list.length-1);let y=top-Math.max(0,(availH-tot)/2*(list.length>2?0.25:0.6));
-    list.forEach((it,i)=>{const b=boxes[i],cx=centerX?(col[0]+col[1])/2:(it.kind==='text'||it.kind==='bullets'?col[0]+b.w/2:(col[0]+col[1])/2);
-      const L={x:+cx.toFixed(2),y:+(it.kind==='steps'?y-em(b.fs)*0.8:y-b.h/2).toFixed(2),size:b.fs,...b.extra};
-      if(it.kind==='bullets'&&!centerX)L.x=+(col[0]+cw/2).toFixed(2);
-      it._lay=L;y-=b.h+gap;});};
-  if(split){place(texts,colL,false);place(vis,colR,true);}else place(flow,colL,true);
-  return items.map(it=>{if(!it._lay)return it;const L=it._lay,n={...it,...L};delete n._lay;
-    if(Array.isArray(it.then))n.then=it.then.map(t=>({...t,...(t.x!=null?{x:L.x+(t.x-(it.x||0))}:{}),...(t.y!=null?{y:L.y+(t.y-(it.y||0))}:{})}));return n;});}
+const AI_OBJ=['incline','fbd','spring','pendulum','pulley','dist','deriv','fourier','circuit','optics','atom','ptree','fraction','stats','wave','phasor','spectrum','polar','curve','field','numberline','plane','triangle','angle','point','table','matrix','code','mcq','callout','network','axes3d','brace','sector','arc','ellipse','polygon'];
+/* Real sizes of objects as drawn (slide units, y up), measured in a hidden copy of the slide. */
+function aiMeasure(objs,W2,H2){const sv=document.createElementNS(NS,'svg'),PX=1600;sv.setAttribute('viewBox',`${-W2/2} ${-H2/2} ${W2} ${H2}`);sv.setAttribute('width',PX);sv.setAttribute('height',Math.round(PX*H2/W2));
+  const host=document.createElement('div');host.style.cssText='position:fixed;left:-99999px;top:0;pointer-events:none';host.appendChild(sv);document.body.appendChild(host);const out={};
+  try{drawStatic(sv,objs.map(o=>{const q={...o};delete q.step;delete q.exitStep;return q;}));const R=sv.getBoundingClientRect(),k=W2/R.width;
+    for(const o of objs){const g=sv.querySelector(`[data-id="${CSS.escape(o.id)}"]`);if(!g)continue;const r=g.getBoundingClientRect();if(!(r.width>0.5||r.height>0.5))continue;
+      out[o.id]={x0:(r.left-R.left)*k-W2/2,x1:(r.right-R.left)*k-W2/2,y0:H2/2-(r.bottom-R.top)*k,y1:H2/2-(r.top-R.top)*k};}}finally{host.remove();}
+  // not drawn yet (maths still being typeset): an estimate from the text and font size
+  for(const o of objs){if(out[o.id])continue;const sc=o.scale||1,em=(o.fontSize||32)/48*0.62*sc,t=String(o.text??o.src??o.tex??o.items??o.value??'');
+    const lines=t.split('\n'),w=['text','latex','bullets','counter'].includes(o.type)?Math.max(...lines.map(l=>l.replace(/\\[a-z]+/gi,'x').length))*em*0.55+em:2*sc,h=['text','latex','bullets','counter'].includes(o.type)?lines.length*em*1.4+(o.type==='latex'?em*0.4:0):2*sc;
+    out[o.id]={x0:(o.x||0)-w/2,x1:(o.x||0)+w/2,y0:(o.y||0)-h/2,y1:(o.y||0)+h/2};}
+  return out;}
+/* Places an AI slide from measured sizes: text in a column, the picture (graph, shapes, drawings, objects and their labels)
+   scaled as one piece into the space beside it (or below it on a tall slide), labels pushed apart, nothing over the edge. */
+function aiFit(objs,W2,H2){const W=W2/2,H=H2/2,flow=objs.filter(o=>o._role==='flow'),pic=objs.filter(o=>o._role==='pic');if(!objs.length)return;
+  const top=H-1.3,bot=-H+0.35,gap=0.3,wide=W>=5,split=flow.length&&pic.length;
+  const move=(o,dx,dy)=>{o.x=+((o.x||0)+dx).toFixed(3);o.y=+((o.y||0)+dy).toFixed(3);if(o.keys)for(const k of Object.values(o.keys)){if(k.x!=null)k.x=+(k.x+dx).toFixed(3);if(k.y!=null)k.y=+(k.y+dy).toFixed(3);}};
+  const zoom=(o,s,cx,cy)=>{o.x=+(cx+((o.x||0)-cx)*s).toFixed(3);o.y=+(cy+((o.y||0)-cy)*s).toFixed(3);o.scale=+((o.scale||1)*s).toFixed(3);if(o.keys)for(const k of Object.values(o.keys)){if(k.x!=null)k.x=+(cx+(k.x-cx)*s).toFixed(3);if(k.y!=null)k.y=+(cy+(k.y-cy)*s).toFixed(3);if(k.scale!=null)k.scale=+(k.scale*s).toFixed(3);}};
+  const box=(list,M)=>{let b=null;for(const o of list){const m=M[o.id];if(!m)continue;b=b?{x0:Math.min(b.x0,m.x0),x1:Math.max(b.x1,m.x1),y0:Math.min(b.y0,m.y0),y1:Math.max(b.y1,m.y1)}:{...m};}return b;};
+  // zones
+  let flowZ,picZ,stack=split&&!wide;
+  // a wide, flat picture (a long ground line, a timeline) reads better under the text than squeezed beside it
+  if(split&&wide){const pb=box(pic,aiMeasure(pic,W2,H2));if(pb&&(pb.x1-pb.x0)/Math.max(0.2,pb.y1-pb.y0)>2.2)stack=true;}
+  if(split&&wide&&!stack){flowZ={x0:-W+0.45,x1:-0.2,y0:bot,y1:top};picZ={x0:0.1,x1:W-0.35,y0:bot,y1:top};}
+  else{flowZ={x0:-W+0.5,x1:W-0.5,y0:bot,y1:top};picZ={...flowZ};}
+  // text column: wrap long sentences to the column, then stack units top-down, shrinking if needed
+  if(flow.length){const cw=flowZ.x1-flowZ.x0;let M=aiMeasure(flow,W2,H2);
+    for(const o of flow){const m=M[o.id];if(!m||o.type!=='text')continue;const w=m.x1-m.x0;if(w>cw&&String(o.text).length>16){const per=Math.max(10,Math.floor(String(o.text).length*cw/w*0.95));
+      o.text=String(o.text).split('\n').map(line=>{const outL=[];let cur='';for(const wd of line.split(' ')){if(cur&&(cur+' '+wd).length>per){outL.push(cur);cur=wd;}else cur=cur?cur+' '+wd:wd;}outL.push(cur);return outL.join('\n');}).join('\n');}}
+    M=aiMeasure(flow,W2,H2);
+    const units=[];for(const o of flow){if(o._grp){let u=units.find(u=>u.g===o._grp);if(!u){u={g:o._grp,objs:[]};units.push(u);}u.objs.push(o);}else units.push({objs:[o]});}
+    for(const u of units){u.b=box(u.objs,M);}
+    const live=units.filter(u=>u.b);
+    // too wide: shrink that unit; too tall overall: shrink all
+    for(const u of live){const w=u.b.x1-u.b.x0;if(w>cw){const s=cw/w;u.objs.forEach(o=>zoom(o,s,o.x||0,o.y||0));}}
+    M=aiMeasure(flow,W2,H2);live.forEach(u=>u.b=box(u.objs,M));
+    let need=live.reduce((a,u)=>a+(u.b.y1-u.b.y0),0)+gap*(live.length-1),availH=stack?Math.max(1.5,(top-bot)*0.45):top-bot;
+    if(need>availH){const s=Math.max(0.5,availH/need);live.forEach(u=>u.objs.forEach(o=>zoom(o,s,o.x||0,o.y||0)));M=aiMeasure(flow,W2,H2);live.forEach(u=>u.b=box(u.objs,M));need=live.reduce((a,u)=>a+(u.b.y1-u.b.y0),0)+gap*(live.length-1);}
+    let y=top-(split?0:Math.max(0,(availH-need)*0.3));const cx=(flowZ.x0+flowZ.x1)/2;
+    for(const u of live){const h=u.b.y1-u.b.y0,bx=(u.b.x0+u.b.x1)/2;u.objs.forEach(o=>move(o,cx-bx,(y-h/2)-(u.b.y0+u.b.y1)/2));y-=h+gap;}
+    if(stack)picZ={x0:-W+0.4,x1:W-0.4,y0:bot,y1:Math.max(bot+1.5,y+gap*0.5)};}
+  // picture: scale the whole group into its zone
+  if(pic.length){let M=aiMeasure(pic,W2,H2),b=box(pic,M);
+    if(b){const bw=Math.max(0.2,b.x1-b.x0),bh=Math.max(0.2,b.y1-b.y0),zw=picZ.x1-picZ.x0,zh=picZ.y1-picZ.y0;const s=Math.max(0.25,Math.min(zw/bw,zh/bh,1.6));
+      const cx=(b.x0+b.x1)/2,cy=(b.y0+b.y1)/2,tx=(picZ.x0+picZ.x1)/2,ty=(picZ.y0+picZ.y1)/2;
+      pic.forEach(o=>{zoom(o,s,cx,cy);move(o,tx-cx,ty-cy);});
+      // labels: push apart from each other and from small pieces they cover
+      const labels=pic.filter(o=>o._label);
+      for(let it=0;it<12&&labels.length;it++){M=aiMeasure(pic,W2,H2);let moved=false;
+        for(let i=0;i<labels.length;i++)for(const other of pic){const a=labels[i];if(other===a)continue;const A=M[a.id],B=M[other.id];if(!A||!B)continue;
+          if(!other._label&&(B.x1-B.x0)*(B.y1-B.y0)>(A.x1-A.x0)*(A.y1-A.y0)*3)continue;
+          const ox=Math.min(A.x1,B.x1)-Math.max(A.x0,B.x0),oy=Math.min(A.y1,B.y1)-Math.max(A.y0,B.y0);if(ox<=0.02||oy<=0.02)continue;
+          const dir=((A.y0+A.y1)/2>=(B.y0+B.y1)/2)?1:-1;move(a,0,dir*(oy+0.08));A.y0+=dir*(oy+0.08);A.y1+=dir*(oy+0.08);moved=true;}
+        if(!moved)break;}}}
+  // finally keep everything inside the slide
+  const M=aiMeasure(objs,W2,H2);for(const o of objs){const m=M[o.id];if(!m)continue;let dx=0,dy=0;
+    if(m.x0<-W+0.1)dx=-W+0.1-m.x0;else if(m.x1>W-0.1)dx=W-0.1-m.x1;if(m.y0<-H+0.1)dy=-H+0.1-m.y0;else if(m.y1>H-0.9&&o._role)dy=Math.min(0,H-0.9-m.y1);if(dx||dy)move(o,dx,dy);}}
 function specToSlides(spec,d){const[W2,H2]=dimsOf(d||deck),W=W2/2,H=H2/2,out=[];
   const cl=(v,a,b)=>Math.max(a,Math.min(b,+v||0));
   for(const s of (spec&&spec.slides)||[]){const os=[],ids=new Set();
     if(s.title)os.push(P2('text',0,+(H-0.7).toFixed(2),{text:s.title,fontSize:W<5?34:42}));
     const dfr=t=>typeof t==='string'?t.replace(/\\frac(?=\{)/g,'\\dfrac'):t;
-    for(const it0 of aiLayout(s.items||[],W,H,s.layout)){const it={...it0,latex:dfr(it0.latex),lines:Array.isArray(it0.lines)?it0.lines.map(dfr):it0.lines};const x=cl(it.x,-W+0.3,W-0.3),y=cl(it.y,-H+0.3,H-0.3),step=Math.max(0,it.click|0),c=it.color;let o=null;
+    const FLOW=['text','bullets','equation','steps','counter'];let grp=0;
+    for(const it0 of (s.items||[])){const it={...it0,latex:dfr(it0.latex),lines:Array.isArray(it0.lines)?it0.lines.map(dfr):it0.lines};const x=cl(it.x,-W+0.3,W-0.3),y=cl(it.y,-H+0.3,H-0.3),step=Math.max(0,it.click|0),c=it.color;let o=null;
       switch(it.kind){
         case'text':o=P2('text',x,y,{text:it.text,fontSize:it.size||32});break;
         case'bullets':o=P2('bullets',x,y,{items:(it.items||[]).join('\n'),fontSize:it.size||30});if(it.reveal&&o.items.split('\n').length>1){const n=o.items.split('\n').length;o.shown=1;o.keys={};for(let i=1;i<n;i++)o.keys[step+i]={shown:i+1};}break;
         case'equation':o=it.latex?P2('latex',x,y,{mode:'latex',tex:it.latex,fontSize:it.size||44}):P2('latex',x,y,{mode:'plain',src:it.math,fontSize:it.size||44});break;
         case'steps':{const fs=it.size||40,gap=+(fs*(it.lines.some(t=>/frac/.test(t))?0.05:0.03)).toFixed(2),n=it.lines.length;let y0=Math.min(y,H-1.3);if(y0-gap*(n-1)<-H+0.5)y0=-H+0.5+gap*(n-1);
-          it.lines.forEach((t,i)=>{const L=P2('latex',x,+(y0-i*gap).toFixed(2),{mode:'latex',tex:t,fontSize:fs});const st=step+i;if(st)L.step=st;if(i===n-1&&n>1){L.color=c||'#F4D345';L.emph='indicate';}else if(c)L.color=c;os.push(L);});continue;}
+          grp++;it.lines.forEach((t,i)=>{const L=P2('latex',x,+(y0-i*gap).toFixed(2),{mode:'latex',tex:t,fontSize:fs});L._role='flow';L._grp='g'+grp;const st=step+i;if(st)L.step=st;if(i===n-1&&n>1){L.color=c||'#F4D345';L.emph='indicate';}else if(c)L.color=c;os.push(L);});continue;}
         case'graph':o=P2('axes',x,y,{fn:it.fn,xmin:it.xmin,xmax:it.xmax,ymin:it.ymin,ymax:it.ymax,w:Math.min(it.w||8,W2-0.6),h:Math.min(it.h||4.5,H2-1.6),fnColor:c||'#F4D345',color:'#C9CED4',enter:'create'});if(it.point!=null){o.mark=true;o.markX=it.point;}break;
         case'shape':{const z=it.size||1,t=it.shape;
           if(t==='circle')o=P2('circle',x,y,{radius:z});else if(t==='rect')o=P2('rect',x,y,{w:it.w,h:it.h});else if(t==='star')o=P2('star',x,y,{r:z});
@@ -5445,6 +5471,10 @@ function specToSlides(spec,d){const[W2,H2]=dimsOf(d||deck),W=W2/2,H=H2/2,out=[];
         case'counter':o=P2('counter',x,y,{value:it.value,decimals:it.decimals||0,prefix:it.prefix||'',suffix:it.suffix||'',fontSize:it.size||60});break;
         case'chart':o=P2('chart',x,y,{ctype:it.type==='line'?'line':'bar',data:(it.data||[]).map(r=>r[0]+', '+r[1]).join('\n'),w:Math.min(it.w||8,W2-0.6),h:Math.min(it.h||4.5,H2-1.6),enter:'create'});if(c)o.barColor=c;break;
         case'venn':{const L=(it.labels||['A','B']).slice(0,3);o=P2('venn',x,y,{sets:L.length>2?3:2,labels:L.join(', '),op:it.shade||'intersection'});break;}
+        case'drawing':{const Lb=LIB[it.lib];if(!Lb)break;o=P2('drawing',x,y,{lib:it.lib,name:Lb.name});if(Lb.nose!=null)o.nose=Lb.nose;const ar=Lb.vb[3]/Lb.vb[2],z=it.size||1;o.w=+((ar>1.2?2.4/ar:2.4)*z).toFixed(2);break;}
+        case'object':{if(!AI_OBJ.includes(it.type)||(!PLAN.pro&&PRO_ADD.has(it.type)))break;o=P2(it.type,x,y,{});const pr=it.props||{};
+          for(const[k,v]of Object.entries(pr)){if(['id','type','keys','step','x','y'].includes(k)||!(k in o))continue;const d0=o[k];
+            if(typeof d0===typeof v||(typeof d0==='number'&&typeof v==='string'&&v.trim()!==''&&isFinite(+v)))o[k]=typeof d0==='number'?+v:v;else if(Array.isArray(d0)&&Array.isArray(v))o[k]=v;}break;}
       }
       if(!o)continue;if(o.w&&o.h&&['axes','chart','rect'].includes(o.type)){o.x=+cl(o.x,-W+o.w/2+0.2,W-o.w/2-0.2).toFixed(2);o.y=+cl(o.y,-H+o.h/2+0.2,H-1.2-o.h/2).toFixed(2);}
 if(c&&!['axes','chart'].includes(o.type))o.color=c;if(step)o.step=step;
@@ -5458,7 +5488,10 @@ if(c&&!['axes','chart'].includes(o.type))o.color=c;if(step)o.step=step;
         if(t.riemann!=null&&o.type==='axes')k.riemann=t.riemann;
         if(Object.keys(k).length){o.keys=o.keys||{};o.keys[t.click]={...(o.keys[t.click]||{}),...k};}}}
       if(it.id&&!ids.has(it.id)){ids.add(it.id);o.id='ai_'+it.id;}
+      o._role=FLOW.includes(it.kind)&&it.label!==true?'flow':'pic';if(it.label===true)o._label=true;
       os.push(o);}
+    if(s.layout!=='free')try{aiFit(os.slice(s.title?1:0),W2,H2);}catch(e){console.warn('layout',e);}
+    os.forEach(o=>{delete o._role;delete o._grp;delete o._label;});
     out.push({objects:os,runTime:1.2});}
   return out;}
 /* Checks the AI's answers by putting them back into the equation, and looks for solutions it missed. */
