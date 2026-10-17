@@ -32,21 +32,37 @@ export async function onRequestPost({ request, env }) {
   const task0 = body.solve ? `${ask}\n\nThis is a request to SOLVE: show the full worked solution step by step (one operation per click) and include "check" on the answer slide.` : ask;
   const task = task0 + langLine;
 
-  let text = '';
+  let text = '', stop = '';
   try {
-    const ac = new AbortController(); const timer = setTimeout(() => ac.abort(), 90000);
+    const ac = new AbortController(); const timer = setTimeout(() => ac.abort(), 150000);
     const res = await fetch(`${env.ANTHROPIC_API_BASE || 'https://api.anthropic.com'}/v1/messages`, {
       method: 'POST', signal: ac.signal,
       headers: { 'x-api-key': env.ANTHROPIC_API_KEY, 'anthropic-version': '2023-06-01', 'content-type': 'application/json' },
-      body: JSON.stringify({ model: env.AI_MODEL || 'claude-sonnet-5-5', max_tokens: 6000, system: systemPrompt(size), messages: [{ role: 'user', content: task }] }),
+      body: JSON.stringify({ model: env.AI_MODEL || 'claude-sonnet-5-5', max_tokens: 8000, system: systemPrompt(size), messages: [{ role: 'user', content: task }] }),
     });
     clearTimeout(timer);
-    if (!res.ok) { await refund(); return json({ error: 'ai_unavailable' }, 502); }
+    if (!res.ok) {
+      // say why (bad key, no API credit, unknown model, busy…) so the site owner can fix it; the message holds no secret
+      let why = '';
+      try { const e = await res.json(); why = String(e && e.error && (e.error.message || e.error.type) || ''); } catch {}
+      console.log('ai-deck: Anthropic answered', res.status, why);
+      await refund();
+      return json({ error: 'ai_unavailable', status: res.status, detail: why.slice(0, 200) }, 502);
+    }
     const out = await res.json();
+    stop = out.stop_reason || '';
     text = (out.content || []).filter(c => c.type === 'text').map(c => c.text).join('');
-  } catch { await refund(); return json({ error: 'ai_unavailable' }, 502); }
+  } catch (e) {
+    console.log('ai-deck: request failed', e && e.name, e && e.message);
+    await refund();
+    return json({ error: 'ai_unavailable', detail: e && e.name === 'AbortError' ? 'The AI took too long to answer.' : 'Could not reach the AI service.' }, 502);
+  }
 
   const spec = sanitizeSpec(extractJSON(text), size);
-  if (!spec.slides.length) { await refund(); return json({ error: 'ai_unreadable' }, 502); }
+  if (!spec.slides.length) {
+    console.log('ai-deck: unreadable answer, stop_reason', stop, 'length', text.length);
+    await refund();
+    return json({ error: 'ai_unreadable', detail: stop === 'max_tokens' ? 'The answer was too long. Ask for fewer slides.' : 'The answer was not in the expected format.' }, 502);
+  }
   return json({ spec, left: credit.left });
 }
