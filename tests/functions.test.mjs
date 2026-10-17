@@ -280,3 +280,73 @@ test('AI: when Anthropic refuses, the reason comes back (and the credit is retur
   assert.ok(!JSON.stringify(out).includes('sk-ant'), 'the key never leaks');
   assert.ok(calls.some(c => c.url.includes('ai_refund_credit')));
 });
+
+test('AI: an answer cut off by the length limit keeps the finished slides', async () => {
+  const deck = { title: 'Long', slides: [MODEL_DECK.slides[0], { ...MODEL_DECK.slides[0], title: 'Second' }, { ...MODEL_DECK.slides[0], title: 'Third' }] };
+  const text = JSON.stringify(deck).slice(0, -40);
+  fakeFetch([authed, ['https://db.example/rest/v1/rpc/ai_take_credit', () => ok({ ok: true, from: 'month', left: 3 })],
+    ['https://ai.example/v1/messages', () => ok({ stop_reason: 'max_tokens', content: [{ type: 'text', text }] })]]);
+  const res = await aiDeck({ request: aiReq({ prompt: 'a long lesson' }), env: aiEnv });
+  const out = await res.json();
+  assert.equal(res.status, 200); assert.equal(out.spec.cut, true);
+  assert.deepEqual(out.spec.slides.map(s => s.title), ['A line', 'Second']);
+  assert.ok(!calls.some(c => c.url.includes('ai_refund_credit')));
+});
+
+test('AI: animation fields (enter, then, leave, loop, emph) are kept and checked', async () => {
+  const { sanitizeSpec, systemPrompt } = await import('../lib/aispec.js');
+  assert.match(systemPrompt(), /every slide must move/);
+  const s = sanitizeSpec({ slides: [{ title: 'S', items: [
+    { kind: 'graph', fn: 'x^2', enter: 'draw', then: [{ click: 1, point: -2 }, { click: 2, riemann: 500, color: 'red' }, { click: 3 }, 'junk'] },
+    { kind: 'shape', shape: 'circle', click: 1, leave: 3, exit: 'explode', loop: 'teleport', emph: 'wiggle', enter: '<script>', then: [{ click: 99, x: 1e9 }] },
+  ] }] });
+  const [g, c] = s.slides[0].items;
+  assert.equal(g.enter, 'draw');
+  assert.deepEqual(g.then, [{ click: 1, point: -2 }, { click: 2, color: '#FC6255', riemann: 100 }]);
+  assert.equal(c.enter, undefined); assert.equal(c.exit, 'fade'); assert.equal(c.leave, 3); assert.equal(c.loop, undefined); assert.equal(c.emph, 'wiggle');
+  assert.deepEqual(c.then, [{ click: 12, x: 7.1 }]);
+});
+
+test('AI: Tracé objects and library drawings are kept, with only plain settings', async () => {
+  const { sanitizeSpec } = await import('../lib/aispec.js');
+  const s = sanitizeSpec({ slides: [{ title: 'S', items: [
+    { kind: 'object', type: 'pendulum', props: { L: 2.5, ang: 20, showAng: true, angLabel: '<img src=x onerror=alert(1)>\\theta', 'bad key': 1, nested: { a: 1 } }, loop: 'flow' },
+    { kind: 'object', type: 'script', props: {} },
+    { kind: 'drawing', lib: 'cannon', size: 0.8 },
+    { kind: 'drawing', lib: '../../etc' },
+    { kind: 'equation', math: '100 cos(theta)', label: true },
+  ] }] });
+  const it = s.slides[0].items;
+  assert.equal(it.length, 3);
+  assert.equal(it[0].type, 'pendulum'); assert.equal(it[0].loop, 'flow');
+  assert.deepEqual(Object.keys(it[0].props).sort(), ['L', 'ang', 'angLabel', 'showAng']);
+  assert.ok(!/[<>]/.test(it[0].props.angLabel));
+  assert.equal(it[1].lib, 'cannon'); assert.equal(it[1].size, 0.8);
+  assert.equal(it[2].label, true);
+});
+
+test('AI: a 10-slide deck is planned, written in 3 parts at once, and uses 3 credits', async () => {
+  let takes = 0; const asks = [];
+  const slide = t => ({ title: t, items: [{ kind: 'text', text: t }] });
+  fakeFetch([authed, ['https://db.example/rest/v1/rpc/ai_take_credit', () => { takes++; return ok({ ok: true, from: 'bought', left: 10 - takes }); }],
+    ['https://ai.example/v1/messages', (u, i) => {
+      const b = JSON.parse(i.body); const m = b.messages[0].content; asks.push(m);
+      if (/You plan animated teaching decks/.test(b.system)) return ok({ content: [{ type: 'text', text: JSON.stringify({ title: 'Waves', slides: Array.from({ length: 10 }, (_, k) => ({ title: 'S' + (k + 1), idea: 'idea' })) }) }] });
+      const [, a, z] = m.match(/Write ONLY slides (\d+) to (\d+)/);
+      return ok({ content: [{ type: 'text', text: JSON.stringify({ title: 'x', slides: Array.from({ length: z - a + 1 }, (_, k) => slide('S' + (+a + k))) }) }] });
+    }]]);
+  const res = await aiDeck({ request: aiReq({ prompt: 'waves for year 11', count: 10 }), env: aiEnv });
+  const out = await res.json();
+  assert.equal(res.status, 200); assert.equal(takes, 3); assert.equal(asks.length, 4);
+  assert.deepEqual(out.spec.slides.map(s => s.title), Array.from({ length: 10 }, (_, k) => 'S' + (k + 1)));
+  assert.equal(out.spec.title, 'Waves'); assert.equal(out.left, 7);
+});
+
+test('AI: not enough credits for a long deck gives back the ones taken', async () => {
+  let takes = 0, refunds = 0;
+  fakeFetch([authed, ['https://db.example/rest/v1/rpc/ai_take_credit', () => ++takes < 2 ? ok({ ok: true, from: 'trial', left: 0 }) : ok({ ok: false, error: 'no_credits', pro: false })],
+    ['https://db.example/rest/v1/rpc/ai_refund_credit', () => { refunds++; return ok(null); }]]);
+  const res = await aiDeck({ request: aiReq({ prompt: 'a long deck please', count: 12 }), env: aiEnv });
+  assert.equal(res.status, 402); assert.equal((await res.json()).need, 3); assert.equal(refunds, 1);
+  assert.ok(!calls.some(c => c.url.includes('ai.example')));
+});

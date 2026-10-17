@@ -363,4 +363,39 @@ exception when insufficient_privilege then raise notice 'ok  nobody can give the
 do $$ begin if exists (select 1 from ai_wallet) or exists (select 1 from ai_purchases) then raise exception 'FAIL: wallets readable'; end if; raise notice 'ok  wallets and purchases are private';
 exception when insufficient_privilege then raise notice 'ok  wallets and purchases are private'; end $$;
 reset role;
+
+-- Online storage (008) -----------------------------------------------------
+insert into auth.users (id, email) values ('eeeeeeee-eeee-eeee-eeee-eeeeeeeeeeee', 'eli@example.com');
+set role authenticated;
+set request.jwt.claim.sub = 'eeeeeeee-eeee-eeee-eeee-eeeeeeeeeeee';
+update profiles set display_name = 'Eli', role = 'teacher' where id = auth.uid();
+select pg_temp.check((select max_decks = 3 and max_total_bytes = 5000000 and plan = 'free' and decks = 0 from my_storage()), 'people can see their online space and limits');
+insert into decks (name, data) values ('E1', jsonb_build_object('big', repeat('x', 1900000))), ('E2', jsonb_build_object('big', repeat('x', 1900000)));
+select pg_temp.check((select used_bytes between 3800000 and 3900000 and decks = 2 from my_storage()), 'the space used is counted');
+do $$ begin
+  insert into decks (name, data) values ('E3', jsonb_build_object('big', repeat('x', 1900000)));
+  raise exception 'FAIL: went over the total space';
+exception when others then
+  if sqlerrm <> 'storage_full' then raise; end if; raise notice 'ok  a free account cannot go over 5 MB in total';
+end $$;
+insert into decks (name, data) values ('E3', '{"slides":[]}');
+update decks set data = jsonb_build_object('big', repeat('x', 1000)) where name = 'E1';
+select pg_temp.check(true, 'a deck that shrinks can always be saved');
+reset role;
+update profiles set plan = 'pro' where id = 'eeeeeeee-eeee-eeee-eeee-eeeeeeeeeeee';
+set role authenticated;
+set request.jwt.claim.sub = 'eeeeeeee-eeee-eeee-eeee-eeeeeeeeeeee';
+select pg_temp.check((select max_decks = 50 and max_total_bytes = 200000000 from my_storage()), 'Pro has 50 decks and 200 MB');
+insert into decks (name, data) select 'P' || g, '{"slides":[]}' from generate_series(1, 47) g;
+do $$ begin
+  insert into decks (name, data) values ('P48', '{"slides":[]}');
+  raise exception 'FAIL: a 51st deck was allowed';
+exception when others then
+  if sqlerrm <> 'pro_limit' then raise; end if; raise notice 'ok  Pro keeps 50 decks online';
+end $$;
+reset role;
+set role anon;
+do $$ begin perform * from my_storage(); raise exception 'FAIL: anon read storage';
+exception when insufficient_privilege then raise notice 'ok  only signed-in people can read their space'; end $$;
+reset role;
 \echo ALL DATABASE TESTS PASSED

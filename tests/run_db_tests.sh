@@ -14,5 +14,6 @@ for pass in 1 2; do   # applying the migrations again, in order, must be safe
   psql -q -v ON_ERROR_STOP=1 -d "$DB" -f supabase/migrations/005_share_fix.sql 2>/dev/null
   psql -q -v ON_ERROR_STOP=1 -d "$DB" -f supabase/migrations/006_referrals.sql 2>/dev/null
   psql -q -v ON_ERROR_STOP=1 -d "$DB" -f supabase/migrations/007_ai.sql 2>/dev/null
+  psql -q -v ON_ERROR_STOP=1 -d "$DB" -f supabase/migrations/008_storage.sql 2>/dev/null
 done
 psql -q -v ON_ERROR_STOP=1 -d "$DB" -f tests/db_test.sql 2>&1 | sed -n 's/^psql:[^ ]* NOTICE:  /  /p; /ERROR\|PASSED/p'

@@ -42,7 +42,7 @@ async def tour_first(pg):
     print('Tour: your first animated slide')
     await step(pg, lambda: pg.click('.tour-card [data-tour="first"]'), 'Welcome')
     await step(pg, lambda: pg.click('.tour-card [data-tb="next"]'), 'first animated slide')
-    check(await pg.evaluate("curMeta().name") == 'My first animation', 'the tour works in a new project')
+    check(await pg.evaluate("curMeta().name") == 'Tutorial practice' and await pg.evaluate("!!curMeta().practice"), 'the tour works in the practice project, not in your own')
     check(await pg.is_visible('.tour-spot'), 'a spotlight shows where to act')
     await step(pg, lambda: pg.click('#tools >> text=Write'), 'Open Write')
     await step(pg, lambda: pg.click('#tools .menu:not([hidden]) [data-t="text"]'), 'Choose Text')
@@ -60,7 +60,7 @@ async def tour_first(pg):
     await step(pg, lambda: pg.select_option('#f_step', '1'), 'On click 1')
     await step(pg, lambda: pg.click('.tour-card [data-tb="next"]'), 'Enters with')
     await step(pg, lambda: pg.click('.tour-card [data-tb="next"]'), 'Opens')
-    await step(pg, lambda: pg.click('#preview'), 'Preview')
+    await step(pg, lambda: pg.click('#preview'), 'Play this slide')
     await pg.wait_for_timeout(1500)
     await step(pg, lambda: pg.check('[data-live="k"]'), 'Live slider')
     await step(pg, lambda: pg.click('#presentBtn'), 'Present')
@@ -70,7 +70,7 @@ async def tour_first(pg):
         check(await pg.is_visible('.tour-card'), 'the tour card stays visible while presenting')
         await pg.keyboard.press('Escape')
     await step(pg, present, 'Press Esc')
-    check('whole idea' in await title(pg), 'the tour ends with what to learn next')
+    check('Your first animated slide' in await title(pg) and 'Next:' in await pg.inner_text('.tour-card'), 'the chapter ends ticked off, with what to learn next')
     await pg.click('.tour-card [data-tb="next"]'); await pg.wait_for_timeout(300)
     check(not await pg.evaluate("!!document.querySelector('.tour-card')"), 'Finish closes the tour')
     r = await pg.evaluate("""(()=>{const os=slide().objects,a=os.find(o=>o.type==='axes'),q=os.find(o=>o.type==='latex');
@@ -79,7 +79,8 @@ async def tour_first(pg):
 
 async def tour_clicks(pg):
     print('Tour: change things on a click')
-    await pg.click('[data-menu="help"]'); await pg.click('.helpmenu [data-tour="clicks"]'); await pg.wait_for_timeout(300)
+    check(await pg.is_visible('#tourBtn'), 'the Tour button is always in the header')
+    await pg.click('#tourBtn'); await pg.click('.tourmenu [data-tour="clicks"]'); await pg.wait_for_timeout(300)
     await step(pg, lambda: pg.click('.tour-card [data-tb="next"]'), 'Change things on a click')
     await step(pg, lambda: pg.click('#addClick'), '+ Click')
     async def pick_circle():
@@ -95,7 +96,7 @@ async def tour_clicks(pg):
 
 async def tour_slides(pg):
     print('Tour: animate between slides')
-    await pg.click('[data-menu="help"]'); await pg.click('.helpmenu [data-tour="slides"]'); await pg.wait_for_timeout(300)
+    await pg.click('#tourBtn'); await pg.click('.tourmenu [data-tour="slides"]'); await pg.wait_for_timeout(300)
     await step(pg, lambda: pg.click('.tour-card [data-tb="next"]'), 'Animate between slides')
     await step(pg, lambda: pg.click('#dupSlide'), 'Duplicate')
     await step(pg, lambda: drag(pg, objc('rect'), 380, 0), 'Drag the square')
@@ -106,21 +107,21 @@ async def tour_slides(pg):
         for i in range(1, 11): await pg.mouse.move(h[0] + 6 * i, h[1] + 6 * i)
         await pg.mouse.up()
     await step(pg, grow, 'corner handle')
-    await step(pg, lambda: pg.click('#preview'), 'Preview')
+    await step(pg, lambda: pg.click('#preview'), 'Play this slide')
     await pg.wait_for_timeout(1500)
-    check('1 move' in await pg.inner_text('#thumbs'), 'the slide list says what animates')
+    check(await pg.evaluate("[...document.querySelectorAll('#thumbs .tchip.anim')].some(c=>c.textContent==='Animates in'&&c.title.includes('1 mov'))"), 'the slide list says what animates')
     await step(pg, lambda: pg.click('.tour-card [data-tb="next"]'), 'slide list')
     await pg.click('.tour-card [data-tb="next"]'); await pg.wait_for_timeout(200)
     check(not await pg.evaluate("!!document.querySelector('.tour-card')"), 'the slides tour finishes')
 
 async def tour_screen_and_auto(pg):
     print('Tour: the screen, and “Do it for me” everywhere')
-    await pg.click('[data-menu="help"]'); await pg.click('.helpmenu [data-tour="screen"]'); await pg.wait_for_timeout(300)
+    await pg.click('[data-menu="more"]'); await pg.click('[data-menu="more"] + .menu [data-tour="screen"]'); await pg.wait_for_timeout(300)
     n = 0
     while await pg.evaluate("!!document.querySelector('.tour-card')") and n < 15:
         check(await pg.is_visible('.tour-spot'), f'screen tour step {n+1} points at something') if n < 9 else None
         await pg.click('.tour-card [data-tb="next"]'); await pg.wait_for_timeout(250); n += 1
-    check(n == 9, 'the screen tour has 9 stops')
+    check(n == 10, 'the screen tour has 9 stops, then the chapter is ticked off')
     # every tour can be finished with "Do it for me" alone
     for name in ['first', 'clicks', 'slides']:
         await pg.evaluate(f"startTour('{name}')"); await pg.wait_for_timeout(200)
@@ -142,7 +143,7 @@ async def main():
         b = await p.chromium.launch()
         pg = await b.new_page(viewport={'width': 1440, 'height': 900})
         pg.on('pageerror', lambda e: errors.append(str(e)))
-        await pg.goto(URL); await pg.wait_for_timeout(2400)
+        await pg.goto(URL + '#edit'); await pg.wait_for_timeout(2400)
         check(await pg.evaluate("!!document.querySelector('.tour-card')"), 'first-time visitors are offered the tour')
         await tour_first(pg)
         await tour_clicks(pg)

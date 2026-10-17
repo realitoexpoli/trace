@@ -27,7 +27,7 @@ async def run(url, label, full=True):
         b = await p.chromium.launch(); pg = await b.new_page(viewport={'width': 1440, 'height': 900}); errs = []
         pg.on('pageerror', lambda e: errs.append(str(e)))
         await pg.add_init_script("localStorage.setItem('trace-toured','1')")
-        await pg.goto(url); await pg.wait_for_timeout(1500)
+        await pg.goto(url + ('' if '#' in url else '#edit')); await pg.wait_for_timeout(1500)
         await pg.evaluate(SETUP); await pg.wait_for_timeout(800)
         res = {}
         res['line'] = await click_at(pg, -3, 2.5, 6) == 'L'          # 6 px beside a thin line
@@ -48,7 +48,8 @@ async def run(url, label, full=True):
             check('Line' in await pg.inner_text('#hoverBox span'), 'hovering shows a dashed outline with the object name')
             # object list
             await pg.mouse.click(5, 5); await pg.evaluate("sel=null;renderProps();renderCanvas()")
-            check('front first' in await pg.inner_text('#props') and await pg.locator('.objlist button').count() == 5, 'the slide panel lists every object on the slide')
+            check('front first' in await pg.text_content('#props') and await pg.locator('.objlist button').count() == 5, 'the slide panel lists every object on the slide')
+            await pg.evaluate("showPane('objs')")
             await pg.click('.objlist button:has-text("Curve")'); await pg.wait_for_timeout(100)
             check(await pg.evaluate("sel") == 'C', 'clicking a name in the list selects it')
             await pg.click('#toBack'); await pg.wait_for_timeout(100)
@@ -61,10 +62,15 @@ async def run(url, label, full=True):
             check(await pg.evaluate("Math.abs(obj('G').x - 2.5) > 0.3"), 'a selected graph can be dragged from its empty inside')
             # settings panel layout
             await pg.evaluate("sel='T';renderProps()")
-            order = await pg.evaluate("[...document.querySelectorAll('#props h3')].map(h=>h.textContent.split(' ')[0])")
-            check(order[:2] == ['Content', 'Animation'], 'settings show the content first, then the animation')
-            check(await pg.evaluate("!document.querySelector('details[data-more=pos]').open"), 'position and size are folded away until needed')
-            check('With the slide' in await pg.inner_text('.animsum'), 'the animation section sums up when and how it appears')
+            order = await pg.evaluate("[...document.querySelectorAll('#props .pp-rail [data-go]')].map(b=>b.dataset.go)")
+            check(order == ['content', 'style', 'pos', 'anim'], 'settings are grouped into Content, Style, Place and Animate, in that order')
+            await pg.click('#props .pp-rail [data-go="anim"]'); await pg.wait_for_timeout(100)
+            check(await pg.is_visible('#f_enter') and not await pg.is_visible('#props [data-pane="content"]'), 'a section opens on its own and hides the others')
+            await pg.evaluate("sel=null;renderProps();sel='T';renderProps()")
+            check(await pg.is_visible('#f_enter'), 'the open section is remembered for the next object')
+            await pg.click('#props .pp-rail [data-go="content"]')
+            check(not await pg.is_visible('#f_x'), 'position and size are kept in their own section until needed')
+            check('With the slide' in await pg.text_content('.animsum'), 'the animation section sums up when and how it appears')
             check(not errs, 'no script errors ' + '; '.join(errs))
         await b.close()
         return res

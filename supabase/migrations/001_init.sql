@@ -143,7 +143,7 @@ begin
   if not found then raise exception 'not_found'; end if;
   if v_slug is null then
     loop
-      v_slug := translate(encode(gen_random_bytes(9), 'base64'), '+/', 'xy');
+      v_slug := left(translate(encode(decode(replace(gen_random_uuid()::text, '-', ''), 'hex'), 'base64'), '+/=', 'xy'), 12);
       exit when not exists (select 1 from decks where share_slug = v_slug);
     end loop;
   end if;

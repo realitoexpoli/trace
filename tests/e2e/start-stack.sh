@@ -10,6 +10,12 @@ dropdb --if-exists "$DB"; createdb "$DB"
 psql -q -v ON_ERROR_STOP=1 -d "$DB" -f "$ROOT/tests/supabase_stub.sql" >/dev/null
 psql -q -v ON_ERROR_STOP=1 -d "$DB" -f "$ROOT/supabase/migrations/001_init.sql" >/dev/null 2>&1
 psql -q -v ON_ERROR_STOP=1 -d "$DB" -f "$ROOT/supabase/migrations/002_profiles.sql" >/dev/null 2>&1
+psql -q -v ON_ERROR_STOP=1 -d "$DB" -f "$ROOT/supabase/migrations/003_pro_features.sql" >/dev/null 2>&1
+psql -q -v ON_ERROR_STOP=1 -d "$DB" -f "$ROOT/supabase/migrations/004_promo_codes.sql" >/dev/null 2>&1
+psql -q -v ON_ERROR_STOP=1 -d "$DB" -f "$ROOT/supabase/migrations/005_share_fix.sql" >/dev/null 2>&1
+psql -q -v ON_ERROR_STOP=1 -d "$DB" -f "$ROOT/supabase/migrations/006_referrals.sql" >/dev/null 2>&1
+psql -q -v ON_ERROR_STOP=1 -d "$DB" -f "$ROOT/supabase/migrations/007_ai.sql" >/dev/null 2>&1
+psql -q -v ON_ERROR_STOP=1 -d "$DB" -f "$ROOT/supabase/migrations/008_storage.sql" >/dev/null 2>&1
 psql -q -d "$DB" -c "do \$\$begin if not exists(select from pg_roles where rolname='authenticator') then create role authenticator login noinherit password 'pw'; end if; end\$\$;
   grant anon, authenticated, service_role to authenticator;
   grant all on all tables in schema public to service_role; grant usage on schema public to service_role;
@@ -33,6 +39,11 @@ PADDLE_API_KEY=test_paddle_api_key
 PADDLE_ENV=sandbox
 PADDLE_API_BASE=http://127.0.0.1:54321/paddle
 VARS
-cd "$ROOT" && ${WRANGLER:-npx wrangler} pages dev public --port 8788 --ip 127.0.0.1 > /tmp/wrangler.log 2>&1 &
+# HOST=workers runs the site the way Cloudflare Workers does (wrangler.jsonc + worker.js); the default is Cloudflare Pages.
+if [ "${HOST:-pages}" = "workers" ]; then
+  cd "$ROOT" && ${WRANGLER:-npx wrangler} dev --port 8788 --ip 127.0.0.1 > /tmp/wrangler.log 2>&1 &
+else
+  cd "$ROOT" && ${WRANGLER:-npx wrangler} pages dev public --port 8788 --ip 127.0.0.1 > /tmp/wrangler.log 2>&1 &
+fi
 for i in $(seq 1 60); do curl -s -o /dev/null http://127.0.0.1:8788/app.html && break; sleep 1; done
 echo "stack up: site http://127.0.0.1:8788  supabase http://127.0.0.1:54321"

@@ -6,7 +6,7 @@ async def m():
     async with async_playwright() as p:
         b=await p.chromium.launch(); errs=[]
         ctx,A=await new_device(b,errs,'A')
-        await A.goto(SITE+'/app'); await A.wait_for_timeout(1500)
+        await A.goto(SITE+'/app#edit'); await A.wait_for_timeout(1500)
         # 1 new project
         await A.click('[data-menu=proj]'); await A.click('#projMenu [data-pa=new]'); await A.wait_for_timeout(400)
         check(await A.evaluate('deck.slides.length==1 && deck.slides[0].objects.length==0'), 'New project gives a blank slide')
@@ -34,6 +34,7 @@ async def m():
         # 6 graph on click 1 with Draw
         gid=await A.evaluate("slide().objects.find(o=>o.type==='axes').id")
         await A.evaluate(f"()=>{{sel='{gid}';renderProps();renderCanvas();}}")
+        await A.click('#props .pp-rail [data-go="anim"]'); await A.wait_for_timeout(150)
         await A.select_option('#f_step','1'); await A.wait_for_timeout(200); await A.select_option('#f_enter','create'); await A.wait_for_timeout(200)
         check(await A.evaluate("(o=>o.step===1&&o.enter==='create')(slide().objects.find(o=>o.type==='axes'))"), 'Appears On click 1 and Enters with Draw are set')
         check('Click 1' in await A.inner_text('#stepbar'), 'The clicks bar now shows Click 1')
@@ -53,9 +54,9 @@ async def m():
         # duplicate summary text
         await A.click('#dupSlide'); await A.wait_for_timeout(400)
         await A.evaluate("()=>{const o=slide().objects.find(o=>o.type==='latex');o.y+=1;persist();refresh();}"); await A.wait_for_timeout(400)
-        t=await A.inner_text('#thumbs'); check('1 move' in t, 'The slide list says what animates (e.g. "1 move")')
+        t=await A.evaluate("[...document.querySelectorAll('#thumbs .tchip.anim')].map(c=>c.textContent+': '+c.title).join(' | ')"); check('Animates in' in t and '1 mov' in t, 'The slide list says the slide animates in, and what moves')
         # Help link
-        await A.click('[data-menu=help]'); await A.wait_for_timeout(200)
+        await A.click('[data-menu=more]'); await A.wait_for_timeout(200)
         check(await A.is_visible('#guideLink') and await A.get_attribute('#guideLink','href')=='/guide/', 'Help in the header lists the tours and the full guide')
         print(errs); print('WALKTHROUGH OK', len(passed))
 asyncio.run(m())

@@ -1,7 +1,8 @@
 // A local stand-in for Supabase, used by the end-to-end tests.
 //   /rest/v1/*  → the real PostgREST (the same data server Supabase runs), on a local Postgres
 //                 with supabase/migrations/001_init.sql applied, so the real security rules are tested
-//   /auth/v1/*  → a small fake of Supabase Auth: email links (PKCE), tokens, current user
+//   /auth/v1/*  → a small fake of Supabase Auth: email links (PKCE), passwords (sign-up with email
+//                 confirmation, sign-in, reset, change), tokens, current user
 //   /paddle/*   → a fake Paddle API for the billing portal
 //   /__test/*   → helpers for the test script
 // Usage: node local-supabase.mjs <port> <postgrest-port> <jwt-secret> <database-name>
@@ -32,6 +33,10 @@ const users = new Map();      // email -> id
 const codes = new Map();      // code -> {email, challenge}
 const refresh = new Map();    // refresh token -> email
 let lastCode = {};
+const passwords = new Map();  // email -> sha256 of the password
+const unconfirmed = new Set(); // emails that signed up with a password and have not opened the link yet
+const hashPw = p => createHash('sha256').update('salt:' + p).digest('hex');
+const exists = email => !!psql(`select id from auth.users where email = '${String(email).replace(/'/g, "''")}'`);
 function userFor(email) {
   if (!users.has(email)) {
     const existing = psql(`select id from auth.users where email = '${email.replace(/'/g, "''")}'`);
@@ -39,7 +44,8 @@ function userFor(email) {
     if (!existing) psql(`insert into auth.users (id, email) values ('${id}', '${email.replace(/'/g, "''")}')`);
     users.set(email, id);
   }
-  return { id: users.get(email), email, aud: 'authenticated', role: 'authenticated', app_metadata: { provider: 'email' }, user_metadata: {}, created_at: new Date().toISOString() };
+  return { id: users.get(email), email, aud: 'authenticated', role: 'authenticated', app_metadata: { provider: 'email' }, user_metadata: {},
+           identities: passwords.has(email) ? [{ provider: 'email', identity_id: users.get(email) }] : [], created_at: new Date().toISOString() };
 }
 function session(email) {
   const user = userFor(email), rt = randomUUID();
@@ -76,20 +82,59 @@ http.createServer(async (req, res) => {
     lastCode[b.email] = code;
     return send(res, 200, {});
   }
+  const newCode = (email, b, kind) => { const code = randomUUID(); codes.set(code, { email, challenge: b.code_challenge, kind }); lastCode[email] = code; return code; };
+  if (url.pathname === '/auth/v1/signup' && req.method === 'POST') {
+    const b = bodyJson();
+    if (!b.password || b.password.length < 8) return send(res, 422, { code: 'weak_password', error_code: 'weak_password', msg: 'Password should be at least 8 characters.' });
+    // like Supabase with "Confirm email" on: an existing address gets a user with no identities, and no email
+    if (exists(b.email) && (passwords.has(b.email) || !unconfirmed.has(b.email))) return send(res, 200, { ...userFor(b.email), identities: [] });
+    passwords.set(b.email, hashPw(b.password)); unconfirmed.add(b.email);
+    const u = userFor(b.email);
+    newCode(b.email, b, 'confirm');
+    return send(res, 200, { ...u, confirmation_sent_at: new Date().toISOString() });
+  }
+  if (url.pathname === '/auth/v1/recover' && req.method === 'POST') {
+    const b = bodyJson();
+    if (exists(b.email)) newCode(b.email, b, 'recovery');
+    return send(res, 200, {});
+  }
+  if (url.pathname === '/auth/v1/resend' && req.method === 'POST') {
+    const b = bodyJson();
+    if (unconfirmed.has(b.email)) newCode(b.email, b, 'confirm');
+    return send(res, 200, {});
+  }
+  if (url.pathname === '/auth/v1/user' && req.method === 'PUT') {
+    const c = verify((req.headers.authorization || '').replace(/^Bearer /, ''));
+    if (!c || !c.sub) return send(res, 401, { msg: 'invalid token' });
+    const b = bodyJson();
+    if (b.password) {
+      if (b.password.length < 8) return send(res, 422, { code: 'weak_password', error_code: 'weak_password', msg: 'Password should be at least 8 characters.' });
+      if (passwords.get(c.email) === hashPw(b.password)) return send(res, 422, { code: 'same_password', error_code: 'same_password', msg: 'New password should be different from the old password.' });
+      passwords.set(c.email, hashPw(b.password));
+    }
+    return send(res, 200, userFor(c.email));
+  }
   if (url.pathname === '/auth/v1/token') {
     const b = bodyJson(), g = url.searchParams.get('grant_type');
+    if (g === 'password') {
+      if (!passwords.has(b.email) || passwords.get(b.email) !== hashPw(b.password || ''))
+        return send(res, 400, { code: 'invalid_credentials', error_code: 'invalid_credentials', msg: 'Invalid login credentials' });
+      if (unconfirmed.has(b.email)) return send(res, 400, { code: 'email_not_confirmed', error_code: 'email_not_confirmed', msg: 'Email not confirmed' });
+      return send(res, 200, session(b.email));
+    }
     if (g === 'pkce') {
       const c = codes.get(b.auth_code);
       if (!c) return send(res, 400, { error: 'invalid_grant', error_description: 'bad code' });
       const challenge = createHash('sha256').update(b.code_verifier || '').digest('base64url');
       if (c.challenge && challenge !== c.challenge) return send(res, 400, { error: 'invalid_grant', error_description: 'code verifier does not match' });
       codes.delete(b.auth_code);
+      unconfirmed.delete(c.email);   // opening any emailed link confirms the address
       return send(res, 200, session(c.email));
     }
     if (g === 'refresh_token' && refresh.has(b.refresh_token)) return send(res, 200, session(refresh.get(b.refresh_token)));
     return send(res, 400, { error: 'invalid_grant' });
   }
-  if (url.pathname === '/auth/v1/user') {
+  if (url.pathname === '/auth/v1/user' && req.method === 'GET') {
     const c = verify((req.headers.authorization || '').replace(/^Bearer /, ''));
     if (!c || !c.sub) return send(res, 401, { msg: 'invalid token' });
     return send(res, 200, userFor(c.email));
