@@ -5412,6 +5412,15 @@ function specToSlides(spec,d){const[W2,H2]=dimsOf(d||deck),W=W2/2,H=H2/2,out=[];
       }
       if(!o)continue;if(o.w&&o.h&&['axes','chart','rect'].includes(o.type)){o.x=+cl(o.x,-W+o.w/2+0.2,W-o.w/2-0.2).toFixed(2);o.y=+cl(o.y,-H+o.h/2+0.2,H-1.2-o.h/2).toFixed(2);}
 if(c&&!['axes','chart'].includes(o.type))o.color=c;if(step)o.step=step;
+      const EN={write:'write',draw:'create',fade:'fadein',grow:'grow',left:'left',right:'right',up:'up',down:'down',zoom:'zoom',spin:'spin'};if(EN[it.enter])o.enter=EN[it.enter];
+      if(it.leave>step){o.exitStep=it.leave;o.exit=it.exit==='undraw'?'uncreate':it.exit||'fade';}
+      if(it.loop)o.loop=it.loop;if(it.emph)o.emph=it.emph;
+      if(Array.isArray(it.then)){for(const t of it.then){if(!(t.click>step))continue;const k={};
+        for(const f of ['x','y','scale','rot','opacity','value'])if(t[f]!=null)k[f]=f==='x'?cl(t.x,-W+0.3,W-0.3):f==='y'?cl(t.y,-H+0.3,H-0.3):t[f];
+        if(t.color){if(o.type==='axes')k.fnColor=t.color;else k.color=t.color;}
+        if(t.point!=null&&o.type==='axes'){o.mark=true;if(o.markX==null)o.markX=t.point;k.markX=t.point;}
+        if(t.riemann!=null&&o.type==='axes')k.riemann=t.riemann;
+        if(Object.keys(k).length){o.keys=o.keys||{};o.keys[t.click]={...(o.keys[t.click]||{}),...k};}}}
       if(it.id&&!ids.has(it.id)){ids.add(it.id);o.id='ai_'+it.id;}
       os.push(o);}
     out.push({objects:os,runTime:1.2});}
