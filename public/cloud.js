@@ -722,7 +722,7 @@
       if (!user || !session) return { error: 'signin' };
       const res = await fetch('/api/ai-deck', { method: 'POST', headers: { 'content-type': 'application/json', authorization: 'Bearer ' + session.access_token }, body: JSON.stringify(Object.assign({ lang: (window.TRACE_I18N && TRACE_I18N.lang) || 'en' }, body)) }).catch(() => null);
       if (!res) return { error: 'offline' };
-      return res.json().catch(() => ({ error: 'ai_unavailable' }));
+      return res.json().catch(() => ({ error: 'ai_unavailable', detail: 'The server answered ' + res.status + '.' }));
     },
   };
   // test hook

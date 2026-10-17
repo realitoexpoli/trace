@@ -5465,7 +5465,8 @@ async function aiGo(){if(AI.busy)return;const p=$('#aiPrompt').value.trim(),A=wi
   if(!r||r.error||!r.spec){const e=r&&r.error;
     const msg=e==='signin'?'Please sign in first.':e==='no_credits'?AI_NOCRED(r.pro)
       :e==='not_configured'?'The AI builder is not switched on for this site yet.':e==='offline'?'You seem to be offline. Try again in a moment.':'The AI could not finish this one. Try again, or describe it a little differently (your request was not counted).';
-    aiLogAdd('bot',msg);if(e==='signin'){closeAI();A.signIn();}aiUsage();return;}
+    const det=r&&r.detail&&e!=='no_credits'&&e!=='signin'?`<br><small class="ai-det">Reason: ${esc(r.detail)}</small>`:'';
+    aiLogAdd('bot',msg+det);if(e==='signin'){closeAI();A.signIn();}aiUsage();return;}
   const spec=r.spec;$('#aiPrompt').value='';
   if(mode==='new'){const d=blankDeck();if(size!=='16:9')d.size=size;d.slides=specToSlides(spec,d);if(!d.slides.length)d.slides=[{objects:[],runTime:1.2}];
     createProject(spec.title||'AI presentation',d);cur=0;sel=null;editStep=null;if(homeShown)showEditor();}
