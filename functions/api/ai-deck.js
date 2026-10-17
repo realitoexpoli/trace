@@ -64,5 +64,6 @@ export async function onRequestPost({ request, env }) {
     await refund();
     return json({ error: 'ai_unreadable', detail: stop === 'max_tokens' ? 'The answer was too long. Ask for fewer slides.' : 'The answer was not in the expected format.' }, 502);
   }
+  if (stop === 'max_tokens') spec.cut = true; // the editor says the last slide was left out
   return json({ spec, left: credit.left });
 }
