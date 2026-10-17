@@ -14,8 +14,9 @@ window.TRACE_CONFIG = {
   prices: {
     monthly: 'pri_01m4k3mh2xq60mjz76mdr84x4m',
     yearly: 'pri_01m4k3np8r3ws83b8qr2w1q0bc',
+    
   },
-  priceLabels: { monthly: '$8 a month', yearly: '$72 a year (save 25%)' },
+  priceLabels: { monthly: '$8 a month', yearly: '$72 a year (save 25%)',creditPacks: [] },
 
   // Free plan limits, shown in the app. The real limits live in the database (plan_limits).
   freeDecks: 3,
