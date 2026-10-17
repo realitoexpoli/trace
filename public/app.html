@@ -452,19 +452,19 @@ aside.props{padding:0!important;display:flex;overflow:hidden}
 .ai-dialog .body{display:grid;gap:12px}
 .ai-mode{display:inline-flex;border:1px solid var(--line);border-radius:999px;padding:3px;gap:2px;justify-self:start;flex-wrap:wrap}
 .ai-mode button{border:0;background:none;padding:6px 12px;border-radius:999px;font:inherit;font-size:13px;color:var(--mute);cursor:pointer}
-.ai-mode button[aria-pressed="true"]{background:var(--ink);color:var(--paper)}
+.ai-mode button[aria-pressed="true"]{background:#3B5BFD;color:#fff}
 .ai-mode button:disabled{opacity:.4;cursor:default}
 .ai-log{max-height:260px;overflow:auto;display:grid;gap:8px;padding:2px}
 .ai-log[hidden]{display:none}
 .ai-msg{padding:9px 12px;border-radius:12px;font-size:14px;line-height:1.45;max-width:92%}
-.ai-msg.me{justify-self:end;background:var(--ink);color:var(--paper);border-bottom-right-radius:4px}
-.ai-msg.bot{justify-self:start;background:color-mix(in srgb,#F4D345 18%,var(--paper));color:var(--ink);border-bottom-left-radius:4px}
+.ai-msg.me{justify-self:end;background:#3B5BFD;color:#fff;border-bottom-right-radius:4px}
+.ai-msg.bot{justify-self:start;background:var(--desk);color:var(--ink);border-bottom-left-radius:4px}
 .ai-msg .btn{margin-left:6px}
 .ai-msg.ok{background:color-mix(in srgb,#83C167 22%,var(--paper))}
 .ai-msg.warn{background:color-mix(in srgb,#FC6255 20%,var(--paper))}
 .ai-dots::after{content:'…';animation:aidots 1.2s steps(4) infinite;display:inline-block;width:1.2em;overflow:hidden;vertical-align:bottom}
 @keyframes aidots{0%{width:0}100%{width:1.2em}}
-#aiPrompt{width:100%;box-sizing:border-box;font:inherit;font-size:15px;padding:10px 12px;border:1px solid var(--line);border-radius:12px;resize:vertical;background:var(--paper);color:var(--ink)}
+#aiPrompt{width:100%;min-height:96px!important;max-height:40vh;box-sizing:border-box;font:inherit;font-size:15px;padding:10px 12px;border:1px solid var(--line);border-radius:12px;resize:vertical;background:var(--paper);color:var(--ink)}
 .ai-chips{display:flex;flex-wrap:wrap;gap:6px}
 .ai-chip{border:1px solid var(--line);background:none;border-radius:999px;padding:5px 10px;font:inherit;font-size:12.5px;color:var(--mute);cursor:pointer}
 .ai-chip:hover{color:var(--ink);border-color:var(--ink)}
@@ -474,13 +474,13 @@ aside.props{padding:0!important;display:flex;overflow:hidden}
 .ai-usage{color:var(--mute);font-size:12.5px}
 .ai-note{margin:0;font-size:12px;color:var(--mute)}
 .aibtn{display:inline-flex;align-items:center;gap:5px}
-.aibtn svg{color:#F4D345}
+.aibtn svg{color:#3B5BFD}
 .ai-usage button{border:0;background:none;padding:0;font:inherit;color:#3B5BFD;cursor:pointer;text-decoration:underline}
-.ai-hero{display:flex;align-items:center;gap:14px;width:100%;text-align:left;border:0;border-radius:16px;padding:16px 18px;margin:0 0 18px;cursor:pointer;font:inherit;background:#141824;color:#fff}
-.ai-hero svg{color:#F4D345;flex-shrink:0}
-.ai-hero b{display:block;font-size:17px}
-.ai-hero small{display:block;opacity:.75;font-size:13.5px;margin-top:2px}
-.ai-hero:hover{background:#1d2333}
+.ai-hero{display:flex;align-items:center;gap:14px;width:100%;text-align:left;border:1px solid var(--line);border-radius:14px;padding:14px 16px;margin:0 0 18px;cursor:pointer;font:inherit;background:var(--paper);color:var(--ink);box-shadow:0 1px 2px rgba(0,0,0,.04)}
+.ai-hero svg{color:#3B5BFD;flex-shrink:0}
+.ai-hero b{display:block;font-size:16px}
+.ai-hero small{display:block;color:var(--mute);font-size:13.5px;margin-top:2px}
+.ai-hero:hover{border-color:#3B5BFD}
 #bgModal{position:fixed;inset:0;background:rgba(12,14,13,.5);z-index:41;display:flex;align-items:center;justify-content:center;padding:12px}
 #bgModal[hidden]{display:none}
 .bg-dialog{width:min(900px,100%)}
@@ -566,31 +566,12 @@ body.portrait .frame{width:min(100%,calc((100vh - 330px) * var(--ar)))}
 .fs-list .fs-none{padding:18px 12px;color:var(--mute);font-size:14px}
 .fs-foot{margin:0;padding:8px 14px;border-top:1px solid var(--line);font-size:11.5px;color:var(--mute)}
 
-/* ---------- Tracé look: ink top bar, warm dotted "desk", chalk-yellow accents ---------- */
-header{background:#141824;border-bottom:1px solid #0B0E16;color:#E8EAEE}
-header>button:not(.primary),header>.menuwrap>button,#tools>.menuwrap>button,header>a,header .proj,header .proj *,header>span,header>div:not(.menuwrap):not(#tools)>button{color:#E8EAEE}
-header>button:not(.primary):hover,header>.menuwrap>button:hover,#tools>.menuwrap>button:hover{background:rgba(255,255,255,.1)}
-#tools>.menuwrap>button[aria-expanded="true"],header>.menuwrap>button[aria-expanded="true"]{background:rgba(255,255,255,.16)}
-#tools .addlabel{color:#F4D345;opacity:1}
-header input,header #projName{color:#fff;background:transparent}
-header .videobtn,header .tourbtn{border-color:rgba(255,255,255,.28)!important;background:transparent!important;color:#fff!important}
-header .videobtn svg,header .tourbtn svg{color:#F4D345}
-header #presentBtn{background:#F4D345;border-color:#F4D345;color:#141824}
-header #presentBtn:hover{filter:brightness(1.06)}
-.fsearch{min-width:180px;justify-content:flex-start;background:rgba(255,255,255,.08);border-color:rgba(255,255,255,.18);color:#C9CED4;font-weight:500}
+/* the feature search shows as a field, so people can find it */
+.fsearch{min-width:170px;justify-content:flex-start;font-weight:500}
 .fsearch span{flex:1;text-align:left}
-.fsearch kbd{background:transparent;border-color:rgba(255,255,255,.25);color:#C9CED4}
-.fsearch:hover{background:rgba(255,255,255,.14);color:#fff;border-color:rgba(255,255,255,.35)}
 @media (max-width:1760px){.fsearch kbd{display:none}}@media (max-width:1500px){.fsearch{min-width:0}}
-@media (max-width:1400px){.fsearch span{display:inline!important;flex:none}.fsearch span::after{content:''}}
-@media (max-width:1400px){.fsearch span{font-size:0}.fsearch span::before{content:'Search';font-size:13px}}
+@media (max-width:1400px){.fsearch span{display:inline!important;flex:none;font-size:0}.fsearch span::before{content:'Search';font-size:13px}}
 @media (max-width:1100px){.fsearch span{display:none!important}}
-main>.stage{background-color:#F2EFE7;background-image:radial-gradient(rgba(20,24,36,.16) 1px,transparent 1.3px);background-size:18px 18px}
-.frame{border-radius:10px;box-shadow:0 0 0 1px rgba(20,24,36,.18),0 28px 50px -26px rgba(20,24,36,.6)}
-.thumb.on{outline-color:#F4D345!important;outline-width:3px}
-.pp-rail button.on{color:#141824}.pp-rail button.on::before{background:#F4D345}.pp-rail button.on svg{color:#3B5BFD}
-.strip-head{color:#141824}
-@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .strip-head,:root:not([data-theme="light"]) .pp-rail button.on{color:var(--ink)}}
 #homeBtn>span{display:none}
 @media (max-width:1640px){#videoHdr>span{display:none}#videoHdr{padding-inline:9px}}
 </style>
@@ -4597,7 +4578,7 @@ Object.assign(TOURS,{
     {target:()=>objEl(byId(C))||$('.frame'),title:'Point, then click',body:'Move the pointer over the slide: a <b>dashed outline</b> and a name show what a click would pick. Click the <b>circle</b>.',wait:()=>sel===C,auto:()=>selectId(C)},
     {target:()=>objEl(byId(C))||$('.frame'),title:'The one underneath',body:'The rectangle is under the circle. Hold <b>Alt</b> and click the circle again to pick the object underneath.',wait:()=>sel===R,auto:()=>selectId(R)},
     {target:()=>$('.frame'),title:'Go through them',body:'Press <b>Tab</b> to select the next object, <b>Shift+Tab</b> for the previous one.',wait:()=>sel&&sel!==R,auto:()=>selectId(L),place:'corner'},
-    {target:()=>$('#props .objlist')||$('#props'),title:'Or pick from the list',body:'With nothing selected, the settings list every object on the slide. Click <b>Line</b> in the list.',wait:()=>sel===L,auto:()=>selectId(L),before:()=>{if(sel!==L&&sel){sel=null;editStep=null;renderCanvas();renderProps();}}},
+    {target:()=>$('#props .objlist')||$('#props'),title:'Or pick from the list',body:'With nothing selected, the settings list every object on the slide. Click <b>Line</b> in the list.',wait:()=>sel===L,auto:()=>selectId(L),before:()=>{if(sel){sel=null;editStep=null;renderCanvas();renderProps();}const o=$('#props .objlist');if(o)revealInProps(o);}},
     {target:()=>objEl(byId(L))||$('.frame'),title:'Resize and turn',body:'Drag a <b>corner handle</b> to resize, or the <b>round handle</b> to turn it.',wait:()=>{const o=byId(L);return o&&(Math.abs((o.scale||1)-1)>0.1||Math.abs(o.rot||0)>5);},auto:()=>{const o=byId(L);snap();o.rot=20;persist();refresh();},before:()=>ensureSel(L),optional:true},
     {target:()=>$('#toFront'),title:'Bring to front',body:'Select the rectangle, then press <b>Bring to front</b>: it now covers the circle.',wait:()=>slide().objects.at(-1)?.id===R,auto:()=>{selectId(R);setTimeout(()=>$('#toFront')?.click(),0);},before:()=>ensureSel(R)},
     {target:()=>$('#dupObj'),title:'Copy it',body:'Press <b>Duplicate</b> (or <b>Ctrl+D</b>) to make a copy.',wait:()=>slide().objects.length>=5,auto:()=>{ensureSel(R);dupObj();},before:()=>ensureSel(R)},
