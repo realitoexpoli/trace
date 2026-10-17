@@ -720,7 +720,7 @@
     async usage() { if (!user) return null; try { const { data } = await sb.rpc('my_ai_credits'); return data; } catch (_) { return null; } },
     async build(body) {
       if (!user || !session) return { error: 'signin' };
-      const res = await fetch('/api/ai-deck', { method: 'POST', headers: { 'content-type': 'application/json', authorization: 'Bearer ' + session.access_token }, body: JSON.stringify(body) }).catch(() => null);
+      const res = await fetch('/api/ai-deck', { method: 'POST', headers: { 'content-type': 'application/json', authorization: 'Bearer ' + session.access_token }, body: JSON.stringify(Object.assign({ lang: (window.TRACE_I18N && TRACE_I18N.lang) || 'en' }, body)) }).catch(() => null);
       if (!res) return { error: 'offline' };
       return res.json().catch(() => ({ error: 'ai_unavailable' }));
     },

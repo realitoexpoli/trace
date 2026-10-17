@@ -378,3 +378,9 @@ body[data-mode="account"] .btn.primary{background:var(--brand);border-color:var(
 
 /* invite friends */
 .inv-row{display:flex;gap:8px;margin:12px 0 10px}.inv-row input{flex:1;min-width:0;font:inherit;font-size:14px;padding:9px 12px;border:1px solid var(--line);border-radius:8px;background:var(--desk);color:var(--ink)}
+/* languages */
+.lang-pick{font:inherit;font-size:13px;color:inherit;background:transparent;border:1px solid var(--line);border-radius:6px;padding:4px 8px;cursor:pointer}
+.tr-note{font-size:14px;color:var(--mute);background:rgba(59,91,253,.06);border-radius:8px;padding:10px 14px;margin:8px 0 18px}
+html[dir=rtl] code,html[dir=rtl] kbd,html[dir=rtl] pre{direction:ltr;unicode-bidi:isolate}
+html[dir=rtl] footer .sp{margin-right:0;margin-left:auto}
+.auth-legal .lang-pick{margin-inline-start:8px}
