@@ -5472,7 +5472,7 @@ async function aiGo(){if(AI.busy)return;const p=$('#aiPrompt').value.trim(),A=wi
     createProject(spec.title||'AI presentation',d);cur=0;sel=null;editStep=null;if(homeShown)showEditor();}
   else{snap();const add=specToSlides(spec,deck),at=deck.slides.length;deck.slides.push(...add);cur=at;sel=null;editStep=null;refresh();}
   const n=spec.slides.length;
-  aiLogAdd('bot',`${mode==='new'?'Made':'Added'} ${n} slide${n>1?'s':''}: ${spec.slides.map(s=>'<b>'+esc(s.title||'…')+'</b>').join(', ')}. Press <b>Present</b> to click through, or keep asking (“add a quiz slide”, “make it simpler”).${mode==='add'?' <button type="button" class="btn small" data-aiundo>Undo</button>':''}`);
+  aiLogAdd('bot',`${mode==='new'?'Made':'Added'} ${n} slide${n>1?'s':''}: ${spec.slides.map(s=>'<b>'+esc(s.title||'…')+'</b>').join(', ')}. Press <b>Present</b> to click through, or keep asking (“add a quiz slide”, “make it simpler”).${spec.cut?' The answer was long, so the last slide was left out: ask “add the next slide” to continue.':''}${mode==='add'?' <button type="button" class="btn small" data-aiundo>Undo</button>':''}`);
   for(const ck of aiChecks(spec))aiLogAdd(ck.ok?'bot ok':'bot warn',ck.html+(ck.ok?'':` <button type="button" class="btn small" data-aigo="${(mode==='new'?0:deck.slides.length-spec.slides.length)+ck.slide}">Show slide</button>`));
   if(mode==='new'&&!solve)aiSetMode('add');
   if(r.left!=null)aiShowLeft(r.left);}
