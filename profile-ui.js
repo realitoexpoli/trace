@@ -1,3 +1,5 @@
+/* invite links: remember ?ref=CODE until the visitor has an account */
+try { const q = new URLSearchParams(location.search).get('ref'); if (q && /^[A-Za-z0-9]{4,12}$/.test(q)) localStorage.setItem('trace-ref', q.toUpperCase()); } catch (_) {}
 /* Shared pieces for the account pages and the editor:
    - TRACE_PLANS: what each plan includes (one list, used everywhere in the app)
    - TraceUI.planTable(): the Free / Pro comparison
@@ -19,12 +21,14 @@
       ['Record your voice on slides and clicks', false, true],
       ['Make a video (MP4) of every click, with your voice', 'With a “Made with Tracé” badge', 'No badge'],
       ['Python video script (Manim)', CFG.pythonForFree ? 'With a “Made with Tracé” mark' : false, true],
-      ['Projects saved to your account', String(FREE_DECKS), 'Unlimited'],
+      ['Projects saved to your account', String(FREE_DECKS), '50'],
+      ['Online space in total', '5 MB', '200 MB'],
+      ['Export and import project files (keep any number on your computer)', true, true],
       ['Size of one project (images and voice included)', '2 MB', '20 MB'],
       ['“Made with Tracé” badge', 'On share links and while presenting', 'None'],
       ['See how often each shared deck is watched', false, true],
     ],
-    proOnly: ['Advanced 3D: surfaces, 3D scenes, polyhedra, turning views', 'Record your voice on slides', 'The Python video script for Manim', 'Unlimited projects in your account, up to 20 MB each', 'No “Made with Tracé” badge', 'View counts on shared decks'],
+    proOnly: ['30 AI credits every month: describe a lesson, get animated slides', 'Advanced 3D: surfaces, 3D scenes, polyhedra, turning views', 'Record your voice on slides', 'The Python video script for Manim', '50 projects in your account (200 MB online)', 'No “Made with Tracé” badge', 'View counts on shared decks'],
   };
 
   const ROLES = [
@@ -206,6 +210,7 @@
   const longDate = d => new Date(d).toLocaleDateString(undefined, { day: 'numeric', month: 'long', year: 'numeric' });
   // Loads the profile; works before 004_promo_codes.sql has been run too.
   async function fetchProfile(sb, uid, cols) {
+    try { const ref = localStorage.getItem('trace-ref'); if (ref) { const r = await sb.rpc('claim_referral', { p_code: ref }); if (!r.error) localStorage.removeItem('trace-ref'); } } catch (_) {}
     try { await sb.rpc('refresh_my_plan'); } catch (_) {}
     let r = await sb.from('profiles').select(cols + ',comp_until,comp_code').eq('id', uid).maybeSingle();
     if (r.error) r = await sb.from('profiles').select(cols).eq('id', uid).maybeSingle();

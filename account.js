@@ -301,7 +301,9 @@
   /* ---------- your account ---------- */
   const PROVIDER_NAMES = { email: 'Email and password', google: 'Google', github: 'GitHub' };
   async function accountView() {
-    const [{ count }] = await Promise.all([sb.from('decks').select('id', { count: 'exact', head: true })]);
+    const [{ count }, stRes] = await Promise.all([sb.from('decks').select('id', { count: 'exact', head: true }), sb.rpc('my_storage').then(r => r, () => ({}))]);
+    const st = stRes && stRes.data ? (Array.isArray(stRes.data) ? stRes.data[0] : stRes.data) : null;
+    const mb = b => (b / 1e6 < 10 ? (b / 1e6).toFixed(1) : Math.round(b / 1e6)) + ' MB';
     const pro = profile.plan === 'pro', FREE = CFG.freeDecks || 3, n = count ?? 0;
     const role = (TraceUI.ROLES.find(r => r[0] === profile.role) || [, ''])[1];
     const pastDue = profile.subscription_status === 'past_due';
@@ -329,12 +331,22 @@
           </div>
           <div class="bill-actions">${gift ? '<a class="btn primary" href="/app?upgrade=1" id="upgradeLink">Keep Pro after that</a>' : pro && profile.paddle_customer_id ? '<button class="btn primary" id="billing">Manage billing</button>' : pro ? '' : '<a class="btn primary" href="/app?upgrade=1" id="upgradeLink">Upgrade to Pro</a>'}</div>
         </div>
+        ${st ? `<div class="store-line"><p class="muted"><b>Online space:</b> ${mb(st.used_bytes)} of ${mb(st.max_total_bytes)} used · ${st.decks} of ${st.max_decks} projects</p>
+          <div class="meter" role="progressbar" aria-label="Online space used" aria-valuemin="0" aria-valuemax="100" aria-valuenow="${Math.min(100, Math.round(100 * st.used_bytes / st.max_total_bytes))}"><i style="width:${Math.min(100, Math.round(100 * st.used_bytes / st.max_total_bytes))}%"></i></div>
+          <p class="fine">To free space, open a project you no longer need, use Export → Project file to keep it on your computer, then delete it. Import brings it back any time.</p></div>` : ''}
         ${gift ? `<p class="fine bill-help">When the free period ends, your account goes back to the Free plan by itself: nothing is charged and no deck is deleted.</p>`
           : pro ? `<p class="fine bill-help">In <b>Manage billing</b> you can update your card, download invoices, switch between monthly and yearly, or cancel. Payments are handled securely by Paddle.</p>`
           : `<div class="pro-peek"><p class="pro-peek-h">With Pro you also get</p><ul class="ticks">${window.TRACE_PLANS.proOnly.map(t => `<li>${esc(t)}</li>`).join('')}</ul>
              <p class="fine">${esc((CFG.priceLabels && CFG.priceLabels.monthly) || '')}${CFG.priceLabels && CFG.priceLabels.yearly ? ' · or ' + esc(CFG.priceLabels.yearly) : ''}. Cancel any time.</p></div>`}
         ${pro ? '' : `<details class="plans-peek" id="promo"${promoParam ? ' open' : ''}><summary>Have a promo code?</summary><div id="promoBox" style="margin-top:12px"></div></details>`}
         <details class="plans-peek"><summary>Compare Free and Pro</summary>${TraceUI.planTable(profile.plan)}</details>
+      </section>
+
+      <section class="acct-sec" id="invite"><h2>Invite friends, get Pro free</h2>
+        <p class="muted sec-sub">Every <b id="invPer">20</b> friends who join with your link give you <b id="invDays">1 month</b> of Pro free. No card needed. A friend counts once they have confirmed their email and filled in their profile.</p>
+        <div class="inv-row"><input id="invLink" readonly value="…" aria-label="Your invite link"><button class="btn primary" type="button" id="invCopy">Copy link</button></div>
+        <div class="meter" role="progressbar" aria-label="Friends towards your next free month" aria-valuemin="0" id="invMeter"><i style="width:0%"></i></div>
+        <p class="fine" id="invStat">Loading…</p>
       </section>
 
       <section class="acct-sec" id="profile"><h2>Profile</h2><p class="muted sec-sub">Shown on decks you share.</p><div id="pf"></div></section>
@@ -363,6 +375,18 @@
       onSubmit: async v => { await saveProfile(v); say('Profile saved.', 'ok'); renderHeaderUser(); refreshHead(); window.scrollTo({ top: 0, behavior: 'smooth' }); },
     });
     wirePw(main);
+    (async () => {
+      try {
+        const { data } = await sb.rpc('my_referral');
+        if (!data || !data.ok) { $('invite').hidden = true; return; }
+        const link = location.origin + '/?ref=' + data.code, per = data.per_reward, done = data.friends % per;
+        $('invLink').value = link; $('invPer').textContent = per; $('invDays').textContent = data.reward_days === 30 ? '1 month' : data.reward_days + ' days';
+        $('invMeter').setAttribute('aria-valuemax', per); $('invMeter').setAttribute('aria-valuenow', done); $('invMeter').firstElementChild.style.width = Math.round(100 * done / per) + '%';
+        $('invStat').textContent = `${data.friends} friend${data.friends === 1 ? '' : 's'} joined · ${data.next_in} more for your next free month` + (data.rewards ? ` · ${data.rewards} free month${data.rewards === 1 ? '' : 's'} earned so far` : '');
+        $('invCopy').onclick = async () => { try { await navigator.clipboard.writeText(link); } catch (_) { $('invLink').select(); document.execCommand('copy'); } $('invCopy').textContent = 'Copied'; setTimeout(() => { $('invCopy').textContent = 'Copy link'; }, 1600); };
+        if (data.new_rewards > 0) { const fresh = await TraceUI.fetchProfile(sb, user.id, 'display_name,role,subject,organization,avatar_color,plan,subscription_status,plan_renews_at,paddle_customer_id'); if (fresh) profile = fresh; say(`Thank you! Your friends earned you ${data.new_rewards} free month${data.new_rewards === 1 ? '' : 's'} of Pro.`, 'ok'); setTimeout(() => { accountView(); renderHeaderUser(); }, 1500); }
+      } catch (_) { const s = $('invite'); if (s) s.hidden = true; }
+    })();
     if ($('promoBox')) TraceUI.promoForm($('promoBox'), sb, async until => {
       const fresh = await TraceUI.fetchProfile(sb, user.id, 'display_name,role,subject,organization,avatar_color,plan,subscription_status,plan_renews_at,paddle_customer_id');
       if (fresh) profile = fresh;
