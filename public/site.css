@@ -384,3 +384,4 @@ body[data-mode="account"] .btn.primary{background:var(--brand);border-color:var(
 html[dir=rtl] code,html[dir=rtl] kbd,html[dir=rtl] pre{direction:ltr;unicode-bidi:isolate}
 html[dir=rtl] footer .sp{margin-right:0;margin-left:auto}
 .auth-legal .lang-pick{margin-inline-start:8px}
+.store-line{margin:14px 0 4px}.store-line .fine{margin-top:8px}

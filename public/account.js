@@ -301,7 +301,9 @@
   /* ---------- your account ---------- */
   const PROVIDER_NAMES = { email: 'Email and password', google: 'Google', github: 'GitHub' };
   async function accountView() {
-    const [{ count }] = await Promise.all([sb.from('decks').select('id', { count: 'exact', head: true })]);
+    const [{ count }, stRes] = await Promise.all([sb.from('decks').select('id', { count: 'exact', head: true }), sb.rpc('my_storage').then(r => r, () => ({}))]);
+    const st = stRes && stRes.data ? (Array.isArray(stRes.data) ? stRes.data[0] : stRes.data) : null;
+    const mb = b => (b / 1e6 < 10 ? (b / 1e6).toFixed(1) : Math.round(b / 1e6)) + ' MB';
     const pro = profile.plan === 'pro', FREE = CFG.freeDecks || 3, n = count ?? 0;
     const role = (TraceUI.ROLES.find(r => r[0] === profile.role) || [, ''])[1];
     const pastDue = profile.subscription_status === 'past_due';
@@ -329,6 +331,9 @@
           </div>
           <div class="bill-actions">${gift ? '<a class="btn primary" href="/app?upgrade=1" id="upgradeLink">Keep Pro after that</a>' : pro && profile.paddle_customer_id ? '<button class="btn primary" id="billing">Manage billing</button>' : pro ? '' : '<a class="btn primary" href="/app?upgrade=1" id="upgradeLink">Upgrade to Pro</a>'}</div>
         </div>
+        ${st ? `<div class="store-line"><p class="muted"><b>Online space:</b> ${mb(st.used_bytes)} of ${mb(st.max_total_bytes)} used · ${st.decks} of ${st.max_decks} projects</p>
+          <div class="meter" role="progressbar" aria-label="Online space used" aria-valuemin="0" aria-valuemax="100" aria-valuenow="${Math.min(100, Math.round(100 * st.used_bytes / st.max_total_bytes))}"><i style="width:${Math.min(100, Math.round(100 * st.used_bytes / st.max_total_bytes))}%"></i></div>
+          <p class="fine">To free space, open a project you no longer need, use Export → Project file to keep it on your computer, then delete it. Import brings it back any time.</p></div>` : ''}
         ${gift ? `<p class="fine bill-help">When the free period ends, your account goes back to the Free plan by itself: nothing is charged and no deck is deleted.</p>`
           : pro ? `<p class="fine bill-help">In <b>Manage billing</b> you can update your card, download invoices, switch between monthly and yearly, or cancel. Payments are handled securely by Paddle.</p>`
           : `<div class="pro-peek"><p class="pro-peek-h">With Pro you also get</p><ul class="ticks">${window.TRACE_PLANS.proOnly.map(t => `<li>${esc(t)}</li>`).join('')}</ul>

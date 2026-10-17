@@ -33,6 +33,7 @@
   .acctmenu .who{padding:8px 10px 4px;font-size:12.5px;color:var(--mute);overflow:hidden;text-overflow:ellipsis}
   .acctmenu .plan{padding:0 10px 8px;font-weight:700}
   .acctmenu .plan small{font-weight:400;color:var(--mute);display:block}
+  .acctmenu .plan .store{margin-top:4px}.store-bar{display:block;height:4px;border-radius:2px;background:var(--line,#e5e7eb);margin:4px 0 3px;overflow:hidden}.store-bar i{display:block;height:100%;background:#3B5BFD}
   .acctmenu .up{color:var(--pen);font-weight:700}
   .pj .tag{font-size:11px;color:var(--mute);border:1px solid var(--line);border-radius:3px;padding:0 4px;margin-left:6px}
   #cloudModal{position:fixed;inset:0;background:rgba(12,14,13,.5);z-index:46;display:flex;align-items:center;justify-content:center;padding:16px}
@@ -185,6 +186,21 @@
     stat.setAttribute('aria-label', text);
     stat.innerHTML = (kind === 'off' ? '' : ICON_CLOUD) + `<span>${esc(short || text)}</span>`;
   }
+  // online space used and allowed (from the database; cached for 30 seconds)
+  let storage = null, storageAt = 0;
+  async function loadStorage(force) {
+    if (!user) return null;
+    if (!force && storage && Date.now() - storageAt < 30000) return storage;
+    try { const { data } = await sb.rpc('my_storage'); storage = Array.isArray(data) ? data[0] : data; storageAt = Date.now(); } catch (_) {}
+    return storage;
+  }
+  const mb = b => (b / 1e6 < 10 ? (b / 1e6).toFixed(1) : Math.round(b / 1e6)) + ' MB';
+  async function fillStorage() {
+    const st = await loadStorage(), el = document.getElementById('acctStore');
+    if (!st || !el) return;
+    const pct = Math.min(100, Math.round(100 * st.used_bytes / st.max_total_bytes));
+    el.innerHTML = `<span class="store-bar"><i style="width:${pct}%"></i></span>${mb(st.used_bytes)} of ${mb(st.max_total_bytes)} online · ${st.decks} of ${st.max_decks} projects`;
+  }
   function showStatus() {
     const m = curMeta();
     if (!user) return setStatus('off', '');
@@ -193,7 +209,7 @@
     if (m.tooBig) return setStatus('warn', 'Too big for the cloud on your plan', 'Too big');
     if (m.practice) return setStatus('local', 'The tutorial’s practice project is kept on this device only', 'Practice');
     if (m.needsPro) return setStatus('warn', 'This project has recorded voice, a Pro feature: saved on this device only', 'Needs Pro');
-    if (m.localOnly) return setStatus('warn', `On this device only: the free plan keeps ${CFG.freeDecks || 3} decks online`, 'Device only');
+    if (m.localOnly) return setStatus('warn', m.full ? 'On this device only: your online space is full' : isPro() ? 'On this device only: Pro keeps 50 decks online' : `On this device only: the free plan keeps ${CFG.freeDecks || 3} decks online`, 'Device only');
     if (pending.has(m.id) || busy) return setStatus('saving', 'Saving to your account…', 'Saving…');
     if (m.cloudId && !dirty(m)) return setStatus('ok', 'Saved to your account', 'Saved');
     if (m.cloudId) return setStatus('saving', 'Waiting to save', 'Saving…');
@@ -318,7 +334,8 @@
     await flush(true);
     m = curMeta();
     if (!m.cloudId) {
-      if (m.localOnly) return upgradeDialog(`This deck is not in the cloud yet: the free plan keeps ${CFG.freeDecks || 3} decks. Upgrade, or delete a deck you no longer need.`);
+      if (m.localOnly && isPro()) return openDialog('<h2 id="cloudTitle">Share</h2><p>This deck is not online yet: your online space is full. Download a project file of a deck you are not using (Export → Project file), delete it, and try again.</p>');
+      if (m.localOnly) return upgradeDialog(m.full ? 'Your online space is full. Pro has 200 MB, or download a project file of a deck you are not using and delete it.' : `This deck is not in the cloud yet: the free plan keeps ${CFG.freeDecks || 3} decks. Upgrade, or delete a deck you no longer need.`);
       if (m.tooBig) return upgradeDialog('This deck is too big for the free plan (2 MB). Pro allows 20 MB.');
       return openDialog('<h2 id="cloudTitle">Share</h2><p>Could not reach the server. Check your connection and try again.</p>');
     }
@@ -373,11 +390,12 @@
       ${profileDone() ? '' : '<button role="menuitem" class="up" data-acct="profile">Finish your profile to save online</button>'}
       <div class="plan">${isPro() ? 'Pro plan' : 'Free plan'}<small>${isPro()
         ? (TraceUI.isGift(profile) ? 'Free with a code until ' + new Date(profile.comp_until).toLocaleDateString() : profile.subscription_status === 'past_due' ? 'Payment problem: please update your card' : profile.plan_renews_at ? 'Renews ' + new Date(profile.plan_renews_at).toLocaleDateString() : '')
-        : `${used} of ${CFG.freeDecks || 3} projects online · <span class="pro-tag">PRO</span> unlimited`}</small></div>
+        : `${used} of ${CFG.freeDecks || 3} projects online · <span class="pro-tag">PRO</span> 50`}</small><small class="store" id="acctStore"></small></div>
       ${isPro() && profile.paddle_customer_id ? '<button role="menuitem" data-acct="billing">Manage billing</button>' : isPro() ? '' : '<button role="menuitem" class="up" data-acct="upgrade">Upgrade to Pro</button>'}
       <a role="menuitem" href="/account" class="menulink">Profile, plan and billing</a>
       <button role="menuitem" data-acct="sync">Sync now</button>
       <hr><button role="menuitem" data-acct="signout">Sign out</button>`;
+    fillStorage();
   }
   document.addEventListener('click', async e => {
     const a = e.target.closest('[data-acct]');
@@ -448,11 +466,14 @@
       if (msg.includes('profile_required')) { await loadProfile(); renderAcct(); showStatus(); profileDialog(); saveIndex(); return; }
       if (msg.includes('voice_needs_pro')) { m.needsPro = true; nudge('Saved on this device only: recorded voice is part of Tracé Pro.'); }
       else if (msg.includes('free_limit')) { m.localOnly = true; nudge(`Saved on this device only: the free plan keeps ${CFG.freeDecks || 3} decks in the cloud.`); }
+      else if (msg.includes('storage_full')) { m.localOnly = true; m.full = true; nudge('Saved on this device only: your online space is full. Download a project file of an old deck and delete it to make room.'); }
+      else if (msg.includes('pro_limit')) { m.localOnly = true; nudge('Saved on this device only: Pro keeps 50 decks online. Download a project file of an old deck and delete it to make room.'); }
       else if (msg.includes('deck_too_large')) { m.tooBig = true; nudge('This deck is too big to save online on your plan. It is still saved on this device.'); }
       else { pending.add(m.id); clearTimeout(timer); timer = setTimeout(flush, 15000); }   // offline or server busy: try again soon
       saveIndex(); return;
     }
     if (res.data.id) m.cloudId = res.data.id;
+    storageAt = 0;
     m.cloudAt = res.data.updated_at;
     m.owner = user.id;
     m.syncedAt = stamp;

@@ -21,12 +21,14 @@ try { const q = new URLSearchParams(location.search).get('ref'); if (q && /^[A-Z
       ['Record your voice on slides and clicks', false, true],
       ['Make a video (MP4) of every click, with your voice', 'With a “Made with Tracé” badge', 'No badge'],
       ['Python video script (Manim)', CFG.pythonForFree ? 'With a “Made with Tracé” mark' : false, true],
-      ['Projects saved to your account', String(FREE_DECKS), 'Unlimited'],
+      ['Projects saved to your account', String(FREE_DECKS), '50'],
+      ['Online space in total', '5 MB', '200 MB'],
+      ['Export and import project files (keep any number on your computer)', true, true],
       ['Size of one project (images and voice included)', '2 MB', '20 MB'],
       ['“Made with Tracé” badge', 'On share links and while presenting', 'None'],
       ['See how often each shared deck is watched', false, true],
     ],
-    proOnly: ['30 AI credits every month: describe a lesson, get animated slides', 'Advanced 3D: surfaces, 3D scenes, polyhedra, turning views', 'Record your voice on slides', 'The Python video script for Manim', 'Unlimited projects in your account, up to 20 MB each', 'No “Made with Tracé” badge', 'View counts on shared decks'],
+    proOnly: ['30 AI credits every month: describe a lesson, get animated slides', 'Advanced 3D: surfaces, 3D scenes, polyhedra, turning views', 'Record your voice on slides', 'The Python video script for Manim', '50 projects in your account (200 MB online)', 'No “Made with Tracé” badge', 'View counts on shared decks'],
   };
 
   const ROLES = [
