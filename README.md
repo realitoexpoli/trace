@@ -8,8 +8,9 @@ Tracé is a browser editor for animated maths and physics slides. This package t
 - **Free and Pro plans**: Pro adds advanced 3D, recorded voice, the Python video script and no “Made with Tracé” badge; storage limits are enforced by the database
 - **Payments** through Paddle, which also collects VAT and sales tax worldwide
 - A **home page** with pricing, a **user guide** at `/guide`, and **terms / privacy / refund** templates
+- **Five languages** (English, French, Spanish, Portuguese, Arabic) for the website, the account pages and the editor
 
-Everything was tested on a full local copy of the stack (511 automated checks, see [Tests](#tests)).
+Everything was tested on a full local copy of the stack (686 automated checks, see [Tests](#tests)).
 
 ---
 
@@ -116,7 +117,7 @@ You need: a GitHub account, and accounts at Supabase, Cloudflare, Paddle and Res
 ### 1. Supabase (database and sign-in)
 
 1. Create a project at [supabase.com](https://supabase.com). Choose a region close to your users (for Europe: Frankfurt). Save the database password somewhere safe.
-2. **SQL Editor → New query**: paste the whole of `supabase/migrations/001_init.sql`, then **Run**. Then do the same with `002_profiles.sql`, `003_pro_features.sql`, `004_promo_codes.sql` and `005_share_fix.sql`. All are safe to run again (in that order). For promo codes, also turn on **Database → Extensions → pg_cron** before running `004` (it ends finished free periods every hour; without it they still end, as soon as the person signs in).
+2. **SQL Editor → New query**: paste the whole of `supabase/migrations/001_init.sql`, then **Run**. Then do the same with `002_profiles.sql`, `003_pro_features.sql`, `004_promo_codes.sql` `005_share_fix.sql`, `006_referrals.sql` and `007_ai.sql`. All are safe to run again (in that order). For promo codes, also turn on **Database → Extensions → pg_cron** before running `004` (it ends finished free periods every hour; without it they still end, as soon as the person signs in).
 3. **Project Settings → API**: copy
    - the **Project URL** → `supabaseUrl` in `public/config.js`
    - the **anon / publishable** key → `supabaseAnonKey` in `public/config.js`
@@ -149,7 +150,7 @@ Start in the **sandbox** ([sandbox-vendors.paddle.com](https://sandbox-vendors.p
 3. **Checkout → Checkout settings**: set the default payment link to `https://traceanim.com/app`.
 4. **Developer tools → Notifications → New destination**:
    - URL: `https://traceanim.com/api/paddle-webhook`
-   - Events: all `subscription.*` events (created, activated, updated, trialing, past_due, paused, resumed, canceled)
+   - Events: all `subscription.*` events (created, activated, updated, trialing, past_due, paused, resumed, canceled), and `transaction.completed` (for AI credit packs)
    - copy the **secret key** → `PADDLE_WEBHOOK_SECRET` in step 3.
 5. To go live later: create the same things in the live dashboard, set `paddleEnv: 'production'` in `config.js` and `PADDLE_ENV=production` in Cloudflare, and ask Paddle to approve your domain. Paddle checks that the site shows pricing, terms, privacy and refund pages, so fill in the templates first.
 
@@ -173,6 +174,9 @@ Cloudflare offers two ways to host this: **Workers** (what the dashboard creates
    | `PADDLE_WEBHOOK_SECRET` | **Secret** | from Paddle notifications |
    | `PADDLE_API_KEY` | **Secret** | from Paddle authentication |
    | `PADDLE_ENV` | Text | `sandbox` (later `production`) |
+   | `ANTHROPIC_API_KEY` | **Secret** | for the AI builder: create a key at console.anthropic.com → API keys |
+   | `CREDIT_PACKS` | Text | the AI credit packs, `price id:credits` separated by commas, e.g. `pri_01aaa:50,pri_01bbb:150,pri_01ccc:400` |
+   | `AI_MODEL` | Text | optional, default `claude-sonnet-5-5` (a cheaper model such as `claude-haiku-5-5` costs less per deck) |
 
 4. **Settings → Domains & Routes → Add → Custom domain**: add your domain. Then use that domain in Supabase (step 1.4) and Paddle (steps 2.3 and 2.4).
 5. Every push to GitHub redeploys the site.
@@ -199,6 +203,68 @@ Before launch, fill in every highlighted part of `terms.html`, `privacy.html` an
 
 ---
 
+## Objects added in October 2026
+
+| Where | Object | Plan |
+|---|---|---|
+| Science → Mechanics | Inclined plane (forces, friction, components), free-body diagram, spring and mass (oscillates), pendulum (swings), pulley / Atwood machine | Free |
+| Plot → Calculus, probability and Fourier | Probability distribution (normal, binomial, Poisson, uniform, exponential, with a shaded probability) | Free |
+| Plot → Calculus, probability and Fourier | Derivative explorer (a tangent slides along f while f′ is drawn), Fourier drawing (turning circles draw a shape) | Pro |
+| 3D → Your own models | Import a 3D model (OBJ or STL, simplified to at most 2,500 triangles, saved with the deck) | Pro |
+| Slide settings | Footer, date and slide number on every slide (like PowerPoint) | Free |
+| Write | Countdown timer, callout (speech bubble, note, box with arrow), quiz question (answer shows on a click) | Free |
+| Geometry | Fraction (pie or bar) | Free |
+| Plot → Statistics and probability | Statistics chart (histogram, box plot, dot plot, scatter with line of best fit and r), probability tree | Free |
+| Science → Electricity, light and atoms | Electric circuit (current flows), atom (Bohr model, electrons turn) | Free |
+| Science → Electricity, light and atoms | Lens or mirror ray diagram (image described: real/virtual, size) | Pro |
+| Presenting | Laser pointer (L), pen (P, E erases), black/white screen (B/W) | Free |
+| Presenting | Presenter view (S): current and next slide, speaker notes, timer | Pro |
+| ⋯ menu | Print or save as PDF (with notes), save a slide as a PNG | Free |
+
+Which objects are Pro is set in `PRO_ADD` in the editor. The Python script shows the new objects as grey placeholders; the MP4 video includes them.
+
+## The AI builder and credits
+
+The **AI** button in the editor (and **Create with AI** on the projects page) opens a chat: people describe a lesson and get an animated deck, or ask for more slides in the deck they are editing.
+
+**Solve an equation:** the third tab takes an equation or a word problem. The AI writes the worked solution, one line of working per click, the answer highlighted and a graph of the solutions. The editor then **checks the answer itself**: it puts each answer back into the original equation and looks for any solution the AI missed (between −100 and 100). It shows “✓ Checked” or a red warning with a button to the slide to correct.
+
+**Credits** (`007_ai.sql`, numbers in `ai_rule()`): 1 credit = 1 request.
+
+| Who | Credits |
+|---|---|
+| Every account | 5 once, to try it (never expire) |
+| Pro | 30 every calendar month (no roll-over), used before bought ones |
+| Anyone | packs bought through Paddle, never expire |
+
+A request that fails is given back. Only the server can spend or add credits; people can only read their own balance.
+
+**How a request works:** the browser sends it to `/api/ai-deck` with the person's sign-in; the server takes a credit, asks Claude with the key only the server knows, cleans the answer strictly (`lib/aispec.js`: known kinds of item only, numbers kept on the slide, no web links or scripts in the maths), and the editor turns it into normal, editable Tracé objects.
+
+**To switch it on:**
+1. Run `007_ai.sql` in Supabase.
+2. Add `ANTHROPIC_API_KEY` as a **Secret** in Cloudflare (step 3). Set a monthly spend limit in the Anthropic console.
+3. Credit packs: in Paddle → **Catalog → Products → New product** "AI credits", add one **one-time** price per pack (50 credits $5, 150 credits $12, 400 credits $29). Then
+   - put the price ids in the Cloudflare variable `CREDIT_PACKS` (this decides what a payment gives), e.g. `pri_01aaa:50,pri_01bbb:150,pri_01ccc:400`;
+   - put the same packs in `public/config.js` → `creditPacks` (what people see);
+   - add `transaction.completed` to the Paddle notification destination (step 2.4).
+   Without packs the AI still works; the "Buy credits" window says packs are coming soon.
+
+Give someone credits by hand: `select ai_add_credits((select id from auth.users where email = 'x@y.com'), 20, 'gift-' || now());`
+
+## Languages
+
+The website, the account pages and the editor work in **English, French, Spanish, Portuguese (Brazil) and Arabic** (Arabic reads right to left; slides, equations and code stay left to right).
+
+- The language is picked automatically from the browser. People can change it with the picker in the footer of every page, on the projects page, or in the editor's **⋯** menu. The choice is remembered. A link can force one: `traceanim.com/?lang=fr`.
+- Only the interface is translated. Slides, project names and anything people type are never changed.
+- The AI builder writes new slides in the language the person is using.
+- The legal pages show a translation with a note that the English version prevails.
+
+How it works: `public/i18n.js` (small, loaded by every page) and one dictionary per language in `public/i18n/` (about 250 KB each, only the chosen one is loaded; English loads none).
+
+**Changing or adding a translation:** edit `tools/i18n/strings.json` (each English text with its French, Spanish, Portuguese and Arabic versions; `#` stands for a number), then run `node tools/i18n/build.mjs` and upload `public/i18n/`. Text that has no entry simply stays in English, so a new button never breaks anything.
+
 ## Updating a site that is already running
 
 1. In Supabase → **SQL Editor**, run `supabase/migrations/002_profiles.sql`, then `supabase/migrations/003_pro_features.sql` (once each; safe to repeat).
@@ -210,14 +276,14 @@ People who already have an account are asked for their profile the next time the
 ## Tests
 
 ```
-npm test                       # server functions (11 checks) + database rules (70 checks)
+npm test                       # server functions (23 checks) + database rules (103 checks)
 ```
 
 The database tests need a local PostgreSQL (`createdb`, `psql`). The end-to-end test runs real browsers against a local copy of the whole stack: Postgres with the migration, [PostgREST](https://postgrest.org) (the data server Supabase uses), a small stand-in for Supabase Auth, and Cloudflare's own local runtime (wrangler) running the functions:
 
 ```
 sh tests/e2e/start-stack.sh    # needs postgres, a postgrest binary, and wrangler (HOST=workers to run it as a Worker)
-python3 tests/e2e/e2e_test.py <MathJax tex-svg.js> <supabase-js dist/umd folder>   # 143 checks
+python3 tests/e2e/e2e_test.py <MathJax tex-svg.js> <supabase-js dist/umd folder>   # 148 checks
 sh tests/e2e/stop-stack.sh
 ```
 
@@ -234,7 +300,11 @@ python3 tests/editor/drawing_test.py file:///path/to/trace.html  # library, SVG 
 python3 tests/editor/video_test.py file:///path/to/trace.html path/to/mp4-muxer.js   # Make a video: frames, voice, badge, 720p/1080p, cancel; checked with ffprobe (19 checks)
 python3 tests/editor/tutorial_test.py file:///path/to/trace.html # every chapter of the interactive tutorial, start to finish, on a laptop and a phone (45 checks)
 python3 tests/editor/home_test.py file:///path/to/trace.html     # the projects page: templates, cards, search, rename, duplicate, delete, Back/Forward (27 checks)
-python3 tests/editor/background_test.py file:///path/to/trace.html # background designer (presets, gradient, pattern, picture, slide size), any colour, hiding and resizing panels, the vertical example (25 checks)
+python3 tests/editor/background_test.py file:///path/to/trace.html # background designer (presets, gradient, pattern, picture, slide size), any colour, hiding and resizing panels, the vertical example (29 checks)
+python3 tests/editor/features_test.py file:///path/to/trace.html   # self-drawing Fourier, countdown timer, statistics, circuits, ray optics, trees, fractions, atoms, callouts, quizzes, laser/pen/black screen, presenter view, notes, PNG and PDF (30 checks)
+python3 tests/editor/objects_test.py file:///path/to/trace.html    # mechanics, distributions, derivative explorer, Fourier drawing, 3D model import, Pro gates, footer and slide numbers (34 checks)
+python3 tests/editor/ai_test.py file:///path/to/trace.html         # the AI builder with a pretend server: new deck, adding slides, Undo, credits, buying more, solving with checked answers (35 checks)
+python3 tests/editor/i18n_test.py file:///path/to/trace.html       # languages: French, Spanish, Portuguese, Arabic right to left, the picker, slides and names never translated (22 checks)
 ```
 
 The end-to-end test covers: signing up on the sign-up page, the profile step and the profile reminder in the editor, the account page (editing the profile, signing out, deleting the account), the home page and legal pages, the demo tour, sign-in by email link, saving edits online, the free limit, sharing and the viewer, a second device, upgrading through a signed webhook, the billing portal, cancelling, deleting, signing out, and that the public key can neither read other decks nor grant Pro.

@@ -4,10 +4,12 @@
 //   /v/<link>                                  → the editor page, which plays the shared deck
 import * as paddleWebhook from './functions/api/paddle-webhook.js';
 import * as billingPortal from './functions/api/billing-portal.js';
+import * as aiDeck from './functions/api/ai-deck.js';
 
 const API = {
   '/api/paddle-webhook': paddleWebhook,
   '/api/billing-portal': billingPortal,
+  '/api/ai-deck': aiDeck,
 };
 
 export default {

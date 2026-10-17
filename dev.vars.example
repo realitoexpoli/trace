@@ -1,0 +1,7 @@
+# Server secrets for local testing with `npm run dev` (copy to .dev.vars, never commit it).
+# In production, set the same names in Cloudflare → your Pages project → Settings → Variables and secrets.
+SUPABASE_URL=https://YOUR-PROJECT.supabase.co
+SUPABASE_SERVICE_ROLE_KEY=your-service-role-key
+PADDLE_WEBHOOK_SECRET=pdl_ntfset_...
+PADDLE_API_KEY=pdl_sdbx_apikey_...
+PADDLE_ENV=sandbox

@@ -11,7 +11,7 @@
     "directory": "./public",
     "binding": "ASSETS",
     "html_handling": "auto-trailing-slash",
-    "not_found_handling": "none"
+    "not_found_handling": "404-page"
   },
   // Keep the variables you typed in the dashboard (SUPABASE_URL, PADDLE_ENV) when deploying.
   "keep_vars": true,
