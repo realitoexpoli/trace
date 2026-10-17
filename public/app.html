@@ -446,6 +446,7 @@ aside.props{padding:0!important;display:flex;overflow:hidden}
 }
 
 /* ---------- background designer ---------- */
+.footbox{border-top:1px solid var(--line);margin-top:14px;padding-top:12px;display:grid;gap:2px}.footh{margin:0 0 6px;font-weight:700;font-size:13px}.footh small{font-weight:400;color:var(--mute)}
 #aiModal{position:fixed;inset:0;background:rgba(12,14,13,.5);z-index:41;display:flex;align-items:center;justify-content:center;padding:12px}
 #aiModal[hidden]{display:none}
 .ai-dialog{width:min(640px,100%)}
@@ -573,7 +574,12 @@ body.portrait .frame{width:min(100%,calc((100vh - 330px) * var(--ar)))}
 @media (max-width:1400px){.fsearch span{display:inline!important;flex:none;font-size:0}.fsearch span::before{content:'Search';font-size:13px}}
 @media (max-width:1100px){.fsearch span{display:none!important}}
 #homeBtn>span{display:none}
-@media (max-width:1640px){#videoHdr>span{display:none}#videoHdr{padding-inline:9px}}
+@media (min-width:901px){header{flex-wrap:nowrap}header>*{flex-shrink:0}header>.tools{flex-shrink:1;min-width:0}}
+@media (min-width:901px) and (max-width:1820px){.fsearch{min-width:0}.fsearch span,.fsearch kbd{display:none!important}#videoHdr>span{display:none}#videoHdr{padding-inline:9px}}
+@media (min-width:901px) and (max-width:1680px){.tourbtn{font-size:0;gap:0;padding-inline:8px!important}.tourbtn svg{margin:0!important}#projName{width:7em}.cloudstat span{display:none}}
+@media (min-width:901px) and (max-width:1520px){.tool:not(.iconbtn)>svg{display:none}.addlabel{display:none}header{gap:2px}#projName{width:9em}#aiBtn{font-size:0;gap:0}#aiBtn svg{width:17px;height:17px}}
+@media (min-width:901px) and (max-width:1180px){#projName{width:6em}.tool{padding-inline:6px!important}}
+
 </style>
 </head>
 <body>
@@ -720,10 +726,10 @@ function enterItem(n,t){switch(n.enter){case'fadein':return{obj:n,op:t};case'gro
 function exitItem(p,t){const u=1-t;switch(p.exit){case'shrink':return{obj:{...p,scale:p.scale*Math.max(.001,u)},op:1};case'left':return{obj:{...p,x:p.x-t},op:u};case'right':return{obj:{...p,x:p.x+t},op:u};
   case'down':return{obj:{...p,y:p.y-t},op:u};case'uncreate':return{obj:p,op:1,reveal:Math.max(0.001,u)};default:return{obj:p,op:u};}}
 const LOOPS={none:'No',spin:'Spin',pulse:'Pulse',float:'Float up and down',flow:'Keep going'};
-function flowLabel(o){return{hopping:'Keep hopping',constellation:'Tone keeps turning',wave:'Keep travelling',phasor:'Keep turning',axes3d:'Keep turning the view',curve:'Keep redrawing',polar:'Keep redrawing'}[o.type]||'Keep spinning';}
+function flowLabel(o){return{pendulum:'Keep swinging',spring:'Keep oscillating',pulley:'Keep moving',fourier:'Keep redrawing',model3d:'Keep turning',hopping:'Keep hopping',constellation:'Tone keeps turning',wave:'Keep travelling',phasor:'Keep turning',axes3d:'Keep turning the view',curve:'Keep redrawing',polar:'Keep redrawing'}[o.type]||'Keep spinning';}
 function withLoop(o,t){if(!o.loop||o.loop==='none')return o;const per=Math.max(0.3,+o.loopTime||4),u=(t/per)%1,q={...o};
   switch(o.loop){case'spin':q.rot=o.rot+360*u;break;case'pulse':q.scale=o.scale*(1+0.08*Math.sin(Math.PI*u));break;case'float':q.y=o.y+0.15*Math.sin(Math.PI*u);break;
-    case'flow':if(o.type==='hopping')q.hop=(o.hop||0)+t/per*8;else if(o.type==='constellation')q.phase=(o.phase||0)+360*u;else if(o.type==='wave')q.phase=o.phase+360*u;else if(o.type==='phasor')q.theta=o.theta+360*u;else if(o.type==='axes3d')q.az=o.az+360*u;else if(o.type==='curve'||o.type==='polar')q.progress=Math.max(0.002,u);else q.rot=o.rot+360*u;break;}
+    case'flow':if(o.type==='hopping')q.hop=(o.hop||0)+t/per*8;else if(o.type==='constellation')q.phase=(o.phase||0)+360*u;else if(o.type==='wave')q.phase=o.phase+360*u;else if(o.type==='phasor')q.theta=o.theta+360*u;else if(o.type==='axes3d'||o.type==='model3d')q.az=(+o.az||0)+360*u;else if(o.type==='pendulum')q.ang=(+o.amp||25)*Math.cos(2*Math.PI*u);else if(o.type==='spring')q.ext=(+o.amp||0.8)*Math.sin(2*Math.PI*u);else if(o.type==='pulley')q.off=(+o.amp||0.8)*Math.sin(2*Math.PI*u);else if(o.type==='fourier')q.prog=Math.max(0.002,u);else if(o.type==='curve'||o.type==='polar')q.progress=Math.max(0.002,u);else q.rot=o.rot+360*u;break;}
   return q;}
 let loopRAF=null,loopSvg=null,LOOP0=performance.now();
 const loopNow=()=>(performance.now()-LOOP0)/1000;
@@ -732,7 +738,7 @@ function stopLoop(){if(loopRAF)cancelAnimationFrame(loopRAF);loopRAF=null;loopSv
 const hasLoop=objs=>objs.some(o=>o.loop&&o.loop!=='none');
 function startLoop(svg,getObjs){stopLoop();if(!hasLoop(getObjs()))return;loopSvg=svg;
   const tick=now=>{if(!anim||anim.svg!==svg){const t=loopNow();drawItems(svg,getObjs().map(o=>({obj:withLoop(o,t),op:1})));}loopRAF=requestAnimationFrame(tick);};loopRAF=requestAnimationFrame(tick);}
-const TYPES={drawing:'Drawing',trail:'Trail',constellation:'Symbols in noise (BPSK)',jsmap:'J/S map',hopping:'Frequency hopping',despread:'Spread spectrum',star:'Star',sector:'Sector or ring',cross:'Cross mark',venn:'Venn diagram',bullets:'Bullet list',code:'Code',polar:'Polar plot',cplane:'Complex plane',network:'Network',table:'Table',point:'Labelled point',triangle:'Triangle',angle:'Angle',plane:'Number plane',counter:'Counter',wave:'Wave',phasor:'Phasor',spectrum:'Signal and spectrum',chart:'Chart',image:'Image',text:'Text',latex:'Equation',matrix:'Matrix',circle:'Circle',ellipse:'Ellipse',rect:'Rectangle',polygon:'Polygon',arc:'Arc',line:'Line',arrow:'Arrow',dot:'Dot',brace:'Brace',axes:'Graph',curve:'Parametric curve',numberline:'Number line',vector:'Vector',field:'Vector field',axes3d:'3D axes'};
+const TYPES={incline:'Inclined plane',fbd:'Free-body diagram',spring:'Spring and mass',pendulum:'Pendulum',pulley:'Pulley (Atwood)',dist:'Probability distribution',deriv:'Derivative explorer',fourier:'Fourier drawing',model3d:'Import a 3D model',drawing:'Drawing',trail:'Trail',constellation:'Symbols in noise (BPSK)',jsmap:'J/S map',hopping:'Frequency hopping',despread:'Spread spectrum',star:'Star',sector:'Sector or ring',cross:'Cross mark',venn:'Venn diagram',bullets:'Bullet list',code:'Code',polar:'Polar plot',cplane:'Complex plane',network:'Network',table:'Table',point:'Labelled point',triangle:'Triangle',angle:'Angle',plane:'Number plane',counter:'Counter',wave:'Wave',phasor:'Phasor',spectrum:'Signal and spectrum',chart:'Chart',image:'Image',text:'Text',latex:'Equation',matrix:'Matrix',circle:'Circle',ellipse:'Ellipse',rect:'Rectangle',polygon:'Polygon',arc:'Arc',line:'Line',arrow:'Arrow',dot:'Dot',brace:'Brace',axes:'Graph',curve:'Parametric curve',numberline:'Number line',vector:'Vector',field:'Vector field',axes3d:'3D axes'};
 const MENU_PRESETS={shapes3d:'3D scene with several shapes',sphere3:'Sphere',cube3:'Cube',box3:'Cuboid',ellipsoid3:'Ellipsoid',cylinder3:'Cylinder',cone3:'Cone',prism3:'Prism',pyramid3:'Pyramid',torus3:'Torus',tetrahedron3:'Tetrahedron',octahedron3:'Octahedron',dodecahedron3:'Dodecahedron',icosahedron3:'Icosahedron',arrow3:'3D arrow'};
 /* ---------- recorded voice (Pro) ----------
    A slide can hold one recording per step: slide.voice = {0: {id, dur}, 2: {...}}. The sound itself is kept
@@ -775,8 +781,9 @@ function wireVoice(s2,k){const r=$('#vRec');if(r)r.onclick=voiceRecord;const pl=
    On its own this editor has everything unlocked. The online version (cloud.js) sets PLAN from the
    account: Free or Pro. Pro adds advanced 3D, the Python video script and recorded voice. */
 const PLAN={pro:true,badge:false,pythonFree:false,upgrade:null};
-const PRO_ADD=new Set(['torus3','tetrahedron3','octahedron3','dodecahedron3','icosahedron3','arrow3','axes3d','shapes3d']);
-const PRO_WHAT={'3d':'Advanced 3D: surfaces z = f(x, y), 3D scenes, polyhedra, torus, 3D arrows and turning 3D views',python:'The Python video script (Manim)',voice:'Recording your voice on slides',video:'A video without the “Made with Tracé” badge'};
+const PRO_KIND={deriv:'deriv',fourier:'fourier',model3d:'model3d'};
+const PRO_ADD=new Set(['deriv','fourier','model3d','torus3','tetrahedron3','octahedron3','dodecahedron3','icosahedron3','arrow3','axes3d','shapes3d']);
+const PRO_WHAT={deriv:'The derivative explorer',fourier:'Fourier drawing',model3d:'Importing 3D models (OBJ, STL)','3d':'Advanced 3D: surfaces z = f(x, y), 3D scenes, polyhedra, torus, 3D arrows and turning 3D views',python:'The Python video script (Manim)',voice:'Recording your voice on slides',video:'A video without the “Made with Tracé” badge'};
 function needPro(what){if(PLAN.pro)return true;if(PLAN.upgrade)PLAN.upgrade(what);else toast(`${PRO_WHAT[what]||what} is part of Tracé Pro.`);return false;}
 const canPython=()=>PLAN.pro||PLAN.pythonFree;
 const isDarkHex=h=>{const n=parseInt(String(h||'#000').replace('#','').slice(0,6).padEnd(6,'0'),16)||0;return((n>>16)*299+((n>>8)&255)*587+(n&255)*114)/1000<128;};
@@ -784,7 +791,7 @@ document.body.classList.add('is-pro');
 function planChanged(){document.body.classList.toggle('is-pro',!!PLAN.pro);const b=$('#pbadge');if(b)b.hidden=!PLAN.badge;
   const t=document.querySelector('.tab[data-tab="code"]');if(t)t.classList.toggle('locked',!canPython());try{renderStepBar();renderProps();}catch(_){}}
 
-const GROUPS=[['Write',['text','latex','bullets','code','matrix','table','counter']],['Draw',['image','circle','ellipse','rect','polygon','star','arc','sector','line','arrow','dot','brace','cross']],['Geometry',['point','triangle','angle','plane','venn']],['Plot',['axes','curve','polar','numberline','vector','field','cplane']],['3D',['sphere3','cube3','box3','ellipsoid3','cylinder3','cone3','prism3','pyramid3','torus3','tetrahedron3','octahedron3','dodecahedron3','icosahedron3','arrow3','axes3d','shapes3d']],['Science',['wave','phasor','spectrum','chart','network','constellation','jsmap','hopping','despread']]];
+const GROUPS=[['Write',['text','latex','bullets','code','matrix','table','counter']],['Draw',['image','circle','ellipse','rect','polygon','star','arc','sector','line','arrow','dot','brace','cross']],['Geometry',['point','triangle','angle','plane','venn']],['Plot',['axes','curve','polar','numberline','vector','field','cplane','deriv','dist','fourier']],['3D',['sphere3','cube3','box3','ellipsoid3','cylinder3','cone3','prism3','pyramid3','torus3','tetrahedron3','octahedron3','dodecahedron3','icosahedron3','arrow3','axes3d','shapes3d','model3d']],['Science',['incline','fbd','spring','pendulum','pulley','wave','phasor','spectrum','chart','network','constellation','jsmap','hopping','despread']]];
 const MANIM={image:'ImageMobject',text:'Text',latex:'MathTex',matrix:'Matrix',circle:'Circle',ellipse:'Ellipse',rect:'Rectangle',polygon:'RegularPolygon',arc:'Arc',line:'Line',arrow:'Arrow',dot:'Dot',brace:'Brace',axes:'Axes',curve:'ParametricFunction',numberline:'NumberLine',vector:'Vector',field:'ArrowVectorField',axes3d:'ThreeDAxes + Surface'};
 const ICONS2={constellation:'<circle cx="4" cy="8" r="1" fill="currentColor"/><circle cx="5.5" cy="6.5" r="1" fill="currentColor"/><circle cx="3" cy="10" r="1" fill="currentColor"/><circle cx="12" cy="8" r="1" fill="currentColor"/><circle cx="11" cy="9.6" r="1" fill="currentColor"/><circle cx="13" cy="6.4" r="1" fill="currentColor"/><path d="M8 2v12" stroke="currentColor" stroke-dasharray="2 1.5"/>',
  jsmap:'<rect x="1.5" y="2.5" width="13" height="11" stroke="currentColor" fill="none"/><circle cx="10.5" cy="9" r="3.2" stroke="currentColor" fill="none"/><circle cx="4" cy="6" r="1.2" fill="currentColor"/>',
@@ -830,7 +837,16 @@ const ICONS2={constellation:'<circle cx="4" cy="8" r="1" fill="currentColor"/><c
  vector:'<path d="M3 13L12 4M8 4h4v4" stroke="currentColor" stroke-width="1.5" fill="none"/><circle cx="3" cy="13" r="1.3" fill="currentColor"/>',
  field:'<path d="M2 4h4M4.5 2.5L6 4 4.5 5.5M9 3l3 2M12 12h-4M9.5 10.5L8 12l1.5 1.5M3 11l2-3" stroke="currentColor" stroke-width="1.3" fill="none"/>',
  axes3d:'<path d="M7 9V2M7 9l6 3M7 9l-5 3" stroke="currentColor" stroke-width="1.5" fill="none"/>'};
-const ICONS={drawing:'<path d="M8 1.5c2 2 2.6 4.4 2.6 7v3.4H5.4V8.5c0-2.6.6-5 2.6-7z" fill="none" stroke="currentColor" stroke-width="1.3"/><path d="M5.4 9.5l-2 3v1.5l2-1M10.6 9.5l2 3v1.5l-2-1" fill="none" stroke="currentColor" stroke-width="1.3"/>',text:'<path d="M3 4h10M8 4v9" stroke="currentColor" stroke-width="1.6" fill="none"/>',
+const ICONS={incline:'<path d="M1.5 13.5h13L1.5 5z" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round"/><path d="M5.2 6.9l2.2 1.5-1.3 2-2.2-1.5z" fill="currentColor"/>',
+ fbd:'<rect x="5.5" y="5.5" width="5" height="5" fill="none" stroke="currentColor" stroke-width="1.2"/><path d="M8 8v6M8 8V2M8 8h6M12.5 12.5l1.5 1.5" stroke="currentColor" stroke-width="1.2" fill="none"/>',
+ spring:'<path d="M1 2v12M1 8h2l1-3 2 6 2-6 2 6 1-3h1" stroke="currentColor" stroke-width="1.2" fill="none" stroke-linejoin="round"/><rect x="12" y="6" width="3.5" height="4" fill="currentColor"/>',
+ pendulum:'<path d="M3 1.5h10M8 1.5l3 9" stroke="currentColor" stroke-width="1.2" fill="none"/><circle cx="11.5" cy="12" r="2.2" fill="currentColor"/><path d="M8 1.5v11" stroke="currentColor" stroke-width=".8" stroke-dasharray="1 1"/>',
+ pulley:'<path d="M3 1h10M8 1v3" stroke="currentColor" stroke-width="1.2"/><circle cx="8" cy="6" r="2.5" fill="none" stroke="currentColor" stroke-width="1.2"/><path d="M5.5 6v4M10.5 6v6" stroke="currentColor" stroke-width="1.1"/><rect x="4" y="10" width="3" height="3" fill="currentColor"/><rect x="9" y="12" width="3" height="3" fill="currentColor"/>',
+ dist:'<path d="M1 14h14" stroke="currentColor" stroke-width="1.1"/><path d="M1.5 13.5C4 13 5.5 3 8 3s4 10 6.5 10.5" fill="none" stroke="currentColor" stroke-width="1.3"/><path d="M6 13.8V6.5Q8 2.6 10 6.5v7.3z" fill="currentColor" opacity=".45"/>',
+ deriv:'<path d="M1.5 12c3-1 4-8 6.5-8s3.5 5 6.5 6" fill="none" stroke="currentColor" stroke-width="1.3"/><path d="M3 9.5l8-6" stroke="currentColor" stroke-width="1.1"/><circle cx="7" cy="6.5" r="1.2" fill="currentColor"/>',
+ fourier:'<circle cx="5" cy="8" r="3.5" fill="none" stroke="currentColor" stroke-width="1.1"/><circle cx="8.5" cy="8" r="1.6" fill="none" stroke="currentColor" stroke-width="1"/><path d="M5 8l3.5 0 1.5-1" stroke="currentColor" stroke-width="1"/><path d="M10 7c2-3 4-2 4.5 0s-2 4-4.5 2" fill="none" stroke="currentColor" stroke-width="1.2"/>',
+ model3d:'<path d="M8 1.5l6 3.3v6.6l-6 3.3-6-3.3V4.8z" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linejoin="round"/><path d="M2 4.8l6 3.3 6-3.3M8 8.1v6.6" stroke="currentColor" stroke-width="1.1" fill="none"/>',
+drawing:'<path d="M8 1.5c2 2 2.6 4.4 2.6 7v3.4H5.4V8.5c0-2.6.6-5 2.6-7z" fill="none" stroke="currentColor" stroke-width="1.3"/><path d="M5.4 9.5l-2 3v1.5l2-1M10.6 9.5l2 3v1.5l-2-1" fill="none" stroke="currentColor" stroke-width="1.3"/>',text:'<path d="M3 4h10M8 4v9" stroke="currentColor" stroke-width="1.6" fill="none"/>',
  latex:'<path d="M12 3H4l4 5-4 5h8" stroke="currentColor" stroke-width="1.6" fill="none" stroke-linejoin="round"/>',
  circle:'<circle cx="8" cy="8" r="5.5" stroke="currentColor" stroke-width="1.6" fill="none"/>',
  rect:'<rect x="2.5" y="4" width="11" height="8" stroke="currentColor" stroke-width="1.6" fill="none"/>',
@@ -879,6 +895,15 @@ function make(type){const o=base(type);
   if(type==='table')Object.assign(o,{font:'Arial',bold:false,italic:false,underline:false,data:'x | x² | x³\n1 | 1 | 1\n2 | 4 | 8\n3 | 9 | 27',header:true,fontSize:32,rowsShown:0,hlRow:0,hlColor:'#F4D345',color:'#FFFFFF',enter:'fadein'});
   if(type==='counter')Object.assign(o,{value:100,decimals:0,prefix:'',suffix:'',fontSize:72,follow:'',autoCount:true,countFrom:0,countTime:2,enter:'fadein'});
   if(type==='wave')Object.assign(o,{kind:'travel',A:1,lam:2,phase:0,L:10,sigma:1.5,baseline:true,envelope:true,color:'#58C4DD'});
+  if(type==='incline')Object.assign(o,{ang:30,L:6,bs:1,fpos:0.55,showAng:true,angLabel:'\\theta',forces:true,fric:false,comps:false,fscale:1,fillOpacity:0.12,blockColor:'#58C4DD',color:'#C9CED4',enter:'fadein'});
+  if(type==='fbd')Object.assign(o,{bs:1,box:true,fscale:1,forces:'\\vec{W}: 0, -1.8\n\\vec{N}: 0, 1.8\n\\vec{F}: 2, 0\n\\vec{f}: -1.2, 0',color:'#C9CED4',enter:'fadein'});
+  if(type==='spring')Object.assign(o,{orient:'h',L0:3,ext:0,amp:0.8,coils:10,bs:0.8,mLabel:'m',eq:true,showX:true,xLabel:'x',blockColor:'#58C4DD',color:'#C9CED4',enter:'fadein'});
+  if(type==='pendulum')Object.assign(o,{L:3,ang:25,amp:25,bob:0.25,showArc:true,showAng:true,angLabel:'\\theta',vert:true,forces:false,fscale:1,blockColor:'#F4D345',color:'#C9CED4',enter:'fadein'});
+  if(type==='pulley')Object.assign(o,{R:0.6,hang:2.2,off:0,amp:0.8,bs:0.8,m1:'m_1',m2:'m_2',forces:false,ratio:1.4,color:'#C9CED4',enter:'fadein'});
+  if(type==='dist')Object.assign(o,{kind:'normal',mu:0,sig:1,nn:10,pp:0.5,lam:3,ua:0,ub:1,rate:1,shade:true,s0:-1,s1:1,showP:true,showMean:true,showName:true,numbers:true,w:8,h:4,fillColor:'#58C4DD',color:'#FFFFFF',enter:'create'});
+  if(type==='deriv')Object.assign(o,{fn:'x^3/3 - x',xmin:-3,xmax:3,ymin:0,ymax:0,x0:-2,tlen:3,w:8,h:5.5,showSlope:true,tColor:'#FC6255',dColor:'#F4D345',color:'#58C4DD',enter:'create'});
+  if(type==='fourier')Object.assign(o,{shape:'heart',pts:'0, 1\n1, -1\n-1, -1',N:30,prog:1,size:3.4,showCircles:true,showShape:false,pathColor:'#F4D345',color:'#C9CED4',enter:'fadein'});
+  if(type==='model3d')Object.assign(o,{meshId:'',name:'3D model',w:4,az:30,tilt:20,shade:true,wire:false,color:'#58C4DD',enter:'fadein'});
   if(type==='phasor')Object.assign(o,{R:1.4,theta:60,k:0.5,tlen:6,circle:true,proj:true,trace:true,color:'#F4D345',x:-3});
   if(type==='spectrum')Object.assign(o,{comps:'1: 1, 3: 0.33, 5: 0.2',T:2,fmax:0,color:'#58C4DD',barColor:'#F4D345'});
   if(type==='chart')Object.assign(o,{ctype:'bar',data:'Mon, 3\nTue, 5\nWed, 2\nThu, 6\nFri, 4',w:8,h:4.5,ymax:0,color:'#C9CED4',barColor:'#58C4DD'});
@@ -887,7 +912,7 @@ function make(type){const o=base(type);
   if(type==='vector')Object.assign(o,{dx:2,dy:1,label:'\\vec v',color:'#F4D345',x:0,y:0});
   if(type==='field')Object.assign(o,{style:'arrows',fx:'-y',fy:'x',xmin:-6,xmax:6,ymin:-3,ymax:3,gap:1,byMag:true,color:'#58C4DD'});
   if(type==='axes3d')Object.assign(o,{xmin:-3,xmax:3,ymin:-3,ymax:3,zmin:-2,zmax:2,len:5,zlen:3.5,az:-40,tilt:65,zfn:'sin(x)*cos(y)',skind:'z',px:'2 sin(u) cos(v)',py:'2 sin(u) sin(v)',pz:'2 cos(u)',umin:0,umax:3.1416,vmin:0,vmax:6.2832,F:'x^2 + y^2 + z^2 = 4',cx:'2 cos(t)',cy:'2 sin(t)',cz:'t/3',tmin:-6.2832,tmax:6.2832,surface:true,numbers:true,labels:true,xlab:'',ylab:'',zlab:'',lo:'#58C4DD',hi:'#F4D345',color:'#C9CED4'});
-  if(['circle','ellipse','rect','polygon','arc','line','curve','triangle','angle','wave','phasor'].includes(type))o.stroke=4;
+  if(['circle','ellipse','rect','polygon','arc','line','curve','triangle','angle','wave','phasor','incline','fbd','spring','pendulum','pulley','dist','deriv','fourier'].includes(type))o.stroke=4;
   if(type==='axes')Object.assign(o,{xmin:-5,xmax:5,ymin:-3,ymax:3,w:8,h:4.5,fn:'sin(x)',ckind:'fn',F2:'x^2 + y^2 = 4',stype:'square',N:3,P:6.2832,showTarget:true,tangent:false,tlen:3,trace:false,area:false,ax0:0,ax1:2,riemann:0,rrule:'left',areaColor:'#58C4DD',fnColor:'#F4D345',numbers:true,labels:true,xlab:'',ylab:''});
   return o;}
 function demo(){
@@ -1248,7 +1273,7 @@ async function addDrawingFromText(text,name){let D;try{D=importSVG(text);}catch(
 function pickSVG(){const inp=document.createElement('input');inp.type='file';inp.accept='.svg,image/svg+xml';inp.onchange=async()=>{const f=inp.files[0];if(!f)return;if(f.size>3e6){toast('This SVG file is too big (over 3 MB).');return;}addDrawingFromText(await f.text(),f.name);};inp.click();}
 function addLibrary(key){const L=LIB[key];if(!L)return;snap();const o=make('drawing');o.lib=key;o.name=L.name;if(L.nose!=null)o.nose=L.nose;const ar=L.vb[3]/L.vb[2];o.w=+(ar>1.2?2.4/ar:2.4).toFixed(2);
   slide().objects.push(o);sel=o.id;editStep=null;refresh();}
-const drawingIds=d=>{const ids=[];(d.slides||[]).forEach(s2=>s2.objects.forEach(o=>{if(o.type==='drawing'&&o.drawId&&IMG.get(o.drawId))ids.push(o.drawId);}));return ids;};
+const drawingIds=d=>{const ids=[];(d.slides||[]).forEach(s2=>s2.objects.forEach(o=>{if(o.type==='drawing'&&o.drawId&&IMG.get(o.drawId))ids.push(o.drawId);if(o.type==='model3d'&&o.meshId&&IMG.get(o.meshId))ids.push(o.meshId);}));return ids;};
 
 /* ---------- drawing ---------- */
 let clipN=0;
@@ -1283,7 +1308,7 @@ function drawObj(o,parent,opt={}){
     case'_morph':{const t=o._t,mix=(c1,c2)=>c1&&c2?lerpColor(c1,c2,t):(c1||c2);for(const m of o._geo||[]){const P=m.pa.map((q,i)=>[q[0]+(m.pb[i][0]-q[0])*t,q[1]+(m.pb[i][1]-q[1])*t]);const fo=m.a.fo+(m.b.fo-m.a.fo)*t,so=m.a.so+(m.b.so-m.a.so)*t,sw=m.a.sw+(m.b.sw-m.a.sw)*t;
       el('path',{d:pth(P)+(m.closed?'Z':''),fill:fo>0.005?mix(m.a.fill,m.b.fill):'none','fill-opacity':fo,stroke:so>0.005&&sw>0?mix(m.a.stroke,m.b.stroke):'none','stroke-opacity':so,'stroke-width':Math.max(sw,0.001),'stroke-linejoin':'round'},g);}break;}
     case'constellation':case'jsmap':case'hopping':case'despread':
-    case'point':case'triangle':case'angle':case'plane':case'counter':case'table':case'star':case'sector':case'cross':case'venn':case'bullets':case'code':case'polar':case'cplane':case'network':case'wave':case'phasor':case'spectrum':case'chart':drawExtra(o,g,dash,rv);break;
+    case'point':case'triangle':case'angle':case'plane':case'counter':case'table':case'star':case'sector':case'cross':case'venn':case'bullets':case'code':case'polar':case'cplane':case'network':case'wave':case'phasor':case'spectrum':case'chart':case'incline':case'fbd':case'spring':case'pendulum':case'pulley':case'dist':case'deriv':case'fourier':case'model3d':drawExtra(o,g,dash,rv);break;
     case'drawing':drawDrawing(o,g,rv);break;
     case'trail':{const P=o.pts||[];if(P.length<2)break;let Q=P;if(rv!==undefined&&rv<1){const n=Math.max(2,Math.round(P.length*rv));Q=P.slice(0,n);}
       el('path',{d:'M'+Q.map(q=>`${q[0]} ${-q[1]}`).join('L'),fill:'none',stroke:o.color,'stroke-width':SW*1.1,'stroke-dasharray':'0.09 0.09','stroke-linecap':'round',opacity:0.7},g);break;}
@@ -1503,7 +1528,205 @@ function buildMorph(A,B){if(!A.length||!B.length)return null;const n=Math.max(A.
       const q=rev?[...pb].reverse():pb;pb=q.map((_,t)=>q[(t+best)%N]);pb[N]=pb[0];}
     else if(Math.hypot(pa[0][0]-pb[N][0],pa[0][1]-pb[N][1])<Math.hypot(pa[0][0]-pb[0][0],pa[0][1]-pb[0][1]))pb=[...pb].reverse();
     return{pa,pb,closed:a.closed&&b.closed,a,b};});}
+/* ---------- more objects: mechanics, probability, calculus, Fourier drawing, 3D models ----------
+   Each one is drawn here from a few numbers, so every number can be animated with clicks or slides. */
+const SCI2=['incline','fbd','spring','pendulum','pulley','dist','deriv','fourier','model3d'];
+const F_RED='#FC6255',F_BLUE='#58C4DD',F_GREEN='#83C167',F_YEL='#F4D345',F_GREY='#888888';
+function s2arr(g,x1,y1,x2,y2,color,op,w){arrowAt(g,x1,-y1,x2-x1,-(y2-y1),color,(w||SW*1.6),0.28,op);}
+function s2lab(g,tex,x,y,color,op,fs){if(tex===undefined||tex===null||String(tex).trim()==='')return;texAt(g,String(tex),emOf(fs||34),x,-y,color,op);}
+function s2line(g,P,color,op,w,extra){el('path',{d:pth(P),fill:'none',stroke:color,'stroke-width':w||SW,'stroke-linecap':'round','stroke-linejoin':'round',opacity:op,...(extra||{})},g);}
+function s2poly(g,P,fill,fo,stroke,op,w){el('path',{d:pth(P)+'Z',fill:fill||'none','fill-opacity':fo??1,stroke:stroke||'none','stroke-width':w||SW,'stroke-linejoin':'round',opacity:op},g);}
+function s2hatch(g,x0,x1,y,dir,op){// a fixed surface: a line with short hatch marks (dir: 1 = marks below, -1 = above)
+  s2line(g,[[x0,y],[x1,y]],'#C9CED4',op,SW*1.2);const n=Math.max(2,Math.round((x1-x0)/0.25));for(let i=0;i<n;i++){const x=x0+(x1-x0)*(i+0.5)/n;s2line(g,[[x,y],[x-0.15,y-0.18*dir]],'#C9CED4',op*0.8,SW*0.6);}}
+function s2hatchV(g,x,y0,y1,dir,op){s2line(g,[[x,y0],[x,y1]],'#C9CED4',op,SW*1.2);const n=Math.max(2,Math.round((y1-y0)/0.25));for(let i=0;i<n;i++){const y=y0+(y1-y0)*(i+0.5)/n;s2line(g,[[x,y],[x-0.18*dir,y-0.15]],'#C9CED4',op*0.8,SW*0.6);}}
+const s2rad=d=>d*Math.PI/180;
+function s2arc(cx,cy,r,a0,a1,n=40){const P=[];for(let i=0;i<=n;i++){const a=a0+(a1-a0)*i/n;P.push([cx+r*Math.cos(a),cy+r*Math.sin(a)]);}return P;}
+
+/* probability */
+function erf(x){const s=Math.sign(x);x=Math.abs(x);const t=1/(1+0.3275911*x),y=1-(((((1.061405429*t-1.453152027)*t)+1.421413741)*t-0.284496736)*t+0.254829592)*t*Math.exp(-x*x);return s*y;}
+const normCdf=(x,m,s)=>0.5*(1+erf((x-m)/(Math.SQRT2*Math.max(1e-9,s))));
+function lnFact(n){let r=0;for(let i=2;i<=n;i++)r+=Math.log(i);return r;}
+function distInfo(o){const k=o.kind||'normal',mu=+o.mu||0,sg=Math.max(0.05,+o.sig||1),n=Math.max(1,Math.min(200,Math.round(+o.nn||10))),p=Math.min(1,Math.max(0,+o.pp)),lam=Math.max(0.05,+o.lam||3),
+    a=+o.ua,b=Math.max(+o.ua+0.01,+o.ub),r=Math.max(0.05,+o.rate||1);
+  if(k==='binomial'){const pmf=x=>(x<0||x>n)?0:Math.exp(lnFact(n)-lnFact(x)-lnFact(n-x)+x*Math.log(Math.max(p,1e-300))+(n-x)*Math.log(Math.max(1-p,1e-300)));return{disc:true,lo:0,hi:n,pmf,mean:n*p,name:`B(${n},\\,${+p.toFixed(3)})`};}
+  if(k==='poisson'){const hi=Math.ceil(Math.max(8,lam+4.5*Math.sqrt(lam)));const pmf=x=>x<0?0:Math.exp(x*Math.log(lam)-lam-lnFact(x));return{disc:true,lo:0,hi,pmf,mean:lam,name:`\\mathrm{Po}(${+lam.toFixed(2)})`};}
+  if(k==='uniform'){const w=b-a;return{disc:false,lo:a-w*0.25,hi:b+w*0.25,pdf:x=>x>=a&&x<=b?1/w:0,cdf:x=>Math.min(1,Math.max(0,(x-a)/w)),mean:(a+b)/2,name:`U(${+a.toFixed(2)},\\,${+b.toFixed(2)})`};}
+  if(k==='exponential')return{disc:false,lo:0,hi:5/r,pdf:x=>x<0?0:r*Math.exp(-r*x),cdf:x=>x<0?0:1-Math.exp(-r*x),mean:1/r,name:`\\mathrm{Exp}(${+r.toFixed(2)})`};
+  return{disc:false,lo:mu-4*sg,hi:mu+4*sg,pdf:x=>Math.exp(-0.5*((x-mu)/sg)**2)/(sg*Math.sqrt(2*Math.PI)),cdf:x=>normCdf(x,mu,sg),mean:mu,name:`N(${+mu.toFixed(2)},\\,${+sg.toFixed(2)}^2)`};}
+function distProb(D,a,b){if(b<a)[a,b]=[b,a];if(D.disc){let s=0;for(let x=Math.max(D.lo,Math.ceil(a-1e-9));x<=Math.min(D.hi,Math.floor(b+1e-9));x++)s+=D.pmf(x);return s;}return D.cdf(b)-D.cdf(a);}
+const fmtP=v=>{const s=(+v).toFixed(4);return s==='-0.0000'?'0.0000':s;};
+const fmtN=v=>String(+(+v).toFixed(2)).replace('-','−');
+
+/* Fourier drawing: the shape, its coefficients (cached) */
+const FSHAPES={heart:'Heart',star:'Star',square:'Square',infinity:'Infinity sign',flower:'Flower',note:'Musical note',pi:'Letter π',custom:'My own points (below)'};
+function fshapePts(o){const M=256,P=[];const k=o.shape||'heart';
+  if(k==='custom'){const Q=String(o.pts||'').split('\n').map(l=>l.split(/[,;\s]+/).map(Number)).filter(q=>q.length>=2&&isFinite(q[0])&&isFinite(q[1]));
+    if(Q.length<3)return fshapePts({shape:'heart'});const L=[0];for(let i=1;i<=Q.length;i++){const a=Q[i-1],b=Q[i%Q.length];L.push(L[i-1]+Math.hypot(b[0]-a[0],b[1]-a[1]));}
+    for(let j=0;j<M;j++){const d=L[Q.length]*j/M;let i=0;while(i<Q.length-1&&L[i+1]<d)i++;const a=Q[i],b=Q[(i+1)%Q.length],u=(d-L[i])/Math.max(1e-9,L[i+1]-L[i]);P.push([a[0]+(b[0]-a[0])*u,a[1]+(b[1]-a[1])*u]);}}
+  else if(k==='star'||k==='square'||k==='pi'||k==='note'){const V=k==='star'?Array.from({length:10},(_,i)=>{const r=i%2?0.42:1,a=Math.PI/2+i*Math.PI/5;return[r*Math.cos(a),r*Math.sin(a)];})
+      :k==='square'?[[-1,-1],[1,-1],[1,1],[-1,1]]
+      :k==='pi'?[[-1,0.75],[1,0.75],[1,0.55],[0.45,0.55],[0.45,-0.55],[0.62,-0.7],[0.62,-0.85],[0.25,-0.85],[0.25,0.55],[-0.25,0.55],[-0.3,-0.4],[-0.55,-0.85],[-0.75,-0.85],[-0.6,-0.5],[-0.5,0.55],[-1,0.55]]
+      :[[-0.55,-0.95],[-0.15,-0.95],[0.1,-0.75],[0.1,0.6],[0.65,0.35],[0.65,0.75],[-0.05,1.05],[-0.05,-0.5],[-0.35,-0.45],[-0.7,-0.65]];
+    return fshapePts({shape:'custom',pts:V.map(q=>q.join(',')).join('\n')});}
+  else for(let j=0;j<M;j++){const t=2*Math.PI*j/M;
+    if(k==='infinity'){const d=1+Math.sin(t)**2;P.push([Math.cos(t)/d*1.4,Math.sin(t)*Math.cos(t)/d*1.4]);}
+    else if(k==='flower'){const r=0.55+0.45*Math.cos(5*t);P.push([r*Math.cos(t),r*Math.sin(t)]);}
+    else P.push([16*Math.sin(t)**3/16,(13*Math.cos(t)-5*Math.cos(2*t)-2*Math.cos(3*t)-Math.cos(4*t))/16]);}
+  // centre and scale to fit a 2×2 box
+  let x0=Infinity,x1=-Infinity,y0=Infinity,y1=-Infinity;for(const q of P){x0=Math.min(x0,q[0]);x1=Math.max(x1,q[0]);y0=Math.min(y0,q[1]);y1=Math.max(y1,q[1]);}
+  const s=2/Math.max(1e-9,x1-x0,y1-y0),cx=(x0+x1)/2,cy=(y0+y1)/2;return P.map(q=>[(q[0]-cx)*s,(q[1]-cy)*s]);}
+const FCACHE=new Map();
+function fcoeffs(o){const key=(o.shape||'heart')+'|'+(o.shape==='custom'?o.pts:'');if(FCACHE.has(key))return FCACHE.get(key);
+  const P=fshapePts(o),M=P.length,C=[];for(let k=-(M/2);k<M/2;k++){let re=0,im=0;for(let j=0;j<M;j++){const a=-2*Math.PI*k*j/M;re+=P[j][0]*Math.cos(a)-P[j][1]*Math.sin(a);im+=P[j][0]*Math.sin(a)+P[j][1]*Math.cos(a);}C.push({k,re:re/M,im:im/M,r:Math.hypot(re,im)/M});}
+  const c0=C.find(c=>c.k===0),rest=C.filter(c=>c.k!==0).sort((a,b)=>b.r-a.r),out={c0,rest,P};if(FCACHE.size>40)FCACHE.clear();FCACHE.set(key,out);return out;}
+function fsum(F,N,t,upto){let x=F.c0.re,y=F.c0.im;const pts=[[x,y]];for(let i=0;i<Math.min(N,F.rest.length);i++){const c=F.rest[i],a=2*Math.PI*c.k*t;x+=c.re*Math.cos(a)-c.im*Math.sin(a);y+=c.re*Math.sin(a)+c.im*Math.cos(a);if(upto)pts.push([x,y]);}return upto?pts:[x,y];}
+
+/* 3D models: kept as {v:[x,y,z…] (0…4095), f:[a,b,c…]}; parsed once */
+const MESHES=new Map();
+function meshOf(id){if(!id)return null;if(MESHES.has(id))return MESHES.get(id);const raw=IMG.get(id);if(!raw)return null;
+  try{const d=JSON.parse(raw),V=[];for(let i=0;i<d.v.length;i+=3)V.push([d.v[i]/4095-0.5,d.v[i+1]/4095-0.5,d.v[i+2]/4095-0.5].map((q,j)=>q*(d.s?d.s[j]:1)));const m={V,F:d.f,name:d.n||'Model'};MESHES.set(id,m);return m;}catch(e){return null;}}
+
+function drawSci2(o,g,dash,op,sw2){const c=o.color||'#FFFFFF';switch(o.type){
+  case'incline':{const th=s2rad(Math.max(3,Math.min(80,+o.ang||30))),L=+o.L||6,Bx=L*Math.cos(th),Hy=L*Math.sin(th),P1=[Bx/2,-Hy/2],P0=[-Bx/2,-Hy/2],P2=[-Bx/2,Hy/2];
+    s2hatch(g,-Bx/2-0.6,Bx/2+0.6,-Hy/2,1,op);
+    s2poly(g,[P0,P1,P2],c,(o.fillOpacity??0.12),c,op,sw2);
+    const u=[-Math.cos(th),Math.sin(th)],n=[Math.sin(th),Math.cos(th)],bs=+o.bs||1,s=Math.max(0,Math.min(1,+o.fpos))*(L-bs)+bs/2;
+    const C=[P1[0]+u[0]*s+n[0]*bs/2,P1[1]+u[1]*s+n[1]*bs/2],cr=(a,b)=>[C[0]+u[0]*a*bs/2+n[0]*b*bs/2,C[1]+u[1]*a*bs/2+n[1]*b*bs/2];
+    s2poly(g,[cr(-1,-1),cr(1,-1),cr(1,1),cr(-1,1)],o.blockColor||F_BLUE,0.35,o.blockColor||F_BLUE,op,sw2);
+    if(o.showAng){s2line(g,s2arc(P1[0],P1[1],0.8,Math.PI-th,Math.PI),c,op,SW*0.9);s2lab(g,o.angLabel||'\\theta',P1[0]-1.15*Math.cos(th/2),P1[1]+1.15*Math.sin(th/2)*0.9+0.05,c,op,30);}
+    if(o.forces){const W=1.7*(+o.fscale||1);s2arr(g,C[0],C[1],C[0],C[1]-W,F_RED,op);s2lab(g,'\\vec{W}',C[0]+0.32,C[1]-W+0.1,F_RED,op,30);
+      const Nn=W*Math.cos(th);s2arr(g,C[0],C[1],C[0]+n[0]*Nn,C[1]+n[1]*Nn,F_YEL,op);s2lab(g,'\\vec{N}',C[0]+n[0]*(Nn+0.3),C[1]+n[1]*(Nn+0.3),F_YEL,op,30);
+      if(o.fric){const Ff=W*Math.sin(th)*0.85;s2arr(g,C[0],C[1],C[0]+u[0]*Ff,C[1]+u[1]*Ff,F_GREEN,op);s2lab(g,'\\vec{f}',C[0]+u[0]*(Ff+0.3)+n[0]*0.2,C[1]+u[1]*(Ff+0.3)+n[1]*0.2,F_GREEN,op,30);}
+      if(o.comps){const wp=W*Math.sin(th),wn=W*Math.cos(th);s2arr(g,C[0],C[1],C[0]-u[0]*wp,C[1]-u[1]*wp,F_RED,op*0.55,SW);s2arr(g,C[0],C[1],C[0]-n[0]*wn,C[1]-n[1]*wn,F_RED,op*0.55,SW);}}
+    break;}
+  case'fbd':{const bs=+o.bs||1;if(o.box!==false)s2poly(g,[[-bs/2,-bs/2],[bs/2,-bs/2],[bs/2,bs/2],[-bs/2,bs/2]],c,0.15,c,op,sw2);el('circle',{cx:0,cy:0,r:0.07,fill:c,opacity:op},g);
+    const pal=[F_RED,F_YEL,F_BLUE,F_GREEN,'#C55F73','#9A72AC'],k=+o.fscale||1;
+    String(o.forces||'').split('\n').map(l=>l.trim()).filter(Boolean).forEach((l,i)=>{const m=l.match(/^(.*?):\s*(-?[\d.]+)\s*[, ]\s*(-?[\d.]+)\s*$/);if(!m)return;const dx=+m[2]*k,dy=+m[3]*k,col=pal[i%pal.length],Lh=Math.hypot(dx,dy);if(Lh<1e-6)return;
+      s2arr(g,0,0,dx,dy,col,op);s2lab(g,m[1].trim(),dx+dx/Lh*0.35,dy+dy/Lh*0.3,col,op,32);});break;}
+  case'spring':{const v=o.orient==='v',L0=+o.L0||3,ext=+o.ext||0,bs=+o.bs||0.8,len=Math.max(0.3,L0+ext),nC=Math.max(3,Math.round(+o.coils||10)),wv=0.22,
+      T=(a,b)=>v?[b,-a]:[a,b],start=-(L0+bs)/2-0.3;
+    if(v)s2hatch(g,-0.9,0.9,-start,-1,op);else s2hatchV(g,start,-0.9,0.9,1,op);
+    const Z=[T(start,0),T(start+0.25,0)];const zl=len-0.5;for(let i=0;i<nC*2;i++)Z.push(T(start+0.25+zl*(i+0.5)/(nC*2),(i%2?-1:1)*wv));Z.push(T(start+0.25+zl,0),T(start+len,0));s2line(g,Z,c,op,sw2);
+    const cA=start+len+bs/2,C=T(cA,0),Q=[T(cA-bs/2,-bs/2),T(cA+bs/2,-bs/2),T(cA+bs/2,bs/2),T(cA-bs/2,bs/2)];s2poly(g,Q,o.blockColor||F_BLUE,0.35,o.blockColor||F_BLUE,op,sw2);s2lab(g,o.mLabel||'m',C[0],C[1],'#FFFFFF',op,30);
+    if(o.eq){const e=start+L0+bs/2;s2line(g,[T(e,-bs*0.9),T(e,bs*0.9)],F_GREY,op,SW*0.8,{'stroke-dasharray':'0.12 0.1'});
+      if(o.showX&&Math.abs(ext)>0.05){const y=-bs*0.85;s2arr(g,...T(e,y),...T(e+ext,y),F_YEL,op,SW*1.2);const m=T(e+ext/2,y-0.32);s2lab(g,o.xLabel||'x',m[0],m[1],F_YEL,op,30);}}
+    break;}
+  case'pendulum':{const L=+o.L||3,a=s2rad(+o.ang||0),py=L/2+0.3,B=[L*Math.sin(a),py-L*Math.cos(a)],r=+o.bob||0.25;
+    s2hatch(g,-1,1,py,-1,op);
+    if(o.vert)s2line(g,[[0,py],[0,py-L-0.4]],F_GREY,op,SW*0.8,{'stroke-dasharray':'0.12 0.1'});
+    if(o.showArc){const A=s2rad(Math.abs(+o.amp||30));s2line(g,s2arc(0,py,L,-Math.PI/2-A,-Math.PI/2+A),F_GREY,op*0.8,SW*0.7,{'stroke-dasharray':'0.08 0.08'});}
+    if(o.showAng&&Math.abs(a)>0.02){const rr=Math.min(1,L*0.35);s2line(g,s2arc(0,py,rr,-Math.PI/2,-Math.PI/2+a),c,op,SW*0.9);const m=-Math.PI/2+a/2;s2lab(g,o.angLabel||'\\theta',(rr+0.3)*Math.cos(m),py+(rr+0.3)*Math.sin(m),c,op,30);}
+    s2line(g,[[0,py],B],c,op,sw2);el('circle',{cx:0,cy:-py,r:0.06,fill:c,opacity:op},g);el('circle',{cx:B[0],cy:-B[1],r,fill:o.blockColor||F_BLUE,'fill-opacity':0.85,stroke:o.blockColor||F_BLUE,'stroke-width':sw2,opacity:op},g);
+    if(o.forces){const W=1.3*(+o.fscale||1);s2arr(g,B[0],B[1],B[0],B[1]-W,F_RED,op);s2lab(g,'m\\vec{g}',B[0]+0.42,B[1]-W+0.05,F_RED,op,28);
+      const Tn=W*Math.cos(a),ux=-Math.sin(a),uy=Math.cos(a);s2arr(g,B[0],B[1],B[0]+ux*Tn,B[1]+uy*Tn,F_YEL,op);s2lab(g,'\\vec{T}',B[0]+ux*Tn+0.3,B[1]+uy*Tn,F_YEL,op,28);}
+    break;}
+  case'pulley':{const R=+o.R||0.6,cy=1.6,h=+o.hang||2.2,off=+o.off||0,bs=+o.bs||0.8,top=cy+0.9;
+    s2hatch(g,-1,1,top,-1,op);s2line(g,[[0,top],[0,cy]],'#C9CED4',op,SW*1.2);
+    el('circle',{cx:0,cy:-cy,r:R,fill:'none',stroke:c,'stroke-width':sw2,opacity:op},g);el('circle',{cx:0,cy:-cy,r:0.08,fill:c,opacity:op},g);
+    const yl=cy-h-off,yr=cy-h+off;s2line(g,s2arc(0,cy,R,0,Math.PI,30),c,op,SW*1.1);s2line(g,[[-R,cy],[-R,yl]],c,op,SW*1.1);s2line(g,[[R,cy],[R,yr]],c,op,SW*1.1);
+    const blk=(x,y,lab,col)=>{s2poly(g,[[x-bs/2,y-bs],[x+bs/2,y-bs],[x+bs/2,y],[x-bs/2,y]],col,0.35,col,op,sw2);s2lab(g,lab,x,y-bs/2,'#FFFFFF',op,28);};
+    blk(-R,yl,o.m1||'m_1',F_BLUE);blk(R,yr,o.m2||'m_2',F_RED);
+    if(o.forces){const W=0.9;s2arr(g,-R-bs/2-0.25,yl-bs/2,-R-bs/2-0.25,yl-bs/2-W,F_RED,op,SW*1.2);s2arr(g,R+bs/2+0.25,yr-bs/2,R+bs/2+0.25,yr-bs/2-W*(+o.ratio||1.4),F_RED,op,SW*1.2);}
+    break;}
+  case'dist':{const D=distInfo(o),w=+o.w||8,h=+o.h||4,lo=D.lo,hi=D.hi,X=x=>-w/2+w*(x-lo)/(hi-lo);let ymax=0;
+    const vals=[];if(D.disc){for(let x=lo;x<=hi;x++){const v=D.pmf(x);vals.push([x,v]);ymax=Math.max(ymax,v);}}else{for(let i=0;i<=300;i++){const x=lo+(hi-lo)*i/300,v=D.pdf(x);vals.push([x,v]);ymax=Math.max(ymax,v);}}
+    ymax=ymax*1.12||1;const Y=v=>-h/2+h*v/ymax,s0=+o.s0,s1=+o.s1,inS=x=>o.shade&&x>=Math.min(s0,s1)-1e-9&&x<=Math.max(s0,s1)+1e-9;
+    s2line(g,[[-w/2-0.1,-h/2],[w/2+0.2,-h/2]],'#C9CED4',op,SW*0.9);
+    const fc=o.fillColor||F_BLUE;
+    if(D.disc){const bw=Math.min(0.9,w/(hi-lo+1)*0.8);for(const[x,v]of vals){if(v<ymax*0.002&&!inS(x))continue;const sh=inS(x);s2poly(g,[[X(x)-bw/2,-h/2],[X(x)+bw/2,-h/2],[X(x)+bw/2,Y(v)],[X(x)-bw/2,Y(v)]],sh?fc:c,sh?0.75:0.25,sh?fc:c,op,SW*0.8);}}
+    else{if(o.shade){const a=Math.max(lo,Math.min(s0,s1)),b=Math.min(hi,Math.max(s0,s1));if(b>a){const A=[[X(a),-h/2]];for(let i=0;i<=120;i++){const x=a+(b-a)*i/120;A.push([X(x),Y(D.pdf(x))]);}A.push([X(b),-h/2]);s2poly(g,A,fc,0.55,null,op);}}
+      s2line(g,vals.map(([x,v])=>[X(x),Y(v)]),c,op,sw2);}
+    if(o.numbers){const span=hi-lo,st=D.disc?Math.max(1,Math.ceil(span/12)):axStep(span,w,0.9);const em=emOf(22);for(let t=Math.ceil(lo/st)*st;t<=hi+1e-9;t+=st){s2line(g,[[X(t),-h/2],[X(t),-h/2-0.08]],'#C9CED4',op,SW*0.6);svgText(g,fmtN(t),X(t),h/2+0.3,em,'#C9CED4',op);}}
+    if(o.showMean){const m=X(D.mean);s2line(g,[[m,-h/2],[m,h/2]],F_YEL,op,SW*0.8,{'stroke-dasharray':'0.12 0.1'});s2lab(g,'\\mu',m+0.2,h/2-0.1,F_YEL,op,28);}
+    if(o.shade&&o.showP){const pv=distProb(D,s0,s1),a=fmtN(Math.min(s0,s1)),b=fmtN(Math.max(s0,s1));s2lab(g,`P(${a}\\le X\\le ${b})=${fmtP(pv)}`,w/2-2,h/2+0.35,fc,op,30);}
+    if(o.showName)s2lab(g,'X\\sim '+D.name,-w/2+1.4,h/2+0.35,c,op,30);
+    break;}
+  case'deriv':{const f=compileFn(o.fn||'x^2','x'),w=+o.w||8,h=+o.h||5.5,xa=+o.xmin,xb=Math.max(+o.xmin+0.1,+o.xmax),x0=Math.max(xa,Math.min(xb,+o.x0)),hT=h*0.58,hB=h*0.36,gap=h-hT-hB;if(!f)break;
+    const ev=x=>{try{const v=f(x);return isFinite(v)?v:NaN;}catch(e){return NaN;}},d=x=>(ev(x+1e-4)-ev(x-1e-4))/2e-4;
+    const N=240,xs=Array.from({length:N+1},(_,i)=>xa+(xb-xa)*i/N),fv=xs.map(ev),dv=xs.map(d);
+    const rng=A=>{const B=A.filter(isFinite);let a=Math.min(...B),b=Math.max(...B);if(!isFinite(a)){a=-1;b=1;}if(b-a<1e-6){a-=1;b+=1;}const p=(b-a)*0.12;return[a-p,b+p];};
+    const[fa,fb]=o.ymin<o.ymax&&(o.ymin||o.ymax)?[+o.ymin,+o.ymax]:rng(fv),[da,db]=rng(dv),X=x=>-w/2+w*(x-xa)/(xb-xa),Yt=v=>h/2-hT+hT*(v-fa)/(fb-fa),Yb=v=>-h/2+hB*(v-da)/(db-da);
+    const axes=(top,Yf,a,b)=>{const y0=Math.max(a,Math.min(b,0));s2line(g,[[-w/2,Yf(y0)],[w/2,Yf(y0)]],'#C9CED4',op,SW*0.7);if(xa<0&&xb>0)s2line(g,[[X(0),Yf(a)],[X(0),Yf(b)]],'#C9CED4',op,SW*0.7);};
+    axes(true,Yt,fa,fb);axes(false,Yb,da,db);
+    const clipT=v=>v>=fa&&v<=fb,seg=(vals,Yf,ok,col,lw,upto)=>{let P=[];const out=[];xs.forEach((x,i)=>{if(upto!==undefined&&x>upto)return;const v=vals[i];if(isFinite(v)&&ok(v))P.push([X(x),Yf(v)]);else if(P.length){out.push(P);P=[];}});if(P.length)out.push(P);out.forEach(Q=>Q.length>1&&s2line(g,Q,col,op,lw));};
+    seg(fv,Yt,clipT,c,sw2);s2lab(g,'f(x)',-w/2+0.6,h/2-0.15,c,op,30);
+    seg(dv,Yb,v=>v>=da&&v<=db,o.dColor||F_YEL,SW*0.6,undefined);seg(dv,Yb,v=>v>=da&&v<=db,o.dColor||F_YEL,sw2,x0);s2lab(g,"f'(x)",-w/2+0.65,-h/2+hB+0.1,o.dColor||F_YEL,op,30);
+    const y0=ev(x0),m=d(x0);if(isFinite(y0)&&isFinite(m)){const tl=(+o.tlen||3)/2,sx=w/(xb-xa),sy=hT/(fb-fa),ms=m*sy/sx,dx=tl/Math.sqrt(1+ms*ms)/sx;
+      const A=[X(x0-dx),Yt(y0-m*dx)],B=[X(x0+dx),Yt(y0+m*dx)];s2line(g,[A,B],o.tColor||F_RED,op,sw2);el('circle',{cx:X(x0),cy:-Yt(y0),r:0.08,fill:o.tColor||F_RED,opacity:op},g);
+      if(m>=da&&m<=db){el('circle',{cx:X(x0),cy:-Yb(m),r:0.08,fill:o.dColor||F_YEL,opacity:op},g);s2line(g,[[X(x0),Yt(y0)],[X(x0),Yb(m)]],F_GREY,op*0.7,SW*0.6,{'stroke-dasharray':'0.1 0.1'});}
+      if(o.showSlope)s2lab(g,`f'(${fmtN(x0)})=${fmtN(m)}`,w/2-1.6,h/2-0.15,o.tColor||F_RED,op,28);}
+    break;}
+  case'fourier':{const F=fcoeffs(o),N=Math.max(1,Math.min(150,Math.round(+o.N||30))),t=Math.max(0,Math.min(1,+o.prog)),S=(+o.size||3)/2,M=q=>[q[0]*S,q[1]*S];
+    if(o.showShape)s2line(g,F.P.concat([F.P[0]]).map(M),F_GREY,op*0.5,SW*0.6,{'stroke-dasharray':'0.08 0.08'});
+    if(t>0.001){const K=Math.max(2,Math.round(400*t)),T=[];for(let i=0;i<=K;i++)T.push(M(fsum(F,N,t*i/K)));s2line(g,T,o.pathColor||F_YEL,op,sw2);}
+    if(o.showCircles&&t<0.9999){const chain=fsum(F,N,t,true).map(M);for(let i=0;i<chain.length-1;i++){const r=Math.hypot(chain[i+1][0]-chain[i][0],chain[i+1][1]-chain[i][1]);if(r>0.015)el('circle',{cx:chain[i][0],cy:-chain[i][1],r,fill:'none',stroke:c,'stroke-width':SW*0.45,opacity:op*0.45},g);}
+      s2line(g,chain,c,op*0.85,SW*0.7);const e=chain[chain.length-1];el('circle',{cx:e[0],cy:-e[1],r:0.06,fill:o.pathColor||F_YEL,opacity:op},g);}
+    break;}
+  case'model3d':{const m=meshOf(o.meshId),W=+o.w||4;if(!m){s2poly(g,[[-W/2,-W/3],[W/2,-W/3],[W/2,W/3],[-W/2,W/3]],F_GREY,0.1,F_GREY,op);svgText(g,'3D model missing',0,0,emOf(26),F_GREY,op);break;}
+    const az=s2rad(+o.az||0),tl=s2rad(+o.tilt||0),ca=Math.cos(az),sa=Math.sin(az),ct=Math.cos(tl),st=Math.sin(tl);
+    const R=m.V.map(([x,y,z])=>{const x1=x*ca+z*sa,z1=-x*sa+z*ca;const y2=y*ct-z1*st,z2=y*st+z1*ct;return[x1*W,y2*W,z2];});
+    const base=o.color||F_BLUE,dark='#0A0C10',lx=-0.35,ly=0.55,lz=0.76,faces=[];const Fi=m.F;
+    for(let i=0;i<Fi.length;i+=3){const A=R[Fi[i]],B=R[Fi[i+1]],C=R[Fi[i+2]];if(!A||!B||!C)continue;const ux=B[0]-A[0],uy=B[1]-A[1],uz=B[2]-A[2],vx=C[0]-A[0],vy=C[1]-A[1],vz=C[2]-A[2];
+      let nx=uy*vz-uz*vy,ny=uz*vx-ux*vz,nz=ux*vy-uy*vx;const nl=Math.hypot(nx,ny,nz)||1;nx/=nl;ny/=nl;nz/=nl;const lit=o.shade===false?0.85:0.25+0.75*Math.abs(nx*lx+ny*ly+nz*lz);
+      faces.push({z:(A[2]+B[2]+C[2])/3,d:`M${A[0].toFixed(3)} ${(-A[1]).toFixed(3)}L${B[0].toFixed(3)} ${(-B[1]).toFixed(3)}L${C[0].toFixed(3)} ${(-C[1]).toFixed(3)}Z`,col:lerpColor(dark,base,lit)});}
+    faces.sort((a,b)=>a.z-b.z);for(const f of faces)el('path',{d:f.d,fill:f.col,stroke:o.wire?'#FFFFFF':f.col,'stroke-width':o.wire?SW*0.25:SW*0.12,'stroke-opacity':o.wire?0.35:1,'stroke-linejoin':'round',opacity:op},g);
+    break;}
+  }}
+
+/* importing a 3D model (OBJ or STL): parsed, simplified to at most ~2,500 triangles, stored with the deck's images */
+function parseModel(name,buf){const txt=()=>new TextDecoder().decode(buf);const V=[],F=[];
+  if(/\.obj$/i.test(name)){for(const line of txt().split('\n')){const t=line.trim().split(/\s+/);if(t[0]==='v')V.push([+t[1],+t[2],+t[3]]);else if(t[0]==='f'){const ix=t.slice(1).map(s=>{const k=parseInt(s,10);return k<0?V.length+k:k-1;});for(let i=1;i<ix.length-1;i++)F.push(ix[0],ix[i],ix[i+1]);}}}
+  else if(/\.stl$/i.test(name)){const dv=new DataView(buf),n=buf.byteLength>=84?dv.getUint32(80,true):0;
+    if(n>0&&84+n*50===buf.byteLength){for(let i=0;i<n;i++){const o=84+i*50+12;for(let j=0;j<3;j++){V.push([dv.getFloat32(o+j*12,true),dv.getFloat32(o+j*12+4,true),dv.getFloat32(o+j*12+8,true)]);F.push(V.length-1);}}}
+    else{const re=/vertex\s+(\S+)\s+(\S+)\s+(\S+)/g;let m;while((m=re.exec(txt())))V.push([+m[1],+m[2],+m[3]]);for(let i=0;i+2<V.length;i+=3)F.push(i,i+1,i+2);}}
+  else throw new Error('Choose an OBJ or STL file.');
+  if(!V.length||F.length<3)throw new Error('No 3D shape was found in this file.');
+  if(/\.stl$/i.test(name))for(const v of V){const y=v[1];v[1]=v[2];v[2]=-y;}  // STL files are usually Z-up
+  let lo=[Infinity,Infinity,Infinity],hi=[-Infinity,-Infinity,-Infinity];for(const v of V)for(let j=0;j<3;j++){if(!isFinite(v[j]))v[j]=0;lo[j]=Math.min(lo[j],v[j]);hi[j]=Math.max(hi[j],v[j]);}
+  const ext=hi.map((h,j)=>Math.max(1e-9,h-lo[j])),big=Math.max(...ext);
+  // simplify by merging nearby points until small enough
+  let grid=256,outV,outF;for(;;){const key=new Map(),nv=[],map=new Int32Array(V.length);
+    V.forEach((v,i)=>{const k=v.map((q,j)=>Math.floor((q-lo[j])/big*grid)).join(',');let id=key.get(k);if(id===undefined){id=nv.length;key.set(k,id);nv.push([0,0,0,0]);}const a=nv[id];a[0]+=v[0];a[1]+=v[1];a[2]+=v[2];a[3]++;map[i]=id;});
+    const nf=[],seen=new Set();for(let i=0;i+2<F.length;i+=3){const a=map[F[i]],b=map[F[i+1]],c=map[F[i+2]];if(a===b||b===c||a===c||a===undefined)continue;const s=[a,b,c].sort((x,y)=>x-y).join(',');if(seen.has(s))continue;seen.add(s);nf.push(a,b,c);}
+    outV=nv.map(a=>[a[0]/a[3],a[1]/a[3],a[2]/a[3]]);outF=nf;if(nf.length/3<=2500||grid<=12)break;grid=Math.floor(grid*0.75);}
+  const s=ext.map(e=>e/big),q=[];for(const v of outV)for(let j=0;j<3;j++)q.push(Math.round(((v[j]-lo[j])/ext[j])*4095));
+  return{v:q,f:outF,s,n:name.replace(/\.[^.]+$/,'').slice(0,40),tri:outF.length/3};}
+function pickModel(target){if(!needPro('model3d'))return;const inp=document.createElement('input');inp.type='file';inp.accept='.obj,.stl';inp.onchange=async()=>{const file=inp.files[0];if(!file)return;
+  if(file.size>40*1024*1024)return toast('This file is too big (over 40 MB). Export a lighter version from your 3D app.');
+  try{const d=parseModel(file.name,await file.arrayBuffer()),id='mesh'+Math.random().toString(36).slice(2,10),raw=JSON.stringify(d);IMG.set(id,raw);MESHES.delete(id);renderEpoch++;const ok=await idb.put(id,raw);snap();
+    if(target&&target.type==='model3d'){target.meshId=id;target.name=d.n;}else{const o=make('model3d');o.meshId=id;o.name=d.n;slide().objects.push(o);sel=o.id;}
+    refresh();toast(`“${d.n}” added: ${d.tri.toLocaleString()} triangles. Set “Keep turning” in Animation to spin it.`+(ok?'':' Export the deck file to keep it.'));}catch(e){toast(e.message||'This file could not be read.');}};inp.click();}
+
+/* PowerPoint-style footer: date, text and slide number on every slide */
+const FOOT_DATE={none:'No date',today:'Today’s date (updates)',fixed:'A fixed date (type it below)'};
+function footSig(d,i){const f=d.footer;if(!f||!(f.num||f.text||(f.date&&f.date!=='none')))return'';return JSON.stringify([f,i,d.slides.length,FW,FH,d.bg,new Date().toDateString()]);}
+function footHTML(){const f=deck.footer||{},esc=t=>String(t??'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/"/g,'&quot;');
+  return`<div class="footbox" id="footBox"><p class="footh">Footer, date and slide number <small>(every slide)</small></p>
+    <div class="field check"><label><input type="checkbox" id="ft_num"${f.num?' checked':''}>Slide number</label></div>
+    <div class="field check"><label><input type="checkbox" id="ft_total"${f.total?' checked':''}${f.num?'':' disabled'}>Show it as “3 / 12”</label></div>
+    <div class="field"><label for="ft_text">Footer text</label><input id="ft_text" type="text" maxlength="120" placeholder="e.g. Physics · Year 11 · Ms Nadari" value="${esc(f.text)}"></div>
+    <div class="field"><label for="ft_date">Date</label><select id="ft_date">${Object.entries(FOOT_DATE).map(([k,v])=>`<option value="${k}"${(f.date||'none')===k?' selected':''}>${v}</option>`).join('')}</select></div>
+    <div class="field"${f.date==='fixed'?'':' hidden'} id="ft_dtw"><label for="ft_dt">Fixed date</label><input id="ft_dt" type="text" maxlength="40" placeholder="e.g. 17 October 2026" value="${esc(f.dateText)}"></div>
+    <div class="field check"><label><input type="checkbox" id="ft_skip"${f.skipFirst?' checked':''}>Not on the title slide</label></div>
+    <div class="field"><label for="ft_size">Size<output>${f.size||18}</output></label><input id="ft_size" type="range" min="12" max="32" step="1" value="${f.size||18}"></div></div>`;}
+function wireFoot(){const box=$('#footBox');if(!box)return;let t=null;
+  const set=(k,v,later)=>{if(!later)snap();deck.footer={...(deck.footer||{}),[k]:v};if(!deck.footer.num&&!deck.footer.text&&(deck.footer.date||'none')==='none'&&!deck.footer.dateText)delete deck.footer;
+    clearTimeout(t);t=setTimeout(()=>{renderCanvas();renderThumbs();persist();},later?250:0);};
+  $('#ft_num').onchange=e=>{set('num',e.target.checked);$('#ft_total').disabled=!e.target.checked;};$('#ft_total').onchange=e=>set('total',e.target.checked);
+  let first=true;$('#ft_text').oninput=e=>{if(first){snap();first=false;}set('text',e.target.value,true);};
+  $('#ft_date').onchange=e=>{set('date',e.target.value);$('#ft_dtw').hidden=e.target.value!=='fixed';};$('#ft_dt').oninput=e=>set('dateText',e.target.value,true);
+  $('#ft_skip').onchange=e=>set('skipFirst',e.target.checked);$('#ft_size').oninput=e=>{e.target.previousElementSibling.querySelector('output').textContent=e.target.value;set('size',+e.target.value,true);};}
+function stampFooter(svg,i,d){d=d||deck;const L=layerOf(svg);if(!L.foot||L.foot.parentNode!==svg){L.foot=el('g',{'pointer-events':'none'});svg.insertBefore(L.foot,L.hud||null);L.footSig=null;}
+  const sig=footSig(d,i);if(L.footSig===sig)return;L.footSig=sig;L.foot.innerHTML='';const f=d.footer;if(!sig||(f.skipFirst&&i===0))return;
+  const em=emOf(f.size||18),y=FH/2-0.38,pad=0.45,col=f.color||(isLightBg(d)?'#555B66':'#9AA0A6');
+  const date=f.date==='today'?new Date().toLocaleDateString(f.locale||undefined,{day:'numeric',month:'long',year:'numeric'}):f.date==='fixed'?String(f.dateText||''):'';
+  if(date)svgText(L.foot,date,-FW/2+pad,y,em,col,1,'start');
+  if(f.text)svgText(L.foot,String(f.text).slice(0,120),0,y,em,col,1,'middle');
+  if(f.num)svgText(L.foot,f.total?`${i+1} / ${d.slides.length}`:String(i+1),FW/2-pad,y,em,col,1,'end');}
+function isLightBg(d){const h=String((d||deck).bg||'#000').replace('#','');if(h.length<6)return false;const r=parseInt(h.slice(0,2),16),g2=parseInt(h.slice(2,4),16),b=parseInt(h.slice(4,6),16);return(0.299*r+0.587*g2+0.114*b)>150;}
+
 function drawExtra(o,g,dash,rv){const op=rv!==undefined?rv:1,sw2=sw(o);switch(o.type){
+  case'incline':case'fbd':case'spring':case'pendulum':case'pulley':case'dist':case'deriv':case'fourier':case'model3d':drawSci2(o,g,dash,op,sw2);break;
   case'point':{const R=0.08*(o.size||1);el('circle',{r:R,fill:o.color,opacity:op},g);if(o.label){const D=DIRS[o.dir]||DIRS.ur,m=texNode(o.label);if(m){const em=emOf(o.fontSize||40),w=m.w*em,h=m.h*em;texAt(g,o.label,em,D[0]*(R+0.12+w/2),-D[1]*(R+0.12+h/2),o.color,op);}}break;}
   case'triangle':{const V=[[o.ax,o.ay],[o.bx,o.by],[o.cx,o.cy]],G=[(V[0][0]+V[1][0]+V[2][0])/3,(V[0][1]+V[1][1]+V[2][1])/3];
     el('path',{d:pth(V)+'Z',fill:o.color,'fill-opacity':(o.fillOpacity||0)*op,stroke:o.color,'stroke-width':sw2,'stroke-linejoin':'round',...dash},g);
@@ -1849,7 +2072,7 @@ function fmtNum(v){const a=Math.abs(v);return a>=100?v.toFixed(0):a>=10?v.toFixe
 function drawBg(svg){el('rect',{x:-FW/2,y:-FH/2,width:FW,height:FH,fill:deck.bg||'#000'},svg);}
 
 /* ---------- transitions ---------- */
-const NUM=['eb','js','hop','d','sf','dP','M','tx','ty','rx','ry','jx','jy','react','n','inner','sep','corner','bend','shown','spacing','rmax','amount','nodeR','sh','rowsShown','size','ax','ay','bx','by','a1','a2','r','L','m11','m12','m21','m22','A','lam','phase','sigma','R','theta','k','tlen','T','fmax','value','progress','ax0','ax1','riemann','umin','umax','vmin','vmax','markX','ar','x','y','scale','rot','fontSize','radius','w','h','dx','dy','fillOpacity','opacity','xmin','xmax','ymin','ymax','zmin','zmax','len','zlen','az','tilt','stroke','start','angle','length','step','tmin','tmax'];
+const NUM=['ang','fpos','fscale','ext','amp','off','mu','sig','nn','pp','lam','ua','ub','rate','s0','s1','x0','tlen','prog','az','tilt','L0','bob','hang','ratio','bs','fillOpacity','eb','js','hop','d','sf','dP','M','tx','ty','rx','ry','jx','jy','react','n','inner','sep','corner','bend','shown','spacing','rmax','amount','nodeR','sh','rowsShown','size','ax','ay','bx','by','a1','a2','r','L','m11','m12','m21','m22','A','lam','phase','sigma','R','theta','k','tlen','T','fmax','value','progress','ax0','ax1','riemann','umin','umax','vmin','vmax','markX','ar','x','y','scale','rot','fontSize','radius','w','h','dx','dy','fillOpacity','opacity','xmin','xmax','ymin','ymax','zmin','zmax','len','zlen','az','tilt','stroke','start','angle','length','step','tmin','tmax'];
 const FNKEYS=['rfn','fn','xt','yt','fx','fy','zfn','F2','px','py','pz','F','cx','cy','cz'];
 function interp(p,n,t){const o={...n};for(const k of NUM)if(typeof p[k]==='number'&&typeof n[k]==='number')o[k]=p[k]+(n[k]-p[k])*t;
   o.color=lerpColor(p.color,n.color,t);for(const k of ['fnColor','lo','hi'])if(p[k]&&n[k])o[k]=lerpColor(p[k],n[k],t);
@@ -1927,7 +2150,7 @@ function renderCanvas(){syncAspect();if(anim&&anim.svg===canvas)return;if(loopSv
   L.grid.innerHTML='';if(showGrid){let d='';const gx=Math.floor(FW/2),gy=Math.floor(FH/2);for(let x=-gx;x<=gx;x++)d+=`M${x} ${-FH/2}V${FH/2}`;for(let y=-gy;y<=gy;y++)d+=`M${-FW/2} ${y}H${FW/2}`;el('path',{d,stroke:'#ffffff',opacity:.09,'stroke-width':0.012},L.grid);el('path',{d:`M${-FW/2} 0H${FW/2}M0 ${-FH/2}V${FH/2}`,stroke:'#ffffff',opacity:.18,'stroke-width':0.014},L.grid);}
   const vis=editStep===null?null:new Set(visibleAt(slide(),editStep).map(o=>o.id));
   let shownObjs=slide().objects;if(editStep!==null&&shownObjs.some(o=>o.keys)){shownObjs=shownObjs.map(o=>({...objAt(o,editStep)}));syncEq(shownObjs);syncLinks(shownObjs);syncSeries(shownObjs);syncCounters(shownObjs);}
-  drawItems(canvas,shownObjs.map(o=>({obj:o,op:vis&&!vis.has(o.id)?0.18:1})),{interactive:true});drawHud(L);updateEmptyHint();
+  drawItems(canvas,shownObjs.map(o=>({obj:o,op:vis&&!vis.has(o.id)?0.18:1})),{interactive:true});stampFooter(canvas,cur);drawHud(L);updateEmptyHint();
   const so=sel&&obj(sel),kk=so&&animK(so);if(kk!==null&&kk!=null){const A=objAt(so,kk-1),B=objAt(so,kk),col=getComputedStyle(document.documentElement).getPropertyValue('--mark').trim()||'#e8b923',ph=so.paths&&so.paths[kk];let d='';
     if(ph){const tg=obj(ph.target);if(tg)d=pth(pathPts(objAt(tg,kk)));}else if(Math.hypot(A.x-B.x,A.y-B.y)>1e-3){if(Math.abs(+so.arc||0)>0.5){const th=so.arc*Math.PI/180,pts=[];for(let i=0;i<=40;i++){const q=interp(A,{...B,arc:so.arc},i/40);pts.push([q.x,q.y]);}d=pth(pts);}else d=pth([[A.x,A.y],[B.x,B.y]]);}
     if(d){el('path',{d,fill:'none',stroke:col,'stroke-width':2,'stroke-dasharray':'5 5','vector-effect':'non-scaling-stroke','pointer-events':'none'},L.hud);el('circle',{cx:A.x,cy:-A.y,r:0.07,fill:'none',stroke:col,'stroke-width':2,'vector-effect':'non-scaling-stroke','pointer-events':'none'},L.hud);}}
@@ -2002,7 +2225,7 @@ canvas.addEventListener('dblclick',e=>{/* the first click re-draws the selection
 function renderThumbs(){const box=$('#thumbs');box.innerHTML='';{const c=$('#slideCount');if(c)c.textContent=deck.slides.length;const d2=$('#delSlide2');if(d2)d2.disabled=deck.slides.length<2;}
   deck.slides.forEach((s,i)=>{const wrap=document.createElement('div');
     const b=document.createElement('button');b.className='thumb'+(i===cur?' on':'');b.setAttribute('aria-label',`Slide ${i+1}`);
-    const sv=document.createElementNS(NS,'svg');sv.setAttribute('viewBox',`${-FW/2} ${-FH/2} ${FW} ${FH}`);drawStatic(sv,finalOf(s));setCam(layerOf(sv),CAM0);b.appendChild(sv);
+    const sv=document.createElementNS(NS,'svg');sv.setAttribute('viewBox',`${-FW/2} ${-FH/2} ${FW} ${FH}`);drawStatic(sv,finalOf(s));setCam(layerOf(sv),CAM0);stampFooter(sv,i);b.appendChild(sv);
     const n=document.createElement('span');n.className='n';n.textContent=i+1;b.appendChild(n);
     b.onclick=()=>{cur=i;sel=null;editStep=null;refresh();};wrap.appendChild(b);
     {const ta=document.createElement('div');ta.className='tacts';ta.innerHTML=`<button type="button" data-ta="dup" title="Duplicate this slide" aria-label="Duplicate slide ${i+1}">${PP_IC(UI_IC.dup)}</button>${deck.slides.length>1?`<button type="button" class="tdel" data-ta="del" title="Delete this slide" aria-label="Delete slide ${i+1}">${PP_IC(UI_IC.del)}</button>`:''}`;
@@ -2057,6 +2280,15 @@ const SPEC={text:[['fontbar','fontbar',''],['text','richtext','Text: select word
   counter:[['follow','follow','Value comes from'],['value','number','Counts to',0.1],['autoCount','check','Count automatically when the slide starts'],['countFrom','number','Counts from',0.1],['countTime','number','Counting time (seconds)',0.1],['decimals','range','Decimals',0,4,1],['prefix','text','Text before the number, e.g. Speed:'],['suffix','text','Text after the number, e.g. km/h or %'],['fontSize','range','Size',12,160,1]],
   wave:[['kind','select','Wave',{travel:'Travelling',standing:'Standing',packet:'Wave packet'}],['A','number','Amplitude',0.1],['lam','number','Wavelength',0.1],['phase','range','Phase (°), animate it to move the wave',-720,720,1],['L','number','Length shown',0.5],['sigma','number','Packet width',0.1],['envelope','check','Show the envelope'],['baseline','check','Show the baseline'],STROKE],
   phasor:[['theta','range','Angle (°), animate it to spin',-720,1440,1],['R','number','Radius',0.1],['k','number','Trace stretch',0.05],['tlen','number','Trace length',0.5],['circle','check','Show the circle'],['proj','check','Show the projection'],['trace','check','Trace the sine wave'],STROKE],
+  incline:[['ang','range','Angle of the slope (°)',3,80,1],['fpos','range','Block position along the slope (animate it to slide)',0,1,0.01],['L','number','Length of the slope',0.1],['bs','number','Block size',0.05],['showAng','check','Show the angle'],['angLabel','text','Angle label (maths)'],['forces','check','Show the forces (weight, normal)'],['fric','check','Show friction'],['comps','check','Show the components of the weight'],['fscale','number','Force arrow size',0.1],['blockColor','color','Block colour'],['fillOpacity','range','Slope fill',0,1,0.05],STROKE],
+  fbd:[['forces','textarea','Forces: one per line, “label: x, y” (label in maths, e.g. \\vec{F})'],['fscale','number','Arrow size',0.1],['bs','number','Box size',0.05],['box','check','Show the box']],
+  spring:[['ext','range','Stretch (animate it, or choose “Keep going” to oscillate)',-2,3,0.01],['amp','number','Oscillation size (for “Keep going”)',0.05],['orient','select','Direction',{h:'Horizontal',v:'Hanging (vertical)'}],['L0','number','Length at rest',0.1],['coils','range','Coils',3,30,1],['bs','number','Mass size',0.05],['mLabel','text','Mass label'],['eq','check','Show the rest position'],['showX','check','Show the stretch x'],['xLabel','text','Stretch label'],['blockColor','color','Mass colour'],STROKE],
+  pendulum:[['ang','range','Angle (°), animate it, or choose “Keep going” to swing',-90,90,1],['amp','number','Swing size (°) for “Keep going”',1],['L','number','Length of the string',0.1],['bob','number','Bob size',0.05],['showArc','check','Show the swing'],['showAng','check','Show the angle'],['angLabel','text','Angle label (maths)'],['vert','check','Show the vertical'],['forces','check','Show the forces (weight, tension)'],['fscale','number','Force arrow size',0.1],['blockColor','color','Bob colour'],STROKE],
+  pulley:[['off','range','Movement (animate it, or choose “Keep going”)',-1.6,1.6,0.01],['amp','number','Movement size for “Keep going”',0.05],['m1','text','Left mass label (maths)'],['m2','text','Right mass label (maths)'],['R','number','Pulley radius',0.05],['hang','number','Rope length',0.1],['bs','number','Mass size',0.05],['forces','check','Show the weights'],['ratio','number','Right weight ÷ left weight (arrows)',0.1],STROKE],
+  dist:[['kind','select','Distribution',{normal:'Normal',binomial:'Binomial',poisson:'Poisson',uniform:'Uniform',exponential:'Exponential'}],['mu','number','Mean μ (normal)',0.1],['sig','number','Standard deviation σ (normal)',0.05],['nn','number','Number of trials n (binomial)',1],['pp','number','Probability p (binomial)',0.01],['lam','number','Rate λ (Poisson)',0.1],['ua','number','From a (uniform)',0.1],['ub','number','To b (uniform)',0.1],['rate','number','Rate λ (exponential)',0.05],['shade','check','Shade a probability'],['s0','number','Shade from (animate it)',0.1],['s1','number','Shade to (animate it)',0.1],['showP','check','Show the probability'],['showMean','check','Show the mean'],['showName','check','Show the name, e.g. X ~ N(0, 1²)'],['numbers','check','Numbers on the axis'],['w','number','Width',0.1],['h','number','Height',0.1],['fillColor','color','Shading colour'],STROKE],
+  deriv:[['fn','text','f(x) ='],['x0','number','Tangent at x (animate it to slide the tangent)',0.1],['xmin','number','x from',0.5],['xmax','number','x to',0.5],['ymin','number','f from (0 and 0 = automatic)',0.5],['ymax','number','f to',0.5],['tlen','number','Tangent length',0.1],['showSlope','check','Show the slope value'],['tColor','color','Tangent colour'],['dColor','color','Colour of f′'],['w','number','Width',0.1],['h','number','Height',0.1],STROKE],
+  fourier:[['shape','select','Shape',FSHAPES],['pts','textarea','My own points: one “x, y” per line, in order around the shape'],['prog','range','How much is drawn (animate it 0 → 1, or choose “Keep going”)',0,1,0.01],['N','range','Number of circles',1,150,1],['size','number','Size',0.1],['showCircles','check','Show the turning circles'],['showShape','check','Show the target shape faintly'],['pathColor','color','Drawing colour'],STROKE],
+  model3d:[['modelbtn','modelbtn','Model'],['az','range','Turn (°), animate it, or choose “Keep going” to spin',-360,720,1],['tilt','range','Tilt (°)',-90,90,1],['w','number','Size',0.1],['shade','check','Shading'],['wire','check','Show the triangles']],
   spectrum:[['comps','textarea','Components, frequency: amplitude'],['T','number','Time window',0.5],['fmax','number','Frequency axis up to (0 = automatic)',1],['barColor','color','Spectrum colour']],
   chart:[['ctype','select','Chart',{bar:'Bars',line:'Line',scatter:'Points'}],['data','textarea','Data: one row per line, “label, value” (or “x, y”)'],['w','number','Width',0.1],['h','number','Height',0.1],['ymax','number','Top of the scale (0 = automatic)',1],['numSize','range','Size of the labels and numbers',10,72,1],['barColor','color','Data colour']],
   image:[['imgbtn','imgbtn','Image'],['w','number','Width',0.1]],
@@ -2090,6 +2322,7 @@ function fieldHTML([k,kind,label,a,b,c],o){if(!fieldVisible(o,k))return'';let v=
       <span class="fbsep"></span><select data-k="lineSpacing" data-num="1" title="Line spacing" aria-label="Line spacing">${[1,1.15,1.2,1.5,2,2.5].map(v2=>`<option value="${v2}"${+(o.lineSpacing||1.2)===v2?' selected':''}>${v2}</option>`).join('')}</select>`:''}</div></div>`;}
   if(kind==='fit3btn')return`<div class="field"><button class="btn" id="fit3d" style="width:100%">Fit ranges to the shape</button></div>`;
   if(kind==='fitbtn')return`<div class="field"><button class="btn" id="fitGraph" style="width:100%">Fit ranges to the curve</button></div>`;
+  if(kind==='modelbtn')return`<div class="field"><button class="btn" id="swapModel" style="width:100%">Change the 3D model…</button>${o.meshId&&!IMG.get(o.meshId)?'<p class="note">This model is not stored in this browser. Choose the file again.</p>':''}<p class="sub" style="margin:6px 0 0">OBJ or STL files, e.g. exported from Blender, Tinkercad or Thingiverse.</p></div>`;
   if(kind==='drawbtn')return`<div class="field"><button class="btn" id="swapDrawing" style="width:100%">Change drawing…</button>${o.drawId&&!IMG.get(o.drawId)?'<p class="note">This drawing is not stored in this browser. Choose it again.</p>':''}</div>`;
   if(kind==='imgbtn')return`<div class="field"><button class="btn" id="replaceImg" style="width:100%">${IMG.get(o.imgId)?'Replace image…':'Choose image…'}</button>${o.imgId&&!IMG.get(o.imgId)?'<p class="note" style="margin:6px 0 0;color:var(--danger)">This image is missing from this browser. Load the deck file that contains it, or replace it.</p>':''}</div>`;
   if(kind==='link'){const eqs=slide().objects.filter(e=>e.type==='latex');const short=t=>{t=String(t);return(t.length>34?t.slice(0,33)+'…':t).replace(/&/g,'&amp;').replace(/</g,'&lt;');};
@@ -2300,7 +2533,8 @@ function renderProps(){const P=$('#props');const o=sel&&obj(sel);
     <div class="field"><label for="f_feel">Motion feel</label><select id="f_feel">${Object.entries(FEELS).map(([k,v])=>`<option value="${k}"${(s.feel||'smooth')===k?' selected':''}>${v.label}</option>`).join('')}</select></div>
     <div class="field check"><label><input type="checkbox" id="f_stagger"${s.stagger?' checked':''}>Objects that appear together come in one after another</label></div>
     <div class="field"><label><span>Show grid while editing</span><input type="checkbox" id="f_grid" ${showGrid?'checked':''}></label></div>
-    <div class="field"><label>Slide size (whole deck)</label><div class="sizes" id="sizeRow">${sizeBtns(sizeOf())}</div></div>`;
+    <div class="field"><label>Slide size (whole deck)</label><div class="sizes" id="sizeRow">${sizeBtns(sizeOf())}</div></div>
+    ${footHTML()}`;
     const bgSec=`<div class="bgcard"><button type="button" class="bgprev" id="bgPrevBtn" title="Design the background" aria-label="Design the background"></button>
       <button class="btn cta big" id="bgDesign" type="button">${PP_IC(UI_IC.brush)}Design the background…</button>
       <div class="field"><label>Quick colours (whole deck)</label><div class="swatches" id="bgsw">${['#000000','#0E1116','#1C1C1C','#0B1F2A','#FFFFFF'].map(c=>`<button class="sw${c===deck.bg&&!deck.bgx?' on':''}" style="background:${c}" data-c="${c}" aria-label="Background ${c}"></button>`).join('')}</div></div></div>`;
@@ -2313,7 +2547,7 @@ function renderProps(){const P=$('#props');const o=sel&&obj(sel);
     $('#f_rt').oninput=e=>{if(!P._s){snap();P._s=1;}s.runTime=+e.target.value;e.target.previousElementSibling.querySelector('output').textContent=(+e.target.value).toFixed(1)+' s';persist();};
     $('#f_feel').onchange=e=>{snap();s.feel=e.target.value;persist();};$('#f_stagger').onchange=e=>{snap();s.stagger=e.target.checked;persist();};
     $('#bgsw').onclick=e=>{const b=e.target.closest('[data-c]');if(!b)return;snap();deck.bg=b.dataset.c;delete deck.bgx;refresh();};
-    $('#f_grid').onchange=e=>{showGrid=e.target.checked;renderCanvas();};
+    $('#f_grid').onchange=e=>{showGrid=e.target.checked;renderCanvas();};wireFoot();
     $('#delSlide').onclick=delSlide;P._s=0;
     P.querySelectorAll('[data-pick]').forEach(b=>{b.onclick=()=>{sel=b.dataset.pick;renderCanvas();renderProps();};b.onmouseenter=()=>showHover(b.dataset.pick);b.onmouseleave=()=>showHover(null);});return;}
   const uses=deck.slides.filter(s=>s.objects.some(x=>x.id===o.id)).length;
@@ -2352,6 +2586,7 @@ function renderProps(){const P=$('#props');const o=sel&&obj(sel);
   const pe=$('#plotEq');if(pe)pe.onclick=()=>plotEquation(o);
   const ri=$('#replaceImg');if(ri)ri.onclick=()=>pickImage(o);
   const sd=$('#swapDrawing');if(sd)sd.onclick=()=>openLibraryFor(o);
+  const sm=$('#swapModel');if(sm)sm.onclick=()=>pickModel(o);
   if(o.type==='axes3d'){const box=document.createElement('div');box.innerHTML=solidsHTML(o);(P.querySelector('[data-pane="content"]')||P.querySelector('.pp-main')).appendChild(box);bindSolids(o);}
   const rte=P.querySelector('.rte');let rteSnap=false;const selIn=()=>{if(!rte)return false;const sl=getSelection();return sl.rangeCount&&!sl.isCollapsed&&rte.contains(sl.anchorNode)&&rte.contains(sl.focusNode);};
   const syncRte=()=>{if(!rteSnap){snap();rteSnap=true;}const k=rte.dataset.rich;writeOf(o,k)[k]=htmlToRich(rte);persist();renderCanvas();thumbsSoon();};
@@ -2943,7 +3178,7 @@ function add3d(type){const def=SOLO3[type];snap();const host=sel&&obj(sel);
   if(host&&host.type==='axes3d'){host.solids=host.solids||[];host.solids.push({c:[0,0,0],...clone(def),color:SOLO_COLORS[host.solids.length%5],op:0.9});refresh();toast(`${MENU_PRESETS[type]} added to the selected 3D scene.`);return;}
   const o=make('axes3d');Object.assign(o,{surface:false,showAxes:false,numbers:false,labels:false,xmin:-2,xmax:2,ymin:-2,ymax:2,zmin:-2,zmax:2,len:3.2,zlen:3.2,az:-35,tilt:65,solids:[{c:[0,0,0],...clone(def),color:'#58C4DD',op:0.9}]});
   const n=slide().objects.filter(x=>x.type==='axes3d').length;o.x=Math.min(5,n*2.5-2);slide().objects.push(o);sel=o.id;refresh();}
-function addObj(type){if(PRO_ADD.has(type)&&!needPro('3d'))return;PSEC.obj='content';if(type==='image')return pickImage(null);if(SOLO3[type])return add3d(type);if(type==='shapes3d'){snap();const o=make('axes3d');Object.assign(o,{surface:false,numbers:false,labels:true,xmin:-3,xmax:3,ymin:-3,ymax:3,zmin:-3,zmax:3,len:4.4,zlen:4.4,az:-35,tilt:65,
+function addObj(type){if(PRO_ADD.has(type)&&!needPro(PRO_KIND[type]||'3d'))return;PSEC.obj='content';if(type==='image')return pickImage(null);if(type==='model3d')return pickModel(null);if(SOLO3[type])return add3d(type);if(type==='shapes3d'){snap();const o=make('axes3d');Object.assign(o,{surface:false,numbers:false,labels:true,xmin:-3,xmax:3,ymin:-3,ymax:3,zmin:-3,zmax:3,len:4.4,zlen:4.4,az:-35,tilt:65,
     solids:[{kind:'sphere',c:[0,0,0],r:1.2,color:'#58C4DD',op:0.85},{kind:'box',c:[2,-1.5,-1.5],size:[1,1,1],color:'#F4D345',op:0.85},{kind:'arrow',a:[0,0,0],b:[2,2,2],color:'#FC6255',label:'\\vec{v}'}]});
     slide().objects.push(o);sel=o.id;refresh();return;}
   snap();const o=make(type);const n=slide().objects.filter(x=>x.type===type).length;o.x=Math.min(5,n*0.4);o.y=-Math.min(3,n*0.3);slide().objects.push(o);sel=o.id;refresh();}
@@ -2957,16 +3192,16 @@ function toast(m){if(!$('#present').hidden)return;const t=$('#toast');t.textCont
 
 Object.assign(ICONS,ICONS2);
 /* The add menus: each item says in plain words what it is, grouped, with a coloured tile */
-const ADD_DESC={text:'A title or a sentence',latex:'Type maths like y = x^2, it is typeset for you',bullets:'Points that appear one at a time',code:'Program code, coloured',matrix:'Numbers in rows and columns',table:'A grid of values with headings',counter:'A number that counts up on a click',
+const ADD_DESC={incline:'A slope with a block and its forces',fbd:'Forces on an object, with labels',spring:'Stretch it, or let it oscillate',pendulum:'Set the angle, or let it swing',pulley:'Two masses over a pulley',dist:'Normal, binomial, Poisson… with a shaded probability',deriv:'A tangent slides along f while f′ is drawn',fourier:'Turning circles draw a shape',model3d:'Your own OBJ or STL file, turning in 3D',text:'A title or a sentence',latex:'Type maths like y = x^2, it is typeset for you',bullets:'Points that appear one at a time',code:'Program code, coloured',matrix:'Numbers in rows and columns',table:'A grid of values with headings',counter:'A number that counts up on a click',
   image:'A photo or picture from your computer',circle:'A round shape',ellipse:'An oval',rect:'A square or rectangle',polygon:'Triangle, hexagon: any number of sides',star:'A star with as many points as you like',arc:'Part of a circle’s edge',sector:'A slice of a circle, or a ring',line:'A straight line between two points',arrow:'Points at something, can draw itself',dot:'A small round point',brace:'A curly bracket to group things',cross:'A cross or a tick',
   point:'A named point such as A',triangle:'Labels its sides and angles itself',angle:'Marks an angle, with θ',plane:'A grid with x and y axes',venn:'Overlapping circles for sets',
   axes:'Type an equation, get its graph',curve:'Spirals and loops from x(t) and y(t)',polar:'Roses and spirals from r = f(θ)',numberline:'A ruler of numbers',vector:'An arrow with a size and a direction',field:'Arrows everywhere, showing a flow',cplane:'Complex numbers as points',
   sphere3:'A ball',cube3:'A cube',box3:'A box with any sides',ellipsoid3:'A stretched ball',cylinder3:'A can shape',cone3:'A cone',prism3:'A prism on any base',pyramid3:'A pyramid',torus3:'A ring doughnut',tetrahedron3:'4 triangle faces',octahedron3:'8 triangle faces',dodecahedron3:'12 pentagon faces',icosahedron3:'20 triangle faces',arrow3:'An arrow in space',axes3d:'A surface z = f(x, y) you can turn',shapes3d:'Several solids in one 3D scene',
   wave:'A travelling or standing wave',phasor:'A turning arrow that draws a sine wave',spectrum:'A signal and the frequencies inside it',chart:'Bars or lines from your numbers',network:'Dots joined by lines',constellation:'Noisy symbols in digital radio',jsmap:'Where a jammer wins, on a map',hopping:'A signal jumping between frequencies',despread:'How spreading beats a jammer'};
 const ADD_INFO={Write:{c:'blue',intro:'Words, maths and numbers'},Draw:{c:'orange',intro:'Shapes and pictures to colour, move and morph',sec:[['Pictures',['image']],['Shapes',['circle','ellipse','rect','polygon','star','sector']],['Lines and marks',['line','arrow','arc','dot','brace','cross']]]},
-  Geometry:{c:'green',intro:'Figures that label themselves'},Plot:{c:'teal',intro:'Graphs from equations'},
-  '3D':{c:'purple',intro:'Solids and surfaces you can turn',sec:[['Solids',['sphere3','cube3','box3','ellipsoid3','cylinder3','cone3','prism3','pyramid3']],['More solids',['torus3','tetrahedron3','octahedron3','dodecahedron3','icosahedron3']],['Scenes and surfaces',['axes3d','shapes3d','arrow3']]]},
-  Science:{c:'red',intro:'Ready-made physics and signal diagrams',sec:[['Waves and signals',['wave','phasor','spectrum']],['Data',['chart','network']],['Radio and communications',['constellation','jsmap','hopping','despread']]]}};
+  Geometry:{c:'green',intro:'Figures that label themselves'},Plot:{c:'teal',intro:'Graphs from equations',sec:[['Graphs',['axes','curve','polar','numberline','vector','field','cplane']],['Calculus, probability and Fourier',['deriv','dist','fourier']]]},
+  '3D':{c:'purple',intro:'Solids and surfaces you can turn',sec:[['Solids',['sphere3','cube3','box3','ellipsoid3','cylinder3','cone3','prism3','pyramid3']],['More solids',['torus3','tetrahedron3','octahedron3','dodecahedron3','icosahedron3']],['Scenes and surfaces',['axes3d','shapes3d','arrow3']],['Your own models',['model3d']]]},
+  Science:{c:'red',intro:'Ready-made physics and signal diagrams',sec:[['Mechanics',['incline','fbd','spring','pendulum','pulley']],['Waves and signals',['wave','phasor','spectrum']],['Data',['chart','network']],['Radio and communications',['constellation','jsmap','hopping','despread']]]}};
 const addItem=k=>`<button role="menuitem" data-t="${k}"><span class="rm-ic"><svg viewBox="0 0 16 16" aria-hidden="true">${ICONS[k]}</svg></span><span class="rm-tx"><b>${TYPES[k]||MENU_PRESETS[k]}${PRO_ADD.has(k)?'<span class="protag">PRO</span>':''}</b><small>${ADD_DESC[k]||''}</small></span></button>`;
 $('#tools').innerHTML='<span class="addlabel" aria-hidden="true">Add</span>'+GROUPS.map(([g,list],i)=>{const inf=ADD_INFO[g]||{},secs=inf.sec||[[null,list]],big=list.length>9;
   return `<div class="menuwrap"><button class="tool" data-menu="${i}" aria-haspopup="true" aria-expanded="false">${g}<svg viewBox="0 0 16 16"><path d="M4 6l4 4 4-4" stroke="currentColor" stroke-width="1.5" fill="none"/></svg></button><div class="menu richmenu${big?' wide':''}" data-c="${inf.c||'blue'}" role="menu" hidden aria-label="Add: ${g}"><p class="rm-head">${inf.intro||''}</p>${secs.map(([t,ks])=>`${t?`<p class="rm-sec">${t}</p>`:''}<div class="rm-grid">${ks.map(addItem).join('')}</div>`).join('')}</div></div>`;}).join('');
@@ -2976,8 +3211,10 @@ document.addEventListener('keydown',e=>{const m=e.target.closest&&e.target.close
   const r=e.target.getBoundingClientRect(),cand=items.filter(x=>x!==e.target).map(x=>({x,b:x.getBoundingClientRect()}));const d={ArrowUp:[0,-1],ArrowDown:[0,1],ArrowLeft:[-1,0],ArrowRight:[1,0]}[e.key];
   let best=null,bs=1e9;for(const c of cand){const dx=(c.b.left+c.b.width/2)-(r.left+r.width/2),dy=(c.b.top+c.b.height/2)-(r.top+r.height/2);if(dx*d[0]+dy*d[1]<=4)continue;const sc=Math.abs(d[0]?dy:dx)*3+Math.abs(d[0]?dx:dy);if(sc<bs){bs=sc;best=c.x;}}
   (best||items[(i+(d[0]+d[1]>0?1:items.length-1))%items.length]).focus();});
+function fitMenu(m){m.style.marginLeft='';const r=m.getBoundingClientRect(),pad=8;
+  if(r.right>innerWidth-pad)m.style.marginLeft=(innerWidth-pad-r.right)+'px';else if(r.left<pad)m.style.marginLeft=(pad-r.left)+'px';}
 function closeMenus(){document.querySelectorAll('.menu').forEach(m=>m.hidden=true);document.querySelectorAll('[data-menu]').forEach(b=>b.setAttribute('aria-expanded','false'));}
-document.addEventListener('click',e=>{const mb=e.target.closest('[data-menu]');if(mb){const m=mb.nextElementSibling,open=m.hidden;closeMenus();if(open){m.hidden=false;mb.setAttribute('aria-expanded','true');m.querySelector('button').focus();}return;}if(!e.target.closest('.menu'))closeMenus();});
+document.addEventListener('click',e=>{const mb=e.target.closest('[data-menu]');if(mb){const m=mb.nextElementSibling,open=m.hidden;closeMenus();if(open){m.hidden=false;mb.setAttribute('aria-expanded','true');fitMenu(m);m.querySelector('button').focus();}return;}if(!e.target.closest('.menu'))closeMenus();});
 document.addEventListener('keydown',e=>{if((e.ctrlKey||e.metaKey)&&!e.shiftKey&&['b','i','u'].includes(e.key.toLowerCase())&&sel&&!e.target.closest('textarea,input')){const o=obj(sel);if(o&&['text','bullets','table'].includes(o.type)){e.preventDefault();const k={b:'bold',i:'italic',u:'underline'}[e.key.toLowerCase()];snap();writeOf(o,k)[k]=!liveOf(o)[k];persist();renderCanvas();thumbsSoon();renderProps();return;}}if(e.key==='Escape')closeMenus();});
 $('#tools').onclick=e=>{const b=e.target.closest('[data-t]');if(b){closeMenus();addObj(b.dataset.t);}};
 /* the Library menu: ready-made drawings, plus importing your own SVG */
@@ -3070,7 +3307,7 @@ function renderLiveBar(){const bar=$('#livebar');const cs=liveControls(slide().o
 const pc=$('#pcanvas');let pi=0;
 let presOv={},presShown=null,liveHidden=false;
 let ps=0;
-function presShow(i,k,animate,from,c0){const s2=deck.slides[i],to=visibleAt(s2,k),c1=camAt(s2,k);stopLoop();pi=i;ps=k;if(animate)voicePlay(s2,k);else voiceStop();presOv={};presShown=to;const K=maxStep(s2);
+function presShow(i,k,animate,from,c0){const s2=deck.slides[i],to=visibleAt(s2,k),c1=camAt(s2,k);stopLoop();pi=i;ps=k;try{stampFooter(pc,i);}catch(_){}if(animate)voicePlay(s2,k);else voiceStop();presOv={};presShown=to;const K=maxStep(s2);
   $('#pcount').textContent=`${i+1} / ${deck.slides.length}${K?` · click ${k} of ${K}`:''}`;const loop=()=>startLoop(pc,()=>presShown||to);
   const after=()=>{loop();if(presQueued){presQueued=false;setTimeout(()=>{if(pi===i&&ps===k)presNext();},0);}else if(k<K&&autoOf(s2,k+1))afterVoice(()=>setTimeout(()=>{if(pi===i&&ps===k)presNext();},40));};
   if(animate)play(pc,from,to,durOf(s2,k),after,{feel:feelOf(s2),stagger:!!s2.stagger,camFrom:c0,camTo:c1,step:k,slideObjs:s2.objects,loops:true});else{finishAnim();drawStatic(pc,to);setCam(layerOf(pc),c1);loop();}renderPresLive();warmNext();}
@@ -3096,6 +3333,8 @@ $('#presentBtn').onclick=openPresent;wirePanels();
 function fsItems(){const L=[],add=(sec,label,sub,kw,run,ic)=>L.push({sec,label,sub:sub||'',kw:(label+' '+(sub||'')+' '+(kw||'')).toLowerCase(),run,ic});
   const I={act:'<path d="M5 12h14M13 6l6 6-6 6"/>',add:'<path d="M12 5v14M5 12h14"/>',set:'<circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3M4.9 4.9l2.1 2.1M17 17l2.1 2.1M4.9 19.1L7 17M17 7l2.1-2.1"/>',learn:'<path d="M2 9l10-5 10 5-10 5z"/><path d="M6 11v5c3 2 9 2 12 0v-5"/>'};
   const o=sel&&obj(sel),click=q=>()=>{const e=$(q);if(e)e.click();};
+  add('Add','Footer, date and slide number','Like PowerPoint, on every slide','footer header date slide number page numbers powerpoint',()=>{sel=null;editStep=null;refresh();showPane('slide');setTimeout(()=>{const b=$('#footBox');if(b)b.scrollIntoView({block:'center'});},50);},I.add);
+  add('Add','Import a 3D model','OBJ or STL file (Pro)','3d model import obj stl blender mesh',()=>addObj('model3d'),I.add);
   add('Do','Solve an equation with AI','Worked steps, one per click, answer checked','solve equation solver steps working algebra',()=>openAI('solve'),I.act);
   add('Do','Create slides with AI','Describe a lesson, get the slides','ai chatbot generate prompt write automatic',()=>openAI(),I.act);
   if(window.TRACE_AI)add('Do','Buy AI credits','Packs that never expire','ai credits tokens buy pack',()=>window.TRACE_AI.buy(),I.act);
@@ -3227,7 +3466,7 @@ async function makeVideo({quality=1080,pause=2,voice=true,badge=PLAN.badge}={},o
   const total=Math.max(1,Math.round(dur*VID.fps));let si=0,stillKey=null;
   try{for(let f=0;f<total;f++){if(job.cancel)throw new Error('cancelled');if(encErr)throw encErr;
       const t=f/VID.fps;while(si<segs.length-1&&t>=segs[si].t0+segs[si].len)si++;const seg=segs[si],fr=vidFrame(seg,t),key=fr.still?si:null;
-      if(key===null||key!==stillKey){drawItems(svg,fr.items);setCam(layerOf(svg),fr.cam);
+      if(key===null||key!==stillKey){drawItems(svg,fr.items);setCam(layerOf(svg),fr.cam);stampFooter(svg,seg.slide);
         let s=new XMLSerializer().serializeToString(svg);if(style)s=s.replace(/^(<svg[^>]*>)/,'$1'+style);
         const url=URL.createObjectURL(new Blob([s],{type:'image/svg+xml'})),img=new Image();img.src=url;try{await img.decode();ctx.clearRect(0,0,W,H);ctx.drawImage(img,0,0,W,H);}finally{URL.revokeObjectURL(url);}
         if(badge)vidBadge(ctx,W,H);stillKey=key;}
@@ -3335,6 +3574,7 @@ function mob(o){const c=`"${o.color}"`;let m;
   if(o.type==='axes3d')return`make_axes3d(${ax3Params(o)})`;
   if(o.type==='vector'){m=`make_vector([${r3(o.x)}, ${r3(o.y)}], [${r3(o.dx)}, ${r3(o.dy)}], r"""${o.label||''}""", ${c})`;const ab=`about_point=[${r3(o.x)}, ${r3(o.y)}, 0]`;if(o.scale!==1)m+=`.scale(${r3(o.scale)}, ${ab})`;if(o.rot)m+=`.rotate(${r3(o.rot)} * DEGREES, ${ab})`;if((o.opacity??1)<1)m+=`.fade_to(${r3(o.opacity)})`;return m;}
   if(o.type==='field'){const st=Math.max(0.15,o.gap);m=`make_field(lambda x, y: ${pyFn(o.fx,'x,y')}, lambda x, y: ${pyFn(o.fy,'x,y')}, [${r3(o.xmin)}, ${r3(o.xmax)}, ${r3(st)}], [${r3(o.ymin)}, ${r3(o.ymax)}, ${r3(st)}], ${o.byMag?'None':c}${o.style==='stream'?', stream=True':''})`;}
+  if(!m&&SCI2.includes(o.type))m=`Rectangle(width=2, height=1, color=GREY)  # ${TYPES[o.type]}: not in the Python script yet (it is in the MP4 video)`;
   if(!m)switch(o.type){
     case'text':{const lines=String(o.text??'').split('\n'),style=`font=${JSON.stringify(o.font||'Arial')}, font_size=${r3(o.fontSize)}, color=${c}${o.bold?', weight=BOLD':''}${o.italic?', slant=ITALIC':''}`;
       const rich=isRichStr(o.text);if(lines.length>1)m=`text_block([${lines.map(l=>JSON.stringify(rich?(pango(l)||' '):(plainOf(l)||' '))).join(', ')}], "${o.align||'center'}", ${r3(o.lineSpacing||1.2)}, ${o.underline?'True':'False'}, ${rich?'True':'False'}, ${style})`;
